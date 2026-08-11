@@ -7,12 +7,6 @@ export const datiLezione = {
     sottotitolo: "Livello A1 - Iniziamo a viaggiare",
     bannerImg: "img/banner_unita1.webp",
 
-    badge: {
-        nome: "Antonio",
-        gruppo: "Venezia",
-        icona: "👤"
-    },
-
     elicitazione: {
         sceltaPersonale: {
             domanda: '📌 Perché studi l\'italiano?',
