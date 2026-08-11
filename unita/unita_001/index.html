@@ -64,7 +64,7 @@
             initSceltaPersonale, 
             avviaSceltaPersonaleListener
         } from '../../moduli/index.js';
-        import { initLogin, getUtenteCorrente, haAccesso, logout } from '../../moduli/login.js';
+        import { initLogin, getUtenteCorrente, haAccesso, logout, mostraLogin } from '../../moduli/login.js';
         import { datiLezione } from './dati-lezione.js';
 
         const firebaseConfig = {
@@ -73,68 +73,70 @@
 
         const app = initializeApp(firebaseConfig, 'unita001');
         initLogin(app);
-
-        const utente = getUtenteCorrente();
-
-        if (!utente) {
-            window.location.href = '../../index.html';
-            throw new Error('Accesso negato - utente non autenticato');
-        }
-
-        if (!haAccesso(utente, 1)) {
-            alert('Non hai accesso a questa unità!');
-            window.location.href = '../../index.html';
-            throw new Error('Accesso negato - livello insufficiente');
-        }
-
         initSceltaPersonale(app);
 
-        const datiConUtente = {
-            ...datiLezione,
-            badge: {
-                nome: utente.username,
-                gruppo: utente.gruppo,
-                icona: '👤'
+        function avviaPagina(utente) {
+            if (!utente) {
+                mostraLogin((utenteLoggato) => avviaPagina(utenteLoggato));
+                return;
             }
-        };
 
-        initIntestazione(datiConUtente);
+            if (!haAccesso(utente, 1)) {
+                alert('Non hai accesso a questa unità!');
+                window.location.href = '../../index.html';
+                return;
+            }
 
-        const html = generaSceltaPersonale(datiLezione, false);
-        document.getElementById('contenitore-dinamico').innerHTML = html;
+            const datiConUtente = {
+                ...datiLezione,
+                badge: {
+                    nome: utente.username,
+                    gruppo: utente.gruppo,
+                    icona: '👤'
+                }
+            };
 
-        const BASE_PATH = `unita_001`;
-        avviaSceltaPersonaleListener(BASE_PATH, utente.username, false);
+            initIntestazione(datiConUtente);
 
-        window.toggleAccordion = function(id) {
-            const currentContent = document.getElementById('content_' + id);
-            if (!currentContent) return;
+            const isDocente = utente.ruolo === 'docenti';
+            const html = generaSceltaPersonale(datiLezione, isDocente);
+            document.getElementById('contenitore-dinamico').innerHTML = html;
 
-            const isOpen = currentContent.classList.contains('open');
+            const BASE_PATH = `unita_001`;
+            avviaSceltaPersonaleListener(BASE_PATH, utente.username, isDocente);
 
-            document.querySelectorAll('.accordion-content').forEach(content => {
-                content.classList.remove('open');
-            });
+            window.toggleAccordion = function(id) {
+                const currentContent = document.getElementById('content_' + id);
+                if (!currentContent) return;
 
-            document.querySelectorAll('.accordion-header span').forEach(arrow => {
-                arrow.textContent = '▼';
-            });
+                const isOpen = currentContent.classList.contains('open');
 
-            if (!isOpen) {
-                currentContent.classList.add('open');
+                document.querySelectorAll('.accordion-content').forEach(content => {
+                    content.classList.remove('open');
+                });
+
+                document.querySelectorAll('.accordion-header span').forEach(arrow => {
+                    arrow.textContent = '▼';
+                });
+
+                if (!isOpen) {
+                    currentContent.classList.add('open');
+                    const arrow = document.getElementById('arrow_' + id);
+                    if (arrow) arrow.textContent = '▲';
+                }
+            };
+
+            window.closeAccordion = function(id) {
+                const content = document.getElementById('content_' + id);
                 const arrow = document.getElementById('arrow_' + id);
-                if (arrow) arrow.textContent = '▲';
-            }
-        };
+                if (content) content.classList.remove('open');
+                if (arrow) arrow.textContent = '▼';
+            };
 
-        window.closeAccordion = function(id) {
-            const content = document.getElementById('content_' + id);
-            const arrow = document.getElementById('arrow_' + id);
-            if (content) content.classList.remove('open');
-            if (arrow) arrow.textContent = '▼';
-        };
+            window.parloLogout = logout;
+        }
 
-        window.parloLogout = logout;
+        avviaPagina(getUtenteCorrente());
     </script>
 </body>
 </html>
