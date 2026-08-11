@@ -3,9 +3,19 @@
 // ================================================================
 
 export const datiLezione = {
-    titolo: "Unità 1: Prime Parole",
-    descrizione: "Perché studi italiano? Come ti presenti?",
+    // Intestazione
+    titolo: "Unità 1 - Un albergo in centro",
+    sottotitolo: "Livello A1 - Iniziamo a viaggiare",
+    bannerImg: "../../unita_001/img/banner_unita1.webp",  // ← percorso corretto
 
+    // Badge utente (fisso per test)
+    badge: {
+        nome: "Antonio",
+        gruppo: "Venezia",
+        icona: "👤"
+    },
+
+    // Contenuto della lezione
     elicitazione: {
         sceltaPersonale: {
             domanda: '📌 Perché studi l\'italiano?',
