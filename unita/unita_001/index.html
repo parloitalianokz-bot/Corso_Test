@@ -9,24 +9,66 @@
 <body>
 
     <div class="main-container">
-        <div class="header">
-            <a href="../../index.html" class="back-link">← Torna al corso</a>
-            <h1>Unità 001: Prime Parole</h1>
-            <p>Scopri perché studi italiano</p>
-        </div>
+        <!-- Intestazione -->
+        <div id="intestazione-container"></div>
         <div id="contenitore-dinamico"></div>
     </div>
 
     <script type="module">
-        import { generaSceltaPersonale } from '../../moduli/index.js';
+        // ================================================================
+        // 1. IMPORTA FIREBASE E MODULI
+        // ================================================================
+        
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        
+        import { generaSceltaPersonale, initIntestazione, initSceltaPersonale, avviaSceltaPersonaleListener } from '../../moduli/index.js';
+
+        // ================================================================
+        // 2. CONFIGURAZIONE FIREBASE
+        // ================================================================
+
+        const firebaseConfig = {
+            databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
+        };
+
+        const app = initializeApp(firebaseConfig, 'unita001');
+
+        // ================================================================
+        // 3. DATI DELLA LEZIONE
+        // ================================================================
+
         import { datiLezione } from './dati-lezione.js';
+
+        // ================================================================
+        // 4. INIZIALIZZA IL MODULO CON IL DATABASE
+        // ================================================================
+
+        initSceltaPersonale(app);
+
+        // ================================================================
+        // 5. GENERA LA PAGINA
+        // ================================================================
 
         console.log('🚀 Avvio Unità 001...');
 
+        // Intestazione
+        initIntestazione(datiLezione);
+
+        // Contenuto
         const html = generaSceltaPersonale(datiLezione, false);
         document.getElementById('contenitore-dinamico').innerHTML = html;
 
+        // ================================================================
+        // 6. AVVIA IL LISTENER PER LE RISPOSTE
+        // ================================================================
+
+        const BASE_PATH = `unita_001`;
+        const myUserName = localStorage.getItem('parlo_italiano_username') || 'Studente';
+
+        avviaSceltaPersonaleListener(BASE_PATH, myUserName, false);
+
         console.log('✅ Unità 001 caricata!');
+        console.log('ℹ️ Clicca su un\'opzione per testare');
     </script>
 </body>
 </html>
