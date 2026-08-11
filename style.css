@@ -147,10 +147,18 @@ h1 { color: var(--primary-color); font-size: 2rem; }
 }
 
 .scheda-immagine-centrata {
+    display: block;
     margin: 0 auto;
-    max-width: 520px;
+    width: 100%;
+    max-width: 320px;
 }
 
 .scheda-contenuto-dinamico {
     margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+    .scheda-immagine-centrata {
+        max-width: 100%;
+    }
 }
