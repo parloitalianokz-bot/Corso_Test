@@ -2,7 +2,16 @@
 // MODULO: SCELTA PERSONALE
 // ================================================================
 
-// INIETTA CSS SPECIFICO DEL MODULO
+// ================================================================
+// 1. IMPORTA FIREBASE
+// ================================================================
+
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+// ================================================================
+// 2. INIETTA CSS
+// ================================================================
+
 (function() {
     const css = `
         .scelta-container { margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 12px; border: 2px solid var(--primary-color); }
@@ -25,12 +34,10 @@
         .scelta-bacheca { margin-top: 15px; padding: 15px; background: white; border-radius: 8px; border: 1px solid #e9ecef; }
         .scelta-bacheca h4 { margin-top: 0; color: #2c3e50; font-size: 0.95em; }
         
-        /* Tablet */
         @media (max-width: 1024px) and (min-width: 601px) {
             .scelta-opzioni { grid-template-columns: repeat(2, 1fr); gap: 15px; }
         }
         
-        /* Smartphone */
         @media (max-width: 600px) {
             .scelta-opzioni { grid-template-columns: 1fr; gap: 15px; max-width: 300px; margin: 15px auto; }
             .scelta-immagine { max-width: 200px; margin: 0 auto; }
@@ -39,25 +46,31 @@
     const style = document.createElement('style');
     style.textContent = css;
     document.head.appendChild(style);
-    console.log('🎨 CSS SceltaPersonale iniettato');
 })();
 
 // ================================================================
-// FUNZIONI DEL MODULO
+// 3. VARIABILI GLOBALI
 // ================================================================
 
-function escapeHtml(str) {
-    return String(str)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
+let dbGlobal = null;
+let BASE_PATH_GLOBAL = '';
+
+// ================================================================
+// 4. FUNZIONI DI INIZIALIZZAZIONE
+// ================================================================
+
+export function initSceltaPersonale(app) {
+    dbGlobal = app;
+    console.log('📦 sceltaPersonale: database inizializzato con app personalizzata');
 }
 
-function escapeJsString(str) {
-    return String(str).replaceAll('\\', '\\\\').replaceAll("'", "\\'");
+export function setBasePath(basePath) {
+    BASE_PATH_GLOBAL = basePath;
 }
+
+// ================================================================
+// 5. GENERATORE HTML
+// ================================================================
 
 export function generaSceltaPersonale(config, isDocente) {
     const data = config?.elicitazione?.sceltaPersonale;
@@ -67,22 +80,20 @@ export function generaSceltaPersonale(config, isDocente) {
     
     let opzioniHtml = '';
     (data.opzioni || []).forEach((opt) => {
-        const safeId = escapeJsString(opt.id);
-        const safeLabel = escapeJsString(opt.etichetta);
         opzioniHtml += `
-        <div class="scelta-option" onclick="scegliOpzione('${id}', '${safeId}', '${safeLabel}')">
-            <img src="${opt.img}" alt="${escapeHtml(opt.etichetta)}" class="scelta-immagine" id="img_${id}_${opt.id}">
-            <div class="scelta-etichetta">${escapeHtml(opt.etichetta)}</div>
+        <div class="scelta-option" onclick="scegliOpzione('${id}', '${opt.id}', '${opt.etichetta}')">
+            <img src="${opt.img}" alt="${opt.etichetta}" class="scelta-immagine" id="img_${id}_${opt.id}">
+            <div class="scelta-etichetta">${opt.etichetta}</div>
         </div>
         `;
     });
     
     return `
     <div class="scelta-container">
-        <div class="scelta-domanda">${escapeHtml(data.domanda)}</div>
+        <div class="scelta-domanda">${data.domanda}</div>
         <div class="scelta-opzioni">${opzioniHtml}</div>
         <div class="scelta-risposta">
-            <div class="scelta-frase-base">${escapeHtml(data.fraseBase)}</div>
+            <div class="scelta-frase-base">${data.fraseBase}</div>
             <div class="scelta-testo" id="scelta_testo_${id}">
                 Scegli un'opzione...
             </div>
@@ -96,35 +107,115 @@ export function generaSceltaPersonale(config, isDocente) {
 }
 
 // ================================================================
-// FUNZIONE GLOBALE PER LA SCELTA
+// 6. FUNZIONE GLOBALE PER LA SCELTA
 // ================================================================
+
 window.scegliOpzione = function(id, opzioneId, etichetta) {
     console.log('🔍 sceltaPersonale: opzione selezionata', opzioneId, etichetta);
     
-    const selectedImg = document.getElementById('img_' + id + '_' + opzioneId);
-    if (selectedImg) {
-        selectedImg.style.borderColor = 'var(--primary-color)';
-        selectedImg.style.borderWidth = '4px';
-        selectedImg.style.boxShadow = '0 0 20px rgba(26, 110, 58, 0.3)';
-    }
+    // 1. Evidenzia l'immagine scelta
+    document.querySelectorAll(`#img_${id}_${opzioneId}`).forEach(img => {
+        img.style.borderColor = 'var(--primary-color)';
+        img.style.borderWidth = '4px';
+        img.style.boxShadow = '0 0 20px rgba(26, 110, 58, 0.3)';
+    });
     
-    document.querySelectorAll('.scelta-immagine').forEach(function(img) {
-        if (img.id !== 'img_' + id + '_' + opzioneId) {
+    document.querySelectorAll('.scelta-immagine').forEach(img => {
+        if (img.id !== `img_${id}_${opzioneId}`) {
             img.style.borderColor = '#ddd';
             img.style.borderWidth = '2px';
             img.style.boxShadow = 'none';
         }
     });
     
-    const testoEl = document.getElementById('scelta_testo_' + id);
+    // 2. Mostra la frase completa
+    const testoEl = document.getElementById(`scelta_testo_${id}`);
     if (testoEl) {
-        testoEl.innerHTML = '<strong>' + escapeHtml(etichetta) + '</strong>';
+        testoEl.innerHTML = `<strong>${etichetta}</strong>`;
         testoEl.style.color = 'var(--primary-color)';
         testoEl.style.fontStyle = 'normal';
     }
     
-    const bacheca = document.getElementById('scelta_risposte_' + id);
-    if (bacheca) {
-        bacheca.innerHTML = '<div style="padding:8px;background:#d4edda;border-radius:4px;color:#155724;">✅ Hai scelto: <strong>' + escapeHtml(etichetta) + '</strong> (salvataggio simulato)</div>';
+    // 3. Salva su Firebase
+    if (!dbGlobal) {
+        console.warn('⚠️ dbGlobal non inizializzato! Salvataggio simulato.');
+        mostraConferma(id, etichetta, true);
+        return;
     }
+    
+    const myUserName = localStorage.getItem('parlo_italiano_username') || 'Studente';
+    const database = getDatabase(dbGlobal);
+    const percorso = `${BASE_PATH_GLOBAL}/scelta_personale/${id}/${myUserName}`;
+    
+    set(ref(database, percorso), {
+        opzione: opzioneId,
+        etichetta: etichetta,
+        timestamp: Date.now()
+    }).then(() => {
+        console.log('✅ Risposta salvata su Firebase');
+        mostraConferma(id, etichetta, false);
+    }).catch((error) => {
+        console.error('❌ Errore durante il salvataggio:', error);
+        mostraConferma(id, etichetta, true);
+    });
 };
+
+// ================================================================
+// 7. FUNZIONE PER MOSTRARE LA CONFERMA
+// ================================================================
+
+function mostraConferma(id, etichetta, simulato) {
+    const bacheca = document.getElementById(`scelta_risposte_${id}`);
+    if (!bacheca) return;
+    
+    const msg = simulato 
+        ? `✅ Hai scelto: <strong>${etichetta}</strong> (salvataggio simulato)`
+        : `✅ Hai scelto: <strong>${etichetta}</strong>`;
+    
+    bacheca.innerHTML = `
+        <div style="padding:8px;background:#d4edda;border-radius:4px;color:#155724;">
+            ${msg}
+        </div>
+    `;
+}
+
+// ================================================================
+// 8. LISTENER PER LE RISPOSTE DELLA CLASSE
+// ================================================================
+
+export function avviaSceltaPersonaleListener(basePath, myUserName, isDocente) {
+    if (!dbGlobal) {
+        console.warn('⚠️ dbGlobal non inizializzato!');
+        return;
+    }
+    
+    BASE_PATH_GLOBAL = basePath;
+    const database = getDatabase(dbGlobal);
+    
+    // Ascolta le risposte
+    onValue(ref(database, `${BASE_PATH_GLOBAL}/scelta_personale`), (snapshot) => {
+        const allData = snapshot.val() || {};
+        
+        // Cerca tutti i container delle risposte
+        Object.keys(allData).forEach(id => {
+            const container = document.getElementById(`scelta_risposte_${id}`);
+            if (!container) return;
+            
+            const studenti = allData[id];
+            if (!studenti || Object.keys(studenti).length === 0) {
+                container.innerHTML = 'Ancora nessuna risposta...';
+                return;
+            }
+            
+            let html = '';
+            Object.keys(studenti).forEach(nome => {
+                const risposta = studenti[nome];
+                html += `
+                <div style="padding: 4px 0; border-bottom: 1px solid #eee;">
+                    <b>${nome}:</b> ${risposta.etichetta}
+                </div>
+                `;
+            });
+            container.innerHTML = html;
+        });
+    });
