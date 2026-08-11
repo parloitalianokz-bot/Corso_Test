@@ -64,6 +64,11 @@
             line-height: 1.25;
         }
 
+        .flashcard-label .mic {
+            margin-right: 6px;
+            font-size: 0.95em;
+        }
+
         .flashcard-arrow {
             position: absolute;
             top: 50%;
@@ -153,7 +158,7 @@ export function generaFlashcard(vocabolario, id = 'flashcard') {
         html += `
             <div class="flashcard-item" onclick="window.playFlashcardAudio('${audioId}')">
                 <img class="flashcard-image" src="${item.img}" alt="${item.parola}" loading="lazy">
-                <div class="flashcard-label">${item.parola}</div>
+                <div class="flashcard-label"><span class="mic">🎤</span>${item.parola}</div>
                 <audio id="${audioId}" src="${item.audio}" preload="none"></audio>
             </div>
         `;
@@ -163,7 +168,7 @@ export function generaFlashcard(vocabolario, id = 'flashcard') {
         </div>
         <button type="button" class="flashcard-arrow next" onclick="window.scrollFlashcard('${sliderId}', 1)">❯</button>
     </div>
-    <p class="flashcard-hint">Usa le frecce o scorri lateralmente</p>
+    <p class="flashcard-hint">Clicca sulla carta per ascoltare l'audio</p>
     `;
 
     return html;
