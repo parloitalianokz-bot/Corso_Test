@@ -20,7 +20,7 @@ export const datiLezione = {
             idFirebase: 'unita_001_motivazione',
             opzioni: [
                 { id: 'turismo', etichetta: 'per turismo', img: 'img/motivazioni/turismo.webp' },
-                { id: 'studio', etichetta: 'per studio', img: 'img/motivazioni/studi.webp' },
+                { id: 'studio', etichetta: 'per studio', img: 'img/motivazioni/studio.webp' },
                 { id: 'amore', etichetta: 'per amore', img: 'img/motivazioni/amore.webp' },
                 { id: 'lavoro', etichetta: 'per lavoro', img: 'img/motivazioni/lavoro.webp' }
             ]
