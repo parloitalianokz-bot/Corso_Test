@@ -219,3 +219,4 @@ export function avviaSceltaPersonaleListener(basePath, myUserName, isDocente) {
             container.innerHTML = html;
         });
     });
+}
