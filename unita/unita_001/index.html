@@ -27,7 +27,7 @@
 
                 <div id="contenitore-dinamico" class="scheda-contenuto-dinamico"></div>
 
-                <div style="margin-top:15px; text-align:right;">
+                <div class="scheda-azioni">
                     <button onclick="closeAccordion('scheda_1')" class="logout-button">Chiudi scheda</button>
                 </div>
             </div>
@@ -39,7 +39,7 @@
             </div>
             <div id="content_scheda_2" class="accordion-content">
                 <p>Contenuto della Scheda 2 (da implementare)</p>
-                <div style="margin-top:15px; text-align:right;">
+                <div class="scheda-azioni">
                     <button onclick="closeAccordion('scheda_2')" class="logout-button">Chiudi scheda</button>
                 </div>
             </div>
@@ -51,7 +51,7 @@
             </div>
             <div id="content_scheda_3" class="accordion-content">
                 <p>Contenuto della Scheda 3 (da implementare)</p>
-                <div style="margin-top:15px; text-align:right;">
+                <div class="scheda-azioni">
                     <button onclick="closeAccordion('scheda_3')" class="logout-button">Chiudi scheda</button>
                 </div>
             </div>
@@ -107,20 +107,28 @@
 
             const isDocente = utente.ruolo === 'docenti';
 
-            const htmlScelta = generaSceltaPersonale(datiLezione, isDocente);
+            const htmlScelta = datiLezione.elicitazione?.sceltaPersonale
+                ? `
+                    <div class="section-separator section-separator-no-top">
+                        <div class="attivita-label">Attività 1</div>
+                        ${generaSceltaPersonale(datiLezione, isDocente)}
+                    </div>
+                `
+                : '';
+
             const htmlFlashcard = datiLezione.vocabolario && datiLezione.vocabolario.length
                 ? `
-                    <div style="margin-top: 28px; padding-top: 20px; border-top: 2px solid rgba(26, 110, 58, 0.18);">
-                        <h3 style="margin: 0 0 14px 0; color: var(--primary-color); text-align:center; font-size: 1.2rem;">
-                            Che cosa associ all'Italia?
-                        </h3>
+                    <div class="section-separator">
+                        <div class="attivita-label">Attività 2</div>
                         ${generaFlashcard(datiLezione.vocabolario, 'u001')}
                     </div>
                 `
                 : '';
+
             const htmlForum = datiLezione.forum
                 ? `
-                    <div style="margin-top: 28px; padding-top: 20px; border-top: 2px solid rgba(26, 110, 58, 0.18);">
+                    <div class="section-separator">
+                        <div class="attivita-label">Attività 3</div>
                         ${generaForum(datiLezione)}
                     </div>
                 `
