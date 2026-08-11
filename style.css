@@ -25,10 +25,28 @@ body {
 .header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid var(--primary-color); }
 h1 { color: var(--primary-color); font-size: 2rem; }
 
+/* Top nav */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.logout-button {
+    padding: 5px 15px;
+    background: var(--secondary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
 /* Back link */
 .back-link {
     display: inline-block;
-    margin-bottom: 15px;
     color: var(--primary-color);
     text-decoration: none;
     font-weight: bold;
