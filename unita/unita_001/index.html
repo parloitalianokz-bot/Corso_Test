@@ -24,7 +24,9 @@
                 <div class="scheda-immagine-box">
                     <img src="img/mappa_italia.webp" alt="Mappa dell'Italia" class="scheda-immagine scheda-immagine-centrata">
                 </div>
+
                 <div id="contenitore-dinamico" class="scheda-contenuto-dinamico"></div>
+
                 <div style="margin-top:15px; text-align:right;">
                     <button onclick="closeAccordion('scheda_1')" class="logout-button">Chiudi scheda</button>
                 </div>
@@ -59,7 +61,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
-            generaSceltaPersonale, 
+            generaSceltaPersonale,
+            generaFlashcard,
             initIntestazione, 
             initSceltaPersonale, 
             avviaSceltaPersonaleListener
@@ -99,8 +102,20 @@
             initIntestazione(datiConUtente);
 
             const isDocente = utente.ruolo === 'docenti';
-            const html = generaSceltaPersonale(datiLezione, isDocente);
-            document.getElementById('contenitore-dinamico').innerHTML = html;
+
+            const htmlScelta = generaSceltaPersonale(datiLezione, isDocente);
+            const htmlFlashcard = datiLezione.vocabolario && datiLezione.vocabolario.length
+                ? `
+                    <div style="margin-top: 28px; padding-top: 20px; border-top: 2px solid rgba(26, 110, 58, 0.18);">
+                        <h3 style="margin: 0 0 14px 0; color: var(--primary-color); text-align:center; font-size: 1.2rem;">
+                            Che cosa associ all'Italia?
+                        </h3>
+                        ${generaFlashcard(datiLezione.vocabolario, 'u001')}
+                    </div>
+                `
+                : '';
+
+            document.getElementById('contenitore-dinamico').innerHTML = htmlScelta + htmlFlashcard;
 
             const BASE_PATH = `unita_001`;
             avviaSceltaPersonaleListener(BASE_PATH, utente.username, isDocente);
