@@ -16,22 +16,45 @@
 
     <script type="module">
         // ================================================================
-        // 1. IMPORTA FIREBASE E MODULI
+        // 1. IMPORTA MODULI
         // ================================================================
         
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         
-        import { generaSceltaPersonale, initIntestazione, initSceltaPersonale, avviaSceltaPersonaleListener } from '../../moduli/index.js';
-
-        // ================================================================
-        // 2. CONFIGURAZIONE FIREBASE
-        // ================================================================
-
+        import { 
+            generaSceltaPersonale, 
+            initIntestazione, 
+            initSceltaPersonale, 
+            avviaSceltaPersonaleListener
+        } from '../../moduli/index.js';
+        
+        import { initLogin, getUtenteCorrente, haAccesso, logout } from '../../moduli/login.js';
+        
+        // Configurazione Firebase (SOLO databaseURL)
         const firebaseConfig = {
             databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
         };
-
+        
         const app = initializeApp(firebaseConfig, 'unita001');
+        initLogin(app);
+
+        // ================================================================
+        // 2. VERIFICA ACCESSO
+        // ================================================================
+
+        const utente = getUtenteCorrente();
+        
+        if (!utente) {
+            // Non autenticato, reindirizza alla home
+            window.location.href = '../../index.html';
+            throw new Error('Accesso negato - utente non autenticato');
+        }
+        
+        if (!haAccesso(utente, 1)) {
+            alert('Non hai accesso a questa unità!');
+            window.location.href = '../../index.html';
+            throw new Error('Accesso negato - livello insufficiente');
+        }
 
         // ================================================================
         // 3. DATI DELLA LEZIONE
@@ -40,7 +63,7 @@
         import { datiLezione } from './dati-lezione.js';
 
         // ================================================================
-        // 4. INIZIALIZZA IL MODULO CON IL DATABASE
+        // 4. INIZIALIZZA I MODULI
         // ================================================================
 
         initSceltaPersonale(app);
@@ -51,8 +74,26 @@
 
         console.log('🚀 Avvio Unità 001...');
 
-        // Intestazione
-        initIntestazione(datiLezione);
+        // Intestazione con nome studente
+        const datiConUtente = {
+            ...datiLezione,
+            badge: {
+                nome: utente.username,
+                gruppo: utente.gruppo,
+                icona: '👤'
+            }
+        };
+        
+        initIntestazione(datiConUtente);
+
+        // Pulsante logout e navigazione
+        const pulsantiNav = document.createElement('div');
+        pulsantiNav.style.cssText = 'display:flex; justify-content:space-between; margin-bottom:15px;';
+        pulsantiNav.innerHTML = `
+            <a href="../../index.html" class="back-link">← Torna alla Home</a>
+            <button onclick="window.parloLogout()" style="padding:5px 15px; background:#ce2b37; color:white; border:none; border-radius:5px; cursor:pointer;">Logout</button>
+        `;
+        document.getElementById('contenitore-dinamico').before(pulsantiNav);
 
         // Contenuto
         const html = generaSceltaPersonale(datiLezione, false);
@@ -63,12 +104,14 @@
         // ================================================================
 
         const BASE_PATH = `unita_001`;
-        const myUserName = localStorage.getItem('parlo_italiano_username') || 'Studente';
+        const myUserName = utente.username;
 
         avviaSceltaPersonaleListener(BASE_PATH, myUserName, false);
 
+        // Funzione globale per logout
+        window.parloLogout = logout;
+
         console.log('✅ Unità 001 caricata!');
-        console.log('ℹ️ Clicca su un\'opzione per testare');
     </script>
 </body>
 </html>
