@@ -13,8 +13,14 @@ export {
     setBasePath 
 } from './sceltaPersonale.js';
 
-// 📦 Modulo: Flashcard (da creare)
-// export { generaFlashcard } from './flashcard.js';
-
-// 📦 Modulo: Forum (da creare)
-// export { generaForum } from './forum.js';
+// 📦 Modulo: Login
+export { 
+    initLogin, 
+    verificaCredenziali, 
+    haAccesso, 
+    getGruppi,
+    mostraLogin, 
+    nascondiLogin, 
+    getUtenteCorrente, 
+    logout 
+} from './login.js';
