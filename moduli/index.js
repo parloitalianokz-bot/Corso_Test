@@ -2,9 +2,19 @@
 // INDEX DEI MODULI - Esporta tutti i moduli riutilizzabili
 // ================================================================
 
-export { generaSceltaPersonale } from './sceltaPersonale.js';
+// 📦 Modulo: Intestazione
+export { generaIntestazione, initIntestazione } from './intestazione.js';
 
-// Aggiungi qui i futuri moduli:
-// export { generaQuiz } from './quiz.js';
-// export { generaAudio } from './audio.js';
-// export { generaTesto } from './testo.js';
+// 📦 Modulo: Scelta Personale
+export { 
+    generaSceltaPersonale, 
+    initSceltaPersonale, 
+    avviaSceltaPersonaleListener,
+    setBasePath 
+} from './sceltaPersonale.js';
+
+// 📦 Modulo: Flashcard (da creare)
+// export { generaFlashcard } from './flashcard.js';
+
+// 📦 Modulo: Forum (da creare)
+// export { generaForum } from './forum.js';
