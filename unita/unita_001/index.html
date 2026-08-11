@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../style.css">
+    <title>Unità 001 - Motivazione</title>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="header">
+            <a href="../../index.html" class="back-link">← Torna al corso</a>
+            <h1>Unità 001: Prime Parole</h1>
+            <p>Scopri perché studi italiano</p>
+        </div>
+        <div id="contenitore-dinamico"></div>
+    </div>
+
+    <script type="module">
+        import { generaSceltaPersonale } from '../../moduli/index.js';
+        import { datiLezione } from './dati-lezione.js';
+
+        console.log('🚀 Avvio Unità 001...');
+
+        const html = generaSceltaPersonale(datiLezione, false);
+        document.getElementById('contenitore-dinamico').innerHTML = html;
+
+        console.log('✅ Unità 001 caricata!');
+    </script>
+</body>
+</html>
