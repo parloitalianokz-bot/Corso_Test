@@ -1,0 +1,70 @@
+/* ============================================================ */
+/* STILI GLOBALI - Solo layout, header, griglia unità, ecc.     */
+/* ============================================================ */
+:root {
+    --primary-color: #1a6e3a;
+    --secondary-color: #ce2b37;
+    --accent-color: #f1c40f;
+    --bg-color: #f7f5f0;
+    --text-color: #1a1a2e;
+    --white: #ffffff;
+}
+
+/* Reset & Base */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 20px;
+    margin: 0;
+}
+
+.main-container { max-width: 800px; margin: 0 auto; }
+
+.header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid var(--primary-color); }
+h1 { color: var(--primary-color); font-size: 2rem; }
+
+/* Back link */
+.back-link {
+    display: inline-block;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+}
+.back-link:hover { color: var(--secondary-color); transform: translateX(-3px); }
+
+/* Griglia Unità (Homepage) */
+.unita-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.unita-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    background: var(--white);
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.unita-card:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.unita-numero { font-size: 1.2em; }

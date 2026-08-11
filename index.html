@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Corso di Italiano - 100 Unità</title>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="header">
+            <h1>🇮🇹 Corso di Italiano</h1>
+            <p>Seleziona un'unità per iniziare</p>
+        </div>
+        <div id="contenitore-unita">
+            <div id="lista-unita"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        const unitaContainer = document.getElementById('lista-unita');
+        
+        // Generiamo 100 link alle unità
+        let html = '<div class="unita-grid">';
+        for (let i = 1; i <= 100; i++) {
+            const num = String(i).padStart(3, '0');
+            html += `
+                <a href="unita/unita_${num}/index.html" class="unita-card">
+                    <span class="unita-numero">${num}</span>
+                </a>
+            `;
+        }
+        html += '</div>';
+        
+        unitaContainer.innerHTML = html;
+    </script>
+</body>
+</html>
