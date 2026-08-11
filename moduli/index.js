@@ -13,6 +13,9 @@ export {
     setBasePath 
 } from './sceltaPersonale.js';
 
+// 📦 Modulo: Flashcard
+export { generaFlashcard } from './flashcard.js';
+
 // 📦 Modulo: Login
 export { 
     initLogin, 
