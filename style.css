@@ -8,6 +8,9 @@
     --bg-color: #f7f5f0;
     --text-color: #1a1a2e;
     --white: #ffffff;
+    --section-gap: 24px;
+    --section-border: 1px solid rgba(26, 110, 58, 0.14);
+    --section-label-size: 1rem;
 }
 
 /* Reset & Base */
@@ -130,6 +133,21 @@ h1 { color: var(--primary-color); font-size: 2rem; }
 
 .accordion-content.open {
     display: block;
+}
+
+.attivita-label {
+    margin: 0 0 12px 0;
+    color: var(--primary-color);
+    text-align: center;
+    font-size: var(--section-label-size);
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.section-separator {
+    margin-top: var(--section-gap);
+    padding-top: 18px;
+    border-top: var(--section-border);
 }
 
 /* Scheda 1 */
