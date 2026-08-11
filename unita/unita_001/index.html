@@ -14,72 +14,69 @@
             <button onclick="window.parloLogout()" class="logout-button">Logout</button>
         </div>
 
-        <!-- Intestazione -->
         <div id="intestazione-container"></div>
-        <div id="contenitore-dinamico"></div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_1')">
+                Scheda 1: 🧊 Per rompere il ghiaccio <span>▼</span>
+            </div>
+            <div id="content_scheda_1" class="accordion-content">
+                <div id="contenitore-dinamico"></div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_2')">
+                Scheda 2: 🎧 Orecchie aperte! <span>▼</span>
+            </div>
+            <div id="content_scheda_2" class="accordion-content">
+                <p>Contenuto della Scheda 2 (da implementare)</p>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_3')">
+                Scheda 3: 📖 Leggiamo insieme <span>▼</span>
+            </div>
+            <div id="content_scheda_3" class="accordion-content">
+                <p>Contenuto della Scheda 3 (da implementare)</p>
+            </div>
+        </div>
     </div>
 
     <script type="module">
-        // ================================================================
-        // 1. IMPORTA MODULI
-        // ================================================================
-        
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        
         import { 
             generaSceltaPersonale, 
             initIntestazione, 
             initSceltaPersonale, 
             avviaSceltaPersonaleListener
         } from '../../moduli/index.js';
-        
         import { initLogin, getUtenteCorrente, haAccesso, logout } from '../../moduli/login.js';
-        
-        // Configurazione Firebase (SOLO databaseURL)
+        import { datiLezione } from './dati-lezione.js';
+
         const firebaseConfig = {
             databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
         };
-        
+
         const app = initializeApp(firebaseConfig, 'unita001');
         initLogin(app);
 
-        // ================================================================
-        // 2. VERIFICA ACCESSO
-        // ================================================================
-
         const utente = getUtenteCorrente();
-        
+
         if (!utente) {
-            // Non autenticato, reindirizza alla home
             window.location.href = '../../index.html';
             throw new Error('Accesso negato - utente non autenticato');
         }
-        
+
         if (!haAccesso(utente, 1)) {
             alert('Non hai accesso a questa unità!');
             window.location.href = '../../index.html';
             throw new Error('Accesso negato - livello insufficiente');
         }
 
-        // ================================================================
-        // 3. DATI DELLA LEZIONE
-        // ================================================================
-
-        import { datiLezione } from './dati-lezione.js';
-
-        // ================================================================
-        // 4. INIZIALIZZA I MODULI
-        // ================================================================
-
         initSceltaPersonale(app);
 
-        // ================================================================
-        // 5. GENERA LA PAGINA
-        // ================================================================
-
-        console.log('🚀 Avvio Unità 001...');
-
-        // Intestazione con nome studente
         const datiConUtente = {
             ...datiLezione,
             badge: {
@@ -88,26 +85,28 @@
                 icona: '👤'
             }
         };
-        
+
         initIntestazione(datiConUtente);
 
-        // Contenuto
         const html = generaSceltaPersonale(datiLezione, false);
         document.getElementById('contenitore-dinamico').innerHTML = html;
 
-        // ================================================================
-        // 6. AVVIA IL LISTENER PER LE RISPOSTE
-        // ================================================================
-
         const BASE_PATH = `unita_001`;
-        const myUserName = utente.username;
+        avviaSceltaPersonaleListener(BASE_PATH, utente.username, false);
 
-        avviaSceltaPersonaleListener(BASE_PATH, myUserName, false);
+        window.toggleAccordion = function(id) {
+            const content = document.getElementById('content_' + id);
+            const header = content?.previousElementSibling;
+            const arrow = header?.querySelector('span');
 
-        // Funzione globale per logout
+            if (!content) return;
+
+            const isOpen = content.classList.contains('open');
+            content.classList.toggle('open', !isOpen);
+            if (arrow) arrow.innerText = isOpen ? '▼' : '▲';
+        };
+
         window.parloLogout = logout;
-
-        console.log('✅ Unità 001 caricata!');
     </script>
 </body>
 </html>
