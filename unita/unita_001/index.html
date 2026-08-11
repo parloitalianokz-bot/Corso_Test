@@ -9,6 +9,11 @@
 <body>
 
     <div class="main-container">
+        <div class="top-nav">
+            <a href="../../index.html" class="back-link">← Torna alla Home</a>
+            <button onclick="window.parloLogout()" class="logout-button">Logout</button>
+        </div>
+
         <!-- Intestazione -->
         <div id="intestazione-container"></div>
         <div id="contenitore-dinamico"></div>
@@ -85,15 +90,6 @@
         };
         
         initIntestazione(datiConUtente);
-
-        // Pulsante logout e navigazione
-        const pulsantiNav = document.createElement('div');
-        pulsantiNav.style.cssText = 'display:flex; justify-content:space-between; margin-bottom:15px;';
-        pulsantiNav.innerHTML = `
-            <a href="../../index.html" class="back-link">← Torna alla Home</a>
-            <button onclick="window.parloLogout()" style="padding:5px 15px; background:#ce2b37; color:white; border:none; border-radius:5px; cursor:pointer;">Logout</button>
-        `;
-        document.getElementById('contenitore-dinamico').before(pulsantiNav);
 
         // Contenuto
         const html = generaSceltaPersonale(datiLezione, false);
