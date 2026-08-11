@@ -16,7 +16,6 @@ export {
 // 📦 Modulo: Login
 export { 
     initLogin, 
-    verificaCredenziali, 
     haAccesso, 
     getGruppi,
     mostraLogin, 
