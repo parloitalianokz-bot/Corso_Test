@@ -1,6 +1,0 @@
-{
-  "name": "Trascrizione e Analisi Parlato Italiano",
-  "description": "Strumento di trascrizione, autocorrezione e analisi grammaticale basata sui livelli QCER per studenti russofoni di italiano.",
-  "requestFramePermissions": ["microphone"],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
