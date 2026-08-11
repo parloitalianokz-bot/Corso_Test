@@ -14,26 +14,67 @@
             <p>Seleziona un'unità per iniziare</p>
         </div>
         <div id="contenitore-unita">
+            <div id="utente-badge" style="text-align:center; margin-bottom:20px;"></div>
             <div id="lista-unita"></div>
         </div>
     </div>
 
     <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { initLogin, mostraLogin, getUtenteCorrente, haAccesso, logout } from './moduli/login.js';
+        
+        // Configurazione Firebase (SOLO databaseURL)
+        const firebaseConfig = {
+            databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
+        };
+        
+        const app = initializeApp(firebaseConfig, 'homeApp');
+        initLogin(app);
+        
+        // Mostra login all'avvio
+        mostraLogin((utente) => {
+            console.log('✅ Login effettuato:', utente);
+            generaUnita(utente);
+        });
+        
         const unitaContainer = document.getElementById('lista-unita');
         
-        // Generiamo 100 link alle unità
-        let html = '<div class="unita-grid">';
-        for (let i = 1; i <= 100; i++) {
-            const num = String(i).padStart(3, '0');
-            html += `
-                <a href="unita/unita_${num}/index.html" class="unita-card">
-                    <span class="unita-numero">${num}</span>
-                </a>
+        function generaUnita(utente) {
+            // Mostra badge utente
+            document.getElementById('utente-badge').innerHTML = `
+                <div style="display:flex; justify-content:center; align-items:center; gap:10px;">
+                    <span>👤 ${utente.username} · 🏫 ${utente.gruppo}</span>
+                    <button onclick="window.parloLogout()" style="padding:5px 10px; background:#ce2b37; color:white; border:none; border-radius:5px; cursor:pointer;">Logout</button>
+                </div>
             `;
+            
+            // Genera link alle unità con controllo permessi
+            let html = '<div class="unita-grid">';
+            for (let i = 1; i <= 100; i++) {
+                const num = String(i).padStart(3, '0');
+                const accessibile = haAccesso(utente, i);
+                
+                if (accessibile) {
+                    html += `
+                        <a href="unita/unita_${num}/index.html" class="unita-card">
+                            <span class="unita-numero">${num}</span>
+                        </a>
+                    `;
+                } else {
+                    html += `
+                        <div class="unita-card" style="opacity:0.4; cursor:not-allowed; background:#f0f0f0;">
+                            <span class="unita-numero">🔒 ${num}</span>
+                        </div>
+                    `;
+                }
+            }
+            html += '</div>';
+            
+            unitaContainer.innerHTML = html;
         }
-        html += '</div>';
         
-        unitaContainer.innerHTML = html;
+        // Funzione globale per logout
+        window.parloLogout = logout;
     </script>
 </body>
 </html>
