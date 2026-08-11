@@ -30,5 +30,12 @@ export const datiLezione = {
         { parola: "La moda", audio: "audio/italia/moda.mp3", img: "img/italia/moda.webp" },
         { parola: "La Ferrari", audio: "audio/italia/ferrari.mp3", img: "img/italia/ferrari.webp" },
         { parola: "Il calcio", audio: "audio/italia/calcio.mp3", img: "img/italia/calcio.webp" }
-    ]
+    ],
+
+    forum: {
+        idFirebase: 'unita001_forum_parole',
+        domanda: '🇮🇹 Che altre parole italiane conosci?',
+        placeholder: 'Scrivi una parola italiana...',
+        mostraNumeroParole: true
+    }
 };
