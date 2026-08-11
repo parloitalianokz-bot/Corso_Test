@@ -120,6 +120,8 @@
             const BASE_PATH = `unita_001`;
             avviaSceltaPersonaleListener(BASE_PATH, utente.username, isDocente);
 
+            const STORAGE_KEY = 'parlo_italiano_unita_001_scheda_aperta';
+
             window.toggleAccordion = function(id) {
                 const currentContent = document.getElementById('content_' + id);
                 if (!currentContent) return;
@@ -138,6 +140,9 @@
                     currentContent.classList.add('open');
                     const arrow = document.getElementById('arrow_' + id);
                     if (arrow) arrow.textContent = '▲';
+                    localStorage.setItem(STORAGE_KEY, id);
+                } else {
+                    localStorage.removeItem(STORAGE_KEY);
                 }
             };
 
@@ -146,7 +151,18 @@
                 const arrow = document.getElementById('arrow_' + id);
                 if (content) content.classList.remove('open');
                 if (arrow) arrow.textContent = '▼';
+                localStorage.removeItem(STORAGE_KEY);
             };
+
+            const schedaSalvata = localStorage.getItem(STORAGE_KEY);
+            if (schedaSalvata) {
+                setTimeout(() => {
+                    const content = document.getElementById('content_' + schedaSalvata);
+                    const arrow = document.getElementById('arrow_' + schedaSalvata);
+                    if (content) content.classList.add('open');
+                    if (arrow) arrow.textContent = '▲';
+                }, 0);
+            }
 
             window.parloLogout = logout;
         }
