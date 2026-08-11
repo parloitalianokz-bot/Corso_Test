@@ -6,7 +6,7 @@ export const datiLezione = {
     // Intestazione
     titolo: "Unità 1 - Un albergo in centro",
     sottotitolo: "Livello A1 - Iniziamo a viaggiare",
-    bannerImg: "../unita/unita_001/img/banner_unita1.webp",  // ← percorso corretto
+    bannerImg: "img/banner_unita1.webp",  // ← percorso corretto
 
     // Badge utente (fisso per test)
     badge: {
