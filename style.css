@@ -131,3 +131,21 @@ h1 { color: var(--primary-color); font-size: 2rem; }
 .accordion-content.open {
     display: block;
 }
+
+/* Scheda 1 */
+.scheda-immagine-box {
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.scheda-immagine {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 12px;
+    display: block;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.scheda-contenuto-dinamico {
+    margin-top: 10px;
+}
