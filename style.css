@@ -381,6 +381,16 @@ h1 { color: var(--primary-color); font-size: 2rem; }
     border-radius: 12px;
 }
 
+.scheda-didascalia {
+    margin-top: 12px;
+    font-size: 1rem;
+    color: #555;
+    font-style: italic;
+    text-align: center;
+    line-height: 1.5;
+    padding: 0 10px;
+}
+
 .scheda-contenuto-dinamico {
     margin-top: 10px;
 }
@@ -407,6 +417,11 @@ h1 { color: var(--primary-color); font-size: 2rem; }
     .scheda-immagine-centrata {
         max-width: 100%;
         aspect-ratio: 16 / 9;
+    }
+    
+    .scheda-didascalia {
+        font-size: 0.9rem;
+        padding: 0 5px;
     }
     
     h1 {
