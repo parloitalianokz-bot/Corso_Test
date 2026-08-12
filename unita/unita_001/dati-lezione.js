@@ -62,6 +62,68 @@ export const datiLezione = {
             titolo: '✍️ Vocabolario: Quali parole nuove hai trovato?',
             placeholder: 'Scrivi qui le parole nuove che hai trovato...'
         },
+        glossario: [
+            {
+                parola: 'albergo',
+                traduzione_ru: 'гостиница',
+                pronuncia_ru: 'альберго'
+            },
+            {
+                parola: 'comodo',
+                traduzione_ru: 'удобный',
+                pronuncia_ru: 'комодо'
+            },
+            {
+                parola: 'molte camere',
+                traduzione_ru: 'много комнат',
+                pronuncia_ru: 'мольте камере'
+            },
+            {
+                parola: 'stranieri',
+                traduzione_ru: 'иностранцы',
+                pronuncia_ru: 'страниери'
+            },
+            {
+                parola: 'ospiti',
+                traduzione_ru: 'гости',
+                pronuncia_ru: 'оспити'
+            },
+            {
+                parola: 'per affari',
+                traduzione_ru: 'по делам',
+                pronuncia_ru: 'пер аффари'
+            },
+            {
+                parola: 'anche',
+                traduzione_ru: 'тоже / также',
+                pronuncia_ru: 'анке'
+            },
+            {
+                parola: 'tedeschi',
+                traduzione_ru: 'немцы',
+                pronuncia_ru: 'тедески'
+            },
+            {
+                parola: 'insegnante',
+                traduzione_ru: 'преподаватель',
+                pronuncia_ru: 'инсеньянте'
+            },
+            {
+                parola: 'sposato',
+                traduzione_ru: 'женат',
+                pronuncia_ru: 'спозато'
+            },
+            {
+                parola: 'ha tre figli',
+                traduzione_ru: 'у него трое детей',
+                pronuncia_ru: 'а тре фиљи'
+            },
+            {
+                parola: 'occupato',
+                traduzione_ru: 'занят',
+                pronuncia_ru: 'окупато'
+            }
+        ],
         paragrafi: [
             'L\'albergo "Ponte Vecchio" <strong>è</strong> a Firenze, in Italia. <strong>È</strong> un albergo grande, con molte camere. <strong>È</strong> un albergo comodo per gli stranieri, perché <strong>è</strong> in centro.',
             'Chi <strong>sono</strong> gli ospiti dell\'albergo "Ponte Vecchio" in questo momento?',
