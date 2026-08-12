@@ -375,7 +375,10 @@ h1 { color: var(--primary-color); font-size: 2rem; }
     display: block;
     margin: 0 auto;
     width: 100%;
-    max-width: 320px;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 12px;
 }
 
 .scheda-contenuto-dinamico {
@@ -403,6 +406,7 @@ h1 { color: var(--primary-color); font-size: 2rem; }
     
     .scheda-immagine-centrata {
         max-width: 100%;
+        aspect-ratio: 16 / 9;
     }
     
     h1 {
