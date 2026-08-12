@@ -51,7 +51,7 @@
 
         <div class="accordion-item">
             <div class="accordion-header" onclick="toggleAccordion('scheda_3')">
-                Scheda 3: 📖 Leggiamo insieme <span id="arrow_scheda_3">▼</span>
+                Scheda 3 <span id="arrow_scheda_3">▼</span>
             </div>
             <div id="content_scheda_3" class="accordion-content">
                 <div id="contenitore-lettura"></div>
@@ -148,7 +148,6 @@
 
             return `
                 <div class="scheda-lettura-box">
-                    <div class="attivita-label">Fase 3: 📖 Leggiamo insieme</div>
                     <h3 class="scheda-lettura-titolo">${lettura.titolo || ''}</h3>
 
                     <div class="scheda-lettura-pagina" style="${lettura.sfondo ? `background-image:url('${lettura.sfondo}')` : ''}">
