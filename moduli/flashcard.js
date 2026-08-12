@@ -8,11 +8,27 @@
             position: relative;
             width: 100%;
             margin: 20px 0;
-            padding: 0 42px;
+            padding: 18px 42px;
             box-sizing: border-box;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(247,245,240,0.96));
+            border: 1px solid rgba(26,110,58,0.12);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        .flashcard-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 12px;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at top left, rgba(206,43,55,0.05), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(26,110,58,0.05), transparent 35%);
         }
 
         .flashcard-slider {
+            position: relative;
             display: flex;
             gap: 16px;
             overflow-x: auto;
@@ -21,6 +37,7 @@
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
             padding: 10px 0;
+            z-index: 1;
         }
 
         .flashcard-slider::-webkit-scrollbar {
@@ -37,8 +54,10 @@
             overflow: hidden;
             box-shadow: 0 4px 14px rgba(0,0,0,0.08);
             cursor: pointer;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            border: 2px solid transparent;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            border: 2px solid rgba(26,110,58,0.08);
+            position: relative;
+            z-index: 1;
         }
 
         .flashcard-item:hover {
@@ -107,7 +126,7 @@
 
         @media (max-width: 900px) {
             .flashcard-wrapper {
-                padding: 0 34px;
+                padding: 16px 34px;
             }
 
             .flashcard-item {
@@ -117,7 +136,7 @@
 
         @media (max-width: 600px) {
             .flashcard-wrapper {
-                padding: 0 28px;
+                padding: 14px 28px;
             }
 
             .flashcard-item {
