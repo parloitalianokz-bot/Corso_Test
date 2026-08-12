@@ -66,62 +66,92 @@ export const datiLezione = {
             {
                 parola: 'albergo',
                 traduzione_ru: 'гостиница',
-                pronuncia_ru: 'альберго'
+                pronuncia_ru: 'альберго',
+                audio: 'audio/glossario/albergo.mp3'
             },
             {
                 parola: 'comodo',
                 traduzione_ru: 'удобный',
-                pronuncia_ru: 'комодо'
+                pronuncia_ru: 'комодо',
+                audio: 'audio/glossario/comodo.mp3'
             },
             {
-                parola: 'molte camere',
-                traduzione_ru: 'много комнат',
-                pronuncia_ru: 'мольте камере'
+                parola: 'camere',
+                traduzione_ru: 'комнаты',
+                pronuncia_ru: 'камере',
+                audio: 'audio/glossario/camere.mp3'
             },
             {
                 parola: 'stranieri',
                 traduzione_ru: 'иностранцы',
-                pronuncia_ru: 'страниери'
+                pronuncia_ru: 'страниери',
+                audio: 'audio/glossario/stranieri.mp3'
             },
             {
                 parola: 'ospiti',
                 traduzione_ru: 'гости',
-                pronuncia_ru: 'оспити'
+                pronuncia_ru: 'оспити',
+                audio: 'audio/glossario/ospiti.mp3'
+            },
+            {
+                parola: 'centro',
+                traduzione_ru: 'центр',
+                pronuncia_ru: 'чентро',
+                audio: 'audio/glossario/centro.mp3'
             },
             {
                 parola: 'per affari',
                 traduzione_ru: 'по делам',
-                pronuncia_ru: 'пер аффари'
+                pronuncia_ru: 'пер аффари',
+                audio: 'audio/glossario/per-affari.mp3'
             },
             {
                 parola: 'anche',
                 traduzione_ru: 'тоже / также',
-                pronuncia_ru: 'анке'
+                pronuncia_ru: 'анке',
+                audio: 'audio/glossario/anche.mp3'
             },
             {
                 parola: 'tedeschi',
                 traduzione_ru: 'немцы',
-                pronuncia_ru: 'тедески'
+                pronuncia_ru: 'тедески',
+                audio: 'audio/glossario/tedeschi.mp3'
+            },
+            {
+                parola: 'francese',
+                traduzione_ru: 'французский',
+                pronuncia_ru: 'франчезе',
+                audio: 'audio/glossario/francese.mp3'
+            },
+            {
+                parola: 'avvocato',
+                traduzione_ru: 'адвокат',
+                pronuncia_ru: 'аввокато',
+                audio: 'audio/glossario/avvocato.mp3'
             },
             {
                 parola: 'insegnante',
                 traduzione_ru: 'преподаватель',
-                pronuncia_ru: 'инсеньянте'
+                pronuncia_ru: 'инсеньянте',
+                audio: 'audio/glossario/insegnante.mp3'
             },
             {
                 parola: 'sposato',
                 traduzione_ru: 'женат',
-                pronuncia_ru: 'спозато'
+                pronuncia_ru: 'спозато',
+                audio: 'audio/glossario/sposato.mp3'
             },
             {
-                parola: 'ha tre figli',
-                traduzione_ru: 'у него трое детей',
-                pronuncia_ru: 'а тре фиљи'
+                parola: 'figli',
+                traduzione_ru: 'дети',
+                pronuncia_ru: 'фильи',
+                audio: 'audio/glossario/figli.mp3'
             },
             {
                 parola: 'occupato',
                 traduzione_ru: 'занят',
-                pronuncia_ru: 'окупато'
+                pronuncia_ru: 'окупато',
+                audio: 'audio/glossario/occupato.mp3'
             }
         ],
         paragrafi: [
