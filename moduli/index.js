@@ -20,6 +20,12 @@ export {
 } from './forum.js';
 
 export {
+    generaLavagna,
+    avviaLavagnaListener,
+    initLavagna
+} from './lavagna.js';
+
+export {
     initLogin,
     haAccesso,
     getGruppi,
