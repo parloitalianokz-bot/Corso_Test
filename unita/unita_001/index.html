@@ -23,6 +23,9 @@
             <div id="content_scheda_1" class="accordion-content">
                 <div class="scheda-immagine-box">
                     <img src="img/mappa_italia.webp" alt="Mappa dell'Italia" class="scheda-immagine scheda-immagine-centrata">
+                    <p class="scheda-didascalia">
+                        🇮🇹 L'Italia è un paese ricco di cultura, storia e... buon cibo! Ma perché studi l'italiano?
+                    </p>
                 </div>
 
                 <div id="contenitore-dinamico" class="scheda-contenuto-dinamico"></div>
@@ -85,7 +88,7 @@
         initLogin(app);
         initSceltaPersonale(app);
         initForum(app);
-        initLavagna(app);  // ← INIZIALIZZA LAVAGNA
+        initLavagna(app);
 
         function renderScheda2() {
             const ascolto = datiLezione.ascolto;
@@ -158,7 +161,7 @@
             initIntestazione(datiConUtente);
 
             const isDocente = utente.ruolo === 'docenti';
-            window.isDocente = isDocente; // per funzioni globali
+            window.isDocente = isDocente;
 
             const htmlScelta = datiLezione.elicitazione?.sceltaPersonale
                 ? `
@@ -189,7 +192,6 @@
 
             document.getElementById('contenitore-dinamico').innerHTML = htmlScelta + htmlFlashcard + htmlForum;
 
-            // Renderizza la scheda 2
             document.getElementById('contenitore-ascolto').innerHTML = renderScheda2();
 
             const BASE_PATH = 'unita_001';
@@ -204,7 +206,6 @@
                 avviaForumListener(BASE_PATH, datiLezione.ascolto.comprensione.id, isDocente);
             }
 
-            // Flag per inizializzare la lavagna solo una volta
             let lavagnaInizializzata = false;
 
             function initLavagnaSeNecessario() {
@@ -226,7 +227,6 @@
                 }
             }
 
-            // Accordion toggle con inizializzazione lavagna
             const STORAGE_KEY = 'parlo_italiano_unita_001_scheda_aperta';
 
             window.toggleAccordion = function(id) {
@@ -249,7 +249,6 @@
                     if (arrow) arrow.textContent = '▲';
                     localStorage.setItem(STORAGE_KEY, id);
 
-                    // Se apriamo la scheda 2, inizializziamo la lavagna
                     if (id === 'scheda_2') {
                         initLavagnaSeNecessario();
                     }
@@ -274,7 +273,6 @@
                     if (content) content.classList.add('open');
                     if (arrow) arrow.textContent = '▲';
 
-                    // Se all'avvio la scheda 2 è già aperta, inizializza la lavagna
                     if (schedaSalvata === 'scheda_2') {
                         initLavagnaSeNecessario();
                     }
