@@ -52,5 +52,24 @@ export const datiLezione = {
             domanda: 'Attività 3 - Mettiti alla prova, scrivi cosa ricordi',
             placeholder: 'Nel video si parla di...'
         }
+    },
+
+    lettura: {
+        titolo: 'Un albergo in centro',
+        sfondo: 'img/sfondo_pagina_libro.webp',
+        brainstorming: {
+            id: 'u001_lettura_brainstorming',
+            titolo: '✍️ Vocabolario: Quali parole nuove hai trovato?',
+            placeholder: 'Scrivi qui le parole nuove che hai trovato...'
+        },
+        paragrafi: [
+            'L\'albergo "Ponte Vecchio" <strong>è</strong> a Firenze, in Italia. <strong>È</strong> un albergo grande, con molte camere. <strong>È</strong> un albergo comodo per gli stranieri, perché <strong>è</strong> in centro.',
+            'Chi <strong>sono</strong> gli ospiti dell\'albergo "Ponte Vecchio" in questo momento?',
+            'Victor <strong>è</strong> un cliente dell\'albergo. Victor <strong>è</strong> francese; <strong>è</strong> avvocato. Adesso <strong>è</strong> in Italia per affari.',
+            'Anche Klaus e Karl <strong>sono</strong> clienti dell\'albergo. <strong>Sono</strong> tedeschi e <strong>sono</strong> studenti. <strong>Sono</strong> in Italia per studiare l\'italiano.',
+            'Mary <strong>è</strong> inglese; <strong>è</strong> insegnante, ed <strong>è</strong> in Italia per insegnare l\'inglese. Yoko, invece, <strong>è</strong> giapponese; <strong>è</strong> dentista ed <strong>è</strong> in Italia per una conferenza.',
+            'Olga <strong>è</strong> russa. <strong>È</strong> studentessa. <strong>È</strong> in Italia per studiare l\'italiano e per fare shopping.',
+            'Paolo Rossi <strong>è</strong> il direttore dell\'albergo "Ponte Vecchio". <strong>È</strong> sposato e ha tre figli. <strong>È</strong> sempre molto occupato con i clienti.'
+        ]
     }
 };
