@@ -11,7 +11,7 @@ import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/
             padding: 22px;
             background:
                 linear-gradient(135deg, rgba(26,110,58,0.08), rgba(206,43,55,0.06)),
-                url('moduli/img/sceltaPersonalebg.webp');
+                url('./moduli/img/sceltaPersonalebg.webp');
             background-size: cover;
             background-position: center;
             border-radius: 16px;
