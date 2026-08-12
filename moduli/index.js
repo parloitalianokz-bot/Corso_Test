@@ -26,6 +26,11 @@ export {
 } from './lavagna.js';
 
 export {
+    glossarizzaTesto,
+    generaListaGlossario
+} from './glossario.js';
+
+export {
     initLogin,
     haAccesso,
     getGruppi,
