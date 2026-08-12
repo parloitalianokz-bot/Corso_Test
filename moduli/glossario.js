@@ -1,8 +1,6 @@
 // ================================================================
 // MODULO: GLOSSARIO
 // ================================================================
-// Evidenzia le parole del glossario nel testo e genera tooltip + lista finale
-// ================================================================
 
 (function() {
     const css = `
@@ -165,12 +163,6 @@ function escapeRegExp(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function isInsideTag(html, index) {
-    const lastOpen = html.lastIndexOf('<', index);
-    const lastClose = html.lastIndexOf('>', index);
-    return lastOpen > lastClose;
-}
-
 function buildTooltip(voce) {
     const traduzione = voce.traduzione_ru || '';
     return `
@@ -194,12 +186,12 @@ const SOLO_TOOLTIP = new Set([
 export function glossarizzaTesto(testo, glossario) {
     if (!testo || !glossario || glossario.length === 0) return testo;
 
+    let risultato = testo;
+
     const vociOrdinate = glossario
         .filter(voce => SOLO_TOOLTIP.has((voce.parola || '').trim()))
         .slice()
         .sort((a, b) => (b.parola?.length || 0) - (a.parola?.length || 0));
-
-    let risultato = testo;
 
     vociOrdinate.forEach((voce) => {
         const parola = (voce.parola || '').trim();
@@ -208,8 +200,7 @@ export function glossarizzaTesto(testo, glossario) {
         const escaped = escapeRegExp(parola);
         const regex = new RegExp(`(?<![\\p{L}\\p{N}])(${escaped})(?![\\p{L}\\p{N}])`, 'giu');
 
-        risultato = risultato.replace(regex, (match, p1, offset) => {
-            if (isInsideTag(risultato, offset)) return match;
+        risultato = risultato.replace(regex, (match) => {
             return `<span class="glossario-word" tabindex="0">${match}${buildTooltip(voce)}</span>`;
         });
     });
