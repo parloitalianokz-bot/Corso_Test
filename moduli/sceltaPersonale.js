@@ -6,27 +6,159 @@ import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/
 
 (function() {
     const css = `
-        .scelta-container { margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 12px; border: 2px solid var(--primary-color); }
-        .scelta-domanda { font-weight: bold; font-size: 1.2rem; color: var(--primary-color); margin-bottom: 15px; text-align: center; }
-        .scelta-opzioni { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 15px 0; }
-        .scelta-option { text-align: center; cursor: pointer; transition: all 0.3s ease; }
-        .scelta-option:hover { transform: translateY(-5px); }
-        .scelta-immagine { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 12px; border: 3px solid #ddd; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        .scelta-immagine:hover { border-color: var(--primary-color); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
-        .scelta-etichetta { margin-top: 6px; font-weight: bold; font-size: 0.9em; color: var(--text-color); }
-        .scelta-risposta { margin: 15px 0 20px 0; padding: 15px; background: white; border-radius: 8px; border: 1px solid #e9ecef; text-align: center; }
-        .scelta-frase-base { font-size: 1.1em; font-weight: bold; color: #2c3e50; }
-        .scelta-testo { font-size: 1.1em; margin-top: 5px; min-height: 30px; color: #999; font-style: italic; }
-        .scelta-bacheca { margin-top: 15px; padding: 15px; background: white; border-radius: 8px; border: 1px solid #e9ecef; }
-        .scelta-bacheca h4 { margin-top: 0; color: #2c3e50; font-size: 0.95em; }
-        .scelta-bacheca-docente { margin-top: 18px; text-align: center; }
-        .scelta-reset { padding: 10px 16px; border: none; border-radius: 8px; cursor: pointer; background: var(--secondary-color); color: white; font-weight: bold; }
-        @media (max-width: 1024px) and (min-width: 601px) {
-            .scelta-opzioni { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .scelta-container {
+            margin: 20px 0;
+            padding: 22px;
+            background:
+                linear-gradient(135deg, rgba(26,110,58,0.08), rgba(206,43,55,0.06)),
+                var(--scelta-bg, url('img/sfondo_italia.webp'));
+            background-size: cover;
+            background-position: center;
+            border-radius: 16px;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
         }
+
+        .scelta-domanda {
+            font-weight: bold;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            margin-bottom: 16px;
+            text-align: center;
+            padding: 12px 14px;
+            background: rgba(255,255,255,0.88);
+            border-radius: 12px;
+            border: 1px solid rgba(26,110,58,0.12);
+        }
+
+        .scelta-opzioni {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        .scelta-option {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .scelta-option:hover {
+            transform: translateY(-5px);
+        }
+
+        .scelta-immagine {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 4px solid rgba(206,43,55,0.18);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.14);
+            background: #fff;
+            padding: 6px;
+            box-sizing: border-box;
+        }
+
+        .scelta-immagine:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+            transform: scale(1.02);
+        }
+
+        .scelta-etichetta {
+            margin-top: 8px;
+            font-weight: bold;
+            font-size: 0.95em;
+            color: var(--text-color);
+            background: rgba(255,255,255,0.85);
+            border-radius: 999px;
+            display: inline-block;
+            padding: 4px 12px;
+        }
+
+        .scelta-risposta {
+            margin: 15px 0 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            text-align: center;
+        }
+
+        .scelta-frase-base {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .scelta-testo {
+            font-size: 1.1em;
+            margin-top: 5px;
+            min-height: 30px;
+            color: #999;
+            font-style: italic;
+        }
+
+        .scelta-bacheca {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.92);
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+        }
+
+        .scelta-bacheca h4 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+
+        .scelta-bacheca-docente {
+            margin-top: 18px;
+            text-align: center;
+        }
+
+        .scelta-reset {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: var(--secondary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        @media (max-width: 1024px) and (min-width: 601px) {
+            .scelta-opzioni {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+
         @media (max-width: 600px) {
-            .scelta-opzioni { grid-template-columns: 1fr; gap: 15px; max-width: 300px; margin: 15px auto; }
-            .scelta-immagine { max-width: 200px; margin: 0 auto; }
+            .scelta-container {
+                padding: 14px;
+            }
+
+            .scelta-domanda {
+                font-size: 1.05rem;
+                padding: 10px 12px;
+            }
+
+            .scelta-opzioni {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                max-width: 300px;
+                margin: 15px auto;
+            }
+
+            .scelta-immagine {
+                max-width: 220px;
+                margin: 0 auto;
+            }
         }
     `;
     const style = document.createElement('style');
@@ -62,7 +194,7 @@ export function generaSceltaPersonale(config, isDocente) {
     });
 
     return `
-    <div class="scelta-container">
+    <div class="scelta-container" style="${data.background ? `--scelta-bg: url('${data.background}')` : ''}">
         <div class="scelta-domanda">${data.domanda}</div>
         <div class="scelta-opzioni">${opzioniHtml}</div>
         ${isDocente ? `
