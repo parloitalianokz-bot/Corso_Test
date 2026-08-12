@@ -91,6 +91,25 @@ h1 { color: var(--primary-color); font-size: 2rem; }
 .unita-numero { font-size: 1.2em; }
 
 /* ================================================================ */
+/* SFONDI MODULI UNIVERSALI                                         */
+/* ================================================================ */
+.forum-container {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.82), rgba(248,241,230,0.92)),
+        url('moduli/img/forumbg.webp') !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+.scelta-container {
+    background:
+        linear-gradient(135deg, rgba(26,110,58,0.08), rgba(206,43,55,0.06)),
+        url('moduli/img/sceltaPersonalebg.webp') !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+/* ================================================================ */
 /* VIDEO WRAPPER - Stile cinema con cornice elegante                 */
 /* ================================================================ */
 .video-wrapper {
