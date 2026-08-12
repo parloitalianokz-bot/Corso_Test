@@ -92,9 +92,18 @@
         initForum(app);
         initLavagna(app);
 
+        // Stato condiviso per le accordion globali
+        const STATO_ACCORDION = {
+            lavagnaInizializzata: false,
+            lavagnaLetturaInizializzata: false,
+            isDocente: false,
+            utente: null
+        };
+
         function renderScheda2() {
             const ascolto = datiLezione.ascolto;
             if (!ascolto) return '';
+
             const htmlVideo = `
                 <div class="scheda-video-box">
                     <div class="attivita-label">Attività 1 - Guardate e ascoltate il video</div>
@@ -108,6 +117,7 @@
                     </div>
                 </div>
             `;
+
             const htmlLavagna = ascolto.scanning
                 ? `
                     <div class="section-separator">
@@ -119,6 +129,7 @@
                     </div>
                 `
                 : '';
+
             const htmlForum = ascolto.comprensione
                 ? `
                     <div class="section-separator">
@@ -132,27 +143,24 @@
                     </div>
                 `
                 : '';
+
             return htmlVideo + htmlLavagna + htmlForum;
         }
 
         function renderScheda3() {
             const lettura = datiLezione.lettura;
             if (!lettura) return '';
-            
+
             const paragrafi = (lettura.paragrafi || []);
             const glossario = (lettura.glossario || []);
 
-            // Glossarizzazione semplice: testo → glossarizzato
             const paragrafiGlossati = paragrafi
                 .map(p => {
-                    // Se il paragrafo contiene già HTML (<strong>), glossarizziamo
-                    // solo il contenuto testuale tra i tag
                     if (/<[^>]+>/.test(p)) {
                         return '<p class="lettura-paragrafo">' + p.replace(/>([^<]+)</g, (match, group) => {
                             return '>' + glossarizzaTesto(group, glossario) + '<';
                         }) + '</p>';
                     }
-                    // Altrimenti glossarizziamo tutto il testo
                     return '<p class="lettura-paragrafo">' + glossarizzaTesto(p, glossario) + '</p>';
                 })
                 .join('');
@@ -179,11 +187,16 @@
                 mostraLogin((utenteLoggato) => avviaPagina(utenteLoggato));
                 return;
             }
+
             if (!haAccesso(utente, 1)) {
                 alert('Non hai accesso a questa unità!');
                 window.location.href = '../../index.html';
                 return;
             }
+
+            STATO_ACCORDION.utente = utente;
+            STATO_ACCORDION.isDocente = utente.ruolo === 'docenti';
+
             const datiConUtente = {
                 ...datiLezione,
                 badge: {
@@ -192,10 +205,10 @@
                     icona: '👤'
                 }
             };
+
             initIntestazione(datiConUtente);
 
-            const isDocente = utente.ruolo === 'docenti';
-            window.isDocente = isDocente;
+            const isDocente = STATO_ACCORDION.isDocente;
 
             const htmlScelta = datiLezione.elicitazione?.sceltaPersonale
                 ? `
@@ -238,13 +251,33 @@
             if (datiLezione.ascolto?.comprensione?.id) {
                 avviaForumListener(BASE_PATH, datiLezione.ascolto.comprensione.id, isDocente);
             }
+        }
 
-            let lavagnaInizializzata = false;
-            let lavagnaLetturaInizializzata = false;
+        const BASE_PATH = 'unita_001';
+        const STORAGE_KEY = 'parlo_italiano_unita_001_scheda_aperta';
 
-            function initLavagnaSeNecessario() {
-                if (lavagnaInizializzata) return;
-                if (datiLezione.ascolto?.scanning?.id) {
+        window.toggleAccordion = function(id) {
+            const currentContent = document.getElementById('content_' + id);
+            if (!currentContent) return;
+
+            const isOpen = currentContent.classList.contains('open');
+            document.querySelectorAll('.accordion-content').forEach(content => content.classList.remove('open'));
+            document.querySelectorAll('.accordion-header span').forEach(arrow => arrow.textContent = '▼');
+
+            if (!isOpen) {
+                currentContent.classList.add('open');
+                const arrow = document.getElementById('arrow_' + id);
+                if (arrow) arrow.textContent = '▲';
+
+                localStorage.setItem(STORAGE_KEY, id);
+
+                // Inizializza lavagne SOLO quando serve (e solo se abbiamo l’utente pronto)
+                const utente = STATO_ACCORDION.utente;
+                const isDocente = STATO_ACCORDION.isDocente;
+                if (!utente) return;
+
+                if (id === 'scheda_2' && !STATO_ACCORDION.lavagnaInizializzata && datiLezione.ascolto?.scanning?.id) {
+                    STATO_ACCORDION.lavagnaInizializzata = true;
                     setTimeout(() => {
                         avviaLavagnaListener(
                             BASE_PATH,
@@ -253,14 +286,11 @@
                             utente.username,
                             `${utente.username}_${Date.now()}`
                         );
-                        lavagnaInizializzata = true;
                     }, 100);
                 }
-            }
 
-            function initLavagnaLetturaSeNecessario() {
-                if (lavagnaLetturaInizializzata) return;
-                if (datiLezione.lettura?.brainstorming?.id) {
+                if (id === 'scheda_3' && !STATO_ACCORDION.lavagnaLetturaInizializzata && datiLezione.lettura?.brainstorming?.id) {
+                    STATO_ACCORDION.lavagnaLetturaInizializzata = true;
                     setTimeout(() => {
                         avviaLavagnaListener(
                             BASE_PATH,
@@ -269,59 +299,38 @@
                             utente.username,
                             `${utente.username}_${Date.now()}`
                         );
-                        lavagnaLetturaInizializzata = true;
                     }, 100);
                 }
-            }
-
-            const STORAGE_KEY = 'parlo_italiano_unita_001_scheda_aperta';
-
-            window.toggleAccordion = function(id) {
-                const currentContent = document.getElementById('content_' + id);
-                if (!currentContent) return;
-                const isOpen = currentContent.classList.contains('open');
-                document.querySelectorAll('.accordion-content').forEach(content => {
-                    content.classList.remove('open');
-                });
-                document.querySelectorAll('.accordion-header span').forEach(arrow => {
-                    arrow.textContent = '▼';
-                });
-                if (!isOpen) {
-                    currentContent.classList.add('open');
-                    const arrow = document.getElementById('arrow_' + id);
-                    if (arrow) arrow.textContent = '▲';
-                    localStorage.setItem(STORAGE_KEY, id);
-                    if (id === 'scheda_2') initLavagnaSeNecessario();
-                    if (id === 'scheda_3') initLavagnaLetturaSeNecessario();
-                } else {
-                    localStorage.removeItem(STORAGE_KEY);
-                }
-            };
-
-            window.closeAccordion = function(id) {
-                const content = document.getElementById('content_' + id);
-                const arrow = document.getElementById('arrow_' + id);
-                if (content) content.classList.remove('open');
-                if (arrow) arrow.textContent = '▼';
+            } else {
                 localStorage.removeItem(STORAGE_KEY);
-            };
-
-            const schedaSalvata = localStorage.getItem(STORAGE_KEY);
-            if (schedaSalvata) {
-                setTimeout(() => {
-                    const content = document.getElementById('content_' + schedaSalvata);
-                    const arrow = document.getElementById('arrow_' + schedaSalvata);
-                    if (content) content.classList.add('open');
-                    if (arrow) arrow.textContent = '▲';
-                    if (schedaSalvata === 'scheda_2') initLavagnaSeNecessario();
-                    if (schedaSalvata === 'scheda_3') initLavagnaLetturaSeNecessario();
-                }, 200);
             }
+        };
 
-            window.parloLogout = logout;
+        window.closeAccordion = function(id) {
+            const content = document.getElementById('content_' + id);
+            const arrow = document.getElementById('arrow_' + id);
+            if (content) content.classList.remove('open');
+            if (arrow) arrow.textContent = '▼';
+            localStorage.removeItem(STORAGE_KEY);
+        };
+
+        // Auto-apertura scheda salvata
+        function autoOpenSavedAccordion() {
+            const schedaSalvata = localStorage.getItem(STORAGE_KEY);
+            if (!schedaSalvata) return;
+
+            setTimeout(() => {
+                const content = document.getElementById('content_' + schedaSalvata);
+                const arrow = document.getElementById('arrow_' + schedaSalvata);
+                if (content) content.classList.add('open');
+                if (arrow) arrow.textContent = '▲';
+            }, 200);
         }
 
+        window.parloLogout = logout;
+
         avviaPagina(getUtenteCorrente());
+        autoOpenSavedAccordion();
     </script>
 </body>
 </html>
