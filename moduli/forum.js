@@ -114,12 +114,14 @@ import { getDatabase, ref, push, onValue, update, remove } from "https://www.gst
         .forum-messaggio-autore {
             font-weight: bold;
             color: var(--primary-color, #1a6e3a);
+            font-size: 0.95rem;
         }
 
         .forum-messaggio-testo {
             display: block;
             margin-top: 2px;
             word-break: break-word;
+            font-size: 0.95rem;
         }
 
         .forum-feedback {
@@ -151,6 +153,7 @@ import { getDatabase, ref, push, onValue, update, remove } from "https://www.gst
             font-weight: bold;
             color: white;
             font-size: 0.9rem;
+            white-space: nowrap;
         }
 
         .forum-btn-verde { background: #2ecc71; }
@@ -198,17 +201,32 @@ import { getDatabase, ref, push, onValue, update, remove } from "https://www.gst
             font-weight: bold;
         }
 
+        /* ===== RESPONSIVE FORUM ===== */
         @media (max-width: 600px) {
+            .forum-container {
+                padding: 12px;
+                margin: 15px 0;
+            }
+            
+            .forum-domanda {
+                font-size: 1.1rem;
+            }
+            
             .forum-input-area {
                 flex-direction: column;
             }
 
             .forum-input-area input {
                 min-width: 100%;
+                font-size: 0.95rem;
             }
 
             .forum-btn-invia {
                 width: 100%;
+            }
+            
+            .forum-messaggio {
+                padding: 8px 10px;
             }
 
             .forum-actions {
@@ -217,6 +235,52 @@ import { getDatabase, ref, push, onValue, update, remove } from "https://www.gst
 
             .forum-btn-azione {
                 flex: 1;
+                padding: 6px 8px;
+                font-size: 0.8rem;
+            }
+            
+            .forum-messaggi {
+                max-height: 300px;
+            }
+            
+            .forum-messaggio-autore {
+                font-size: 0.85rem;
+            }
+            
+            .forum-messaggio-testo {
+                font-size: 0.85rem;
+            }
+            
+            .forum-stato {
+                font-size: 0.85rem;
+            }
+            
+            .forum-feedback {
+                font-size: 0.8rem;
+            }
+            
+            .forum-numero-parole {
+                font-size: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .forum-container {
+                padding: 10px;
+            }
+            
+            .forum-domanda {
+                font-size: 1rem;
+            }
+            
+            .forum-messaggi {
+                max-height: 250px;
+                padding: 8px;
+            }
+            
+            .forum-btn-azione {
+                padding: 5px 6px;
+                font-size: 0.75rem;
             }
         }
     `;
