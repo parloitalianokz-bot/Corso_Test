@@ -37,5 +37,20 @@ export const datiLezione = {
         domanda: '🇮🇹 Che altre parole italiane conosci?',
         placeholder: 'Scrivi una parola italiana...',
         mostraNumeroParole: true
+    },
+
+    ascolto: {
+        videoUrl: '5FpbKA_i074',
+        istruzioni: 'Guarda il video e ascolta attentamente la pronuncia.',
+        scanning: {
+            id: 'u001_ascolto_scanning',
+            placeholder: 'Scrivi qui le parole che hai sentito...',
+            titolo: 'Caccia alle parole'
+        },
+        comprensione: {
+            id: 'u001_ascolto_comprensione',
+            domanda: 'Attività 3 - Mettiti alla prova, scrivi cosa ricordi',
+            placeholder: 'Nel video si parla di...'
+        }
     }
 };
