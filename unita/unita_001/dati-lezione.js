@@ -12,7 +12,6 @@ export const datiLezione = {
             domanda: '📌 Perché studi l\'italiano?',
             fraseBase: 'Io studio l\'italiano...',
             idFirebase: 'unita_001_motivazione',
-            background: 'img/sceltaPersonalebg.webp',
             opzioni: [
                 { id: 'turismo', etichetta: 'per turismo', img: 'img/motivazioni/turismo.webp' },
                 { id: 'studio', etichetta: 'per studio', img: 'img/motivazioni/studio.webp' },
