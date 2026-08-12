@@ -54,7 +54,8 @@
                 Scheda 3: 📖 Leggiamo insieme <span id="arrow_scheda_3">▼</span>
             </div>
             <div id="content_scheda_3" class="accordion-content">
-                <p>Contenuto della Scheda 3 (da implementare)</p>
+                <div id="contenitore-lettura"></div>
+
                 <div class="scheda-azioni">
                     <button onclick="closeAccordion('scheda_3')" class="logout-button">Chiudi scheda</button>
                 </div>
@@ -137,6 +138,34 @@
             return htmlVideo + htmlLavagna + htmlForum;
         }
 
+        function renderScheda3() {
+            const lettura = datiLezione.lettura;
+            if (!lettura) return '';
+
+            const paragrafi = (lettura.paragrafi || [])
+                .map(p => `<p class="lettura-paragrafo">${p}</p>`)
+                .join('');
+
+            return `
+                <div class="scheda-lettura-box">
+                    <div class="attivita-label">Fase 3: 📖 Leggiamo insieme</div>
+                    <h3 class="scheda-lettura-titolo">${lettura.titolo || ''}</h3>
+
+                    <div class="scheda-lettura-pagina" style="${lettura.sfondo ? `background-image:url('${lettura.sfondo}')` : ''}">
+                        ${paragrafi}
+                    </div>
+
+                    <div class="section-separator">
+                        ${generaLavagna({
+                            id: lettura.brainstorming.id,
+                            placeholder: lettura.brainstorming.placeholder,
+                            titolo: lettura.brainstorming.titolo
+                        })}
+                    </div>
+                </div>
+            `;
+        }
+
         function avviaPagina(utente) {
             if (!utente) {
                 mostraLogin((utenteLoggato) => avviaPagina(utenteLoggato));
@@ -191,8 +220,8 @@
                 : '';
 
             document.getElementById('contenitore-dinamico').innerHTML = htmlScelta + htmlFlashcard + htmlForum;
-
             document.getElementById('contenitore-ascolto').innerHTML = renderScheda2();
+            document.getElementById('contenitore-lettura').innerHTML = renderScheda3();
 
             const BASE_PATH = 'unita_001';
 
@@ -207,13 +236,12 @@
             }
 
             let lavagnaInizializzata = false;
+            let lavagnaLetturaInizializzata = false;
 
             function initLavagnaSeNecessario() {
                 if (lavagnaInizializzata) return;
 
                 if (datiLezione.ascolto?.scanning?.id) {
-                    console.log('🚀 Inizializzazione lavagna per scheda 2...');
-                    
                     setTimeout(() => {
                         avviaLavagnaListener(
                             BASE_PATH,
@@ -223,6 +251,23 @@
                             `${utente.username}_${Date.now()}`
                         );
                         lavagnaInizializzata = true;
+                    }, 100);
+                }
+            }
+
+            function initLavagnaLetturaSeNecessario() {
+                if (lavagnaLetturaInizializzata) return;
+
+                if (datiLezione.lettura?.brainstorming?.id) {
+                    setTimeout(() => {
+                        avviaLavagnaListener(
+                            BASE_PATH,
+                            datiLezione.lettura.brainstorming.id,
+                            isDocente,
+                            utente.username,
+                            `${utente.username}_${Date.now()}`
+                        );
+                        lavagnaLetturaInizializzata = true;
                     }, 100);
                 }
             }
@@ -249,9 +294,8 @@
                     if (arrow) arrow.textContent = '▲';
                     localStorage.setItem(STORAGE_KEY, id);
 
-                    if (id === 'scheda_2') {
-                        initLavagnaSeNecessario();
-                    }
+                    if (id === 'scheda_2') initLavagnaSeNecessario();
+                    if (id === 'scheda_3') initLavagnaLetturaSeNecessario();
                 } else {
                     localStorage.removeItem(STORAGE_KEY);
                 }
@@ -273,9 +317,8 @@
                     if (content) content.classList.add('open');
                     if (arrow) arrow.textContent = '▲';
 
-                    if (schedaSalvata === 'scheda_2') {
-                        initLavagnaSeNecessario();
-                    }
+                    if (schedaSalvata === 'scheda_2') initLavagnaSeNecessario();
+                    if (schedaSalvata === 'scheda_3') initLavagnaLetturaSeNecessario();
                 }, 200);
             }
 
