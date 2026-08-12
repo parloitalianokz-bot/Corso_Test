@@ -80,6 +80,7 @@
         } from '../../moduli/index.js';
         import { initLogin, getUtenteCorrente, haAccesso, logout, mostraLogin } from '../../moduli/login.js';
         import { datiLezione } from './dati-lezione.js';
+        import { glossarizzaTesto } from '../../moduli/glossario.js';
 
         const firebaseConfig = {
             databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -94,7 +95,6 @@
         function renderScheda2() {
             const ascolto = datiLezione.ascolto;
             if (!ascolto) return '';
-
             const htmlVideo = `
                 <div class="scheda-video-box">
                     <div class="attivita-label">Attività 1 - Guardate e ascoltate il video</div>
@@ -108,7 +108,6 @@
                     </div>
                 </div>
             `;
-
             const htmlLavagna = ascolto.scanning
                 ? `
                     <div class="section-separator">
@@ -120,7 +119,6 @@
                     </div>
                 `
                 : '';
-
             const htmlForum = ascolto.comprensione
                 ? `
                     <div class="section-separator">
@@ -134,26 +132,37 @@
                     </div>
                 `
                 : '';
-
             return htmlVideo + htmlLavagna + htmlForum;
         }
 
         function renderScheda3() {
             const lettura = datiLezione.lettura;
             if (!lettura) return '';
+            
+            const paragrafi = (lettura.paragrafi || []);
+            const glossario = (lettura.glossario || []);
 
-            const paragrafi = (lettura.paragrafi || [])
-                .map(p => `<p class="lettura-paragrafo">${p}</p>`)
+            // Glossarizzazione semplice: testo → glossarizzato
+            const paragrafiGlossati = paragrafi
+                .map(p => {
+                    // Se il paragrafo contiene già HTML (<strong>), glossarizziamo
+                    // solo il contenuto testuale tra i tag
+                    if (/<[^>]+>/.test(p)) {
+                        return '<p class="lettura-paragrafo">' + p.replace(/>([^<]+)</g, (match, group) => {
+                            return '>' + glossarizzaTesto(group, glossario) + '<';
+                        }) + '</p>';
+                    }
+                    // Altrimenti glossarizziamo tutto il testo
+                    return '<p class="lettura-paragrafo">' + glossarizzaTesto(p, glossario) + '</p>';
+                })
                 .join('');
 
             return `
                 <div class="scheda-lettura-box">
                     <h3 class="scheda-lettura-titolo">${lettura.titolo || ''}</h3>
-
                     <div class="scheda-lettura-pagina">
-                        ${paragrafi}
+                        ${paragrafiGlossati}
                     </div>
-
                     <div class="section-separator">
                         ${generaLavagna({
                             id: lettura.brainstorming.id,
@@ -170,13 +179,11 @@
                 mostraLogin((utenteLoggato) => avviaPagina(utenteLoggato));
                 return;
             }
-
             if (!haAccesso(utente, 1)) {
                 alert('Non hai accesso a questa unità!');
                 window.location.href = '../../index.html';
                 return;
             }
-
             const datiConUtente = {
                 ...datiLezione,
                 badge: {
@@ -185,7 +192,6 @@
                     icona: '👤'
                 }
             };
-
             initIntestazione(datiConUtente);
 
             const isDocente = utente.ruolo === 'docenti';
@@ -229,7 +235,6 @@
             if (datiLezione.forum?.idFirebase) {
                 avviaForumListener(BASE_PATH, datiLezione.forum.idFirebase, isDocente);
             }
-
             if (datiLezione.ascolto?.comprensione?.id) {
                 avviaForumListener(BASE_PATH, datiLezione.ascolto.comprensione.id, isDocente);
             }
@@ -239,7 +244,6 @@
 
             function initLavagnaSeNecessario() {
                 if (lavagnaInizializzata) return;
-
                 if (datiLezione.ascolto?.scanning?.id) {
                     setTimeout(() => {
                         avviaLavagnaListener(
@@ -256,7 +260,6 @@
 
             function initLavagnaLetturaSeNecessario() {
                 if (lavagnaLetturaInizializzata) return;
-
                 if (datiLezione.lettura?.brainstorming?.id) {
                     setTimeout(() => {
                         avviaLavagnaListener(
@@ -276,23 +279,18 @@
             window.toggleAccordion = function(id) {
                 const currentContent = document.getElementById('content_' + id);
                 if (!currentContent) return;
-
                 const isOpen = currentContent.classList.contains('open');
-
                 document.querySelectorAll('.accordion-content').forEach(content => {
                     content.classList.remove('open');
                 });
-
                 document.querySelectorAll('.accordion-header span').forEach(arrow => {
                     arrow.textContent = '▼';
                 });
-
                 if (!isOpen) {
                     currentContent.classList.add('open');
                     const arrow = document.getElementById('arrow_' + id);
                     if (arrow) arrow.textContent = '▲';
                     localStorage.setItem(STORAGE_KEY, id);
-
                     if (id === 'scheda_2') initLavagnaSeNecessario();
                     if (id === 'scheda_3') initLavagnaLetturaSeNecessario();
                 } else {
@@ -315,7 +313,6 @@
                     const arrow = document.getElementById('arrow_' + schedaSalvata);
                     if (content) content.classList.add('open');
                     if (arrow) arrow.textContent = '▲';
-
                     if (schedaSalvata === 'scheda_2') initLavagnaSeNecessario();
                     if (schedaSalvata === 'scheda_3') initLavagnaLetturaSeNecessario();
                 }, 200);
