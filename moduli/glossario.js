@@ -1,94 +1,110 @@
 // ================================================================
-// MODULO: GLOSSARIO INTERATTIVO
+// MODULO: GLOSSARIO
 // ================================================================
-// Trasforma le parole del glossario in span interattivi con tooltip
+// Evidenzia le parole del glossario nel testo e genera tooltip + lista finale
 // ================================================================
 
 (function() {
     const css = `
         .glossario-word {
+            color: inherit;
+            border-bottom: 1px dashed rgba(26, 110, 58, 0.45);
+            padding: 0 1px;
+            cursor: help;
             position: relative;
-            cursor: pointer;
+            white-space: nowrap;
         }
 
         .glossario-tooltip {
-            display: none;
             position: absolute;
-            top: calc(100% + 8px);
             left: 50%;
+            bottom: calc(100% + 8px);
             transform: translateX(-50%);
-            width: max-content;
-            max-width: 280px;
-            background: #ffffff;
-            color: #333;
-            border: 1px solid #1a6e3a;
-            border-radius: 6px;
-            box-shadow: 0 6px 16px rgba(26, 110, 58, 0.2);
-            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.98);
+            color: #1f3f2a;
+            border: 1px solid rgba(26, 110, 58, 0.18);
+            border-radius: 10px;
+            padding: 8px 10px;
+            min-width: 140px;
+            max-width: 220px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
             z-index: 20;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 0.95rem;
-            line-height: 1.5;
+            display: none;
+            font-size: 0.92rem;
+            line-height: 1.35;
             text-align: left;
-            pointer-events: none;
-            white-space: normal;
-        }
-
-        /* Freccia verso l'alto */
-        .glossario-tooltip::before {
-            content: '';
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 6px;
-            border-style: solid;
-            border-color: transparent transparent #1a6e3a transparent;
         }
 
         .glossario-tooltip::after {
             content: '';
             position: absolute;
-            bottom: 100%;
             left: 50%;
-            transform: translateX(-50%);
-            border-width: 5px;
-            border-style: solid;
-            border-color: transparent transparent #ffffff transparent;
-            margin-bottom: -1px;
+            bottom: -6px;
+            transform: translateX(-50%) rotate(45deg);
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.98);
+            border-right: 1px solid rgba(26, 110, 58, 0.18);
+            border-bottom: 1px solid rgba(26, 110, 58, 0.18);
         }
 
         .glossario-word:hover .glossario-tooltip,
-        .glossario-word:active .glossario-tooltip {
+        .glossario-word:focus .glossario-tooltip,
+        .glossario-word.show-tooltip .glossario-tooltip {
             display: block;
         }
 
-        .glossario-tooltip-traduzione {
-            color: #1a6e3a;
+        .glossario-tooltip-breve {
             font-weight: 600;
         }
 
-        .glossario-lista {
+        .glossario-toggle-wrap {
             margin-top: 16px;
-            padding: 16px;
+        }
+
+        .glossario-toggle-btn {
+            background: var(--primary-color, #1a6e3a);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.92rem;
+        }
+
+        .glossario-toggle-btn:hover {
+            background: var(--secondary-color, #ce2b37);
+        }
+
+        .glossario-lista {
+            margin-top: 10px;
+            padding: 14px 16px;
             border-radius: 14px;
             background: #ffffff;
             border: 1px solid rgba(26, 110, 58, 0.12);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
         }
 
+        .glossario-lista[hidden] {
+            display: none !important;
+        }
+
         .glossario-lista-titolo {
             font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 12px;
+            color: var(--primary-color, #1a6e3a);
+            margin-bottom: 10px;
             font-size: 1rem;
         }
 
         .glossario-item {
             display: flex;
-            gap: 12px;
-            padding: 10px 0;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 7px 0;
             border-bottom: 1px solid #edf2ee;
+            line-height: 1.45;
+            flex-wrap: wrap;
         }
 
         .glossario-item:last-child {
@@ -96,46 +112,47 @@
         }
 
         .glossario-item-parola {
-            min-width: 120px;
             font-weight: 700;
-            color: #1f3f2a;
+            color: var(--primary-color, #1a6e3a);
+            white-space: nowrap;
         }
 
-        .glossario-item-note {
-            color: #3d3226;
-            font-size: 0.95rem;
-            line-height: 1.45;
+        .glossario-item-resto {
+            color: #1a1a1a;
         }
 
-        .glossario-toggle {
-            margin-top: 12px;
-            background: var(--primary-color);
-            color: white;
+        .glossario-item-pronuncia {
+            color: #1a1a1a;
+            font-style: italic;
+        }
+
+        .glossario-audio-btn {
             border: none;
-            border-radius: 999px;
-            padding: 10px 16px;
+            background: transparent;
+            color: var(--primary-color, #1a6e3a);
             cursor: pointer;
             font-weight: 700;
+            padding: 0;
+            font-size: 0.95rem;
         }
 
-        .glossario-toggle:hover {
-            background: #145a30;
-        }
-
-        .glossario-nascosto {
-            display: none;
+        .glossario-audio-btn:hover {
+            color: var(--secondary-color, #ce2b37);
         }
 
         @media (max-width: 600px) {
-            .glossario-tooltip {
-                max-width: 220px;
+            .glossario-lista {
+                padding: 12px 12px;
             }
+
             .glossario-item {
-                flex-direction: column;
-                gap: 4px;
+                gap: 6px;
             }
-            .glossario-item-parola {
-                min-width: 0;
+
+            .glossario-tooltip {
+                min-width: 120px;
+                max-width: 180px;
+                font-size: 0.85rem;
             }
         }
     `;
@@ -144,55 +161,109 @@
     document.head.appendChild(style);
 })();
 
-/**
- * Trasforma un testo HTML inserendo span glossariati per le voci del glossario.
- * - Case-insensitive
- * - Supporta chunk multi-parola ("molte camere")
- * - Glossarizza solo la PRIMA occorrenza di ogni voce
- * 
- * @param {string} testo - Il testo HTML da glossarizzare
- * @param {Array} glossario - Array di oggetti {parola, traduzione_ru, pronuncia_ru}
- * @returns {string} Testo HTML con le parole glossarizzate
- */
+function escapeRegExp(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function isInsideTag(html, index) {
+    const lastOpen = html.lastIndexOf('<', index);
+    const lastClose = html.lastIndexOf('>', index);
+    return lastOpen > lastClose;
+}
+
+function buildTooltip(voce) {
+    const traduzione = voce.traduzione_ru || '';
+    return `
+        <span class="glossario-tooltip">
+            <span class="glossario-tooltip-breve">${traduzione}</span>
+        </span>
+    `;
+}
+
+const SOLO_TOOLTIP = new Set([
+    'comodo',
+    'camere',
+    'stranieri',
+    'per affari',
+    'tedeschi',
+    'insegnante',
+    'sposato',
+    'occupato'
+]);
+
 export function glossarizzaTesto(testo, glossario) {
-    if (!glossario || glossario.length === 0) return testo;
-    
-    // Ordina per lunghezza decrescente
-    const vociOrdinate = glossario.slice().sort((a, b) => 
-        (b.parola?.length || 0) - (a.parola?.length || 0)
-    );
-    
+    if (!testo || !glossario || glossario.length === 0) return testo;
+
+    const vociOrdinate = glossario
+        .filter(voce => SOLO_TOOLTIP.has((voce.parola || '').trim()))
+        .slice()
+        .sort((a, b) => (b.parola?.length || 0) - (a.parola?.length || 0));
+
     let risultato = testo;
-    
+
     vociOrdinate.forEach((voce) => {
-        const parola = voce.parola || '';
+        const parola = (voce.parola || '').trim();
         if (!parola) return;
-        
-        const escaped = parola.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        
-        // 🔑 CAMBIA: usa 'gi' per globale + case-insensitive
-        const regex = new RegExp(
-            `(?<=^|[^A-Za-zÀ-ÿ0-9])(${escaped})(?=[^A-Za-zÀ-ÿ0-9]|$)`,
-            'gi'  // ← 'g' per trovare TUTTE le occorrenze
-        );
-        
-        const tooltipHtml = `
-            <span class="glossario-tooltip" role="tooltip">
-                ${voce.traduzione_ru ? `<span class="glossario-tooltip-traduzione">${voce.traduzione_ru}</span>` : ''}
-            </span>
-        `;
-        
-        // 🔑 CAMBIA: usa replaceAll per sostituire TUTTE le occorrenze
-        risultato = risultato.replaceAll(regex, (match) => {
-            // Evita di glossarizzare parole già dentro tag HTML
-            const startIndex = risultato.indexOf(match);
-            const before = risultato[startIndex - 1] || '';
-            const after = risultato[startIndex + match.length] || '';
-            if (before === '<' || after === '>') return match;
-            
-            return `<span class="glossario-word" data-glossario-word="${parola}">${match}${tooltipHtml}</span>`;
+
+        const escaped = escapeRegExp(parola);
+        const regex = new RegExp(`(?<![\\p{L}\\p{N}])(${escaped})(?![\\p{L}\\p{N}])`, 'giu');
+
+        risultato = risultato.replace(regex, (match, p1, offset) => {
+            if (isInsideTag(risultato, offset)) return match;
+            return `<span class="glossario-word" tabindex="0">${match}${buildTooltip(voce)}</span>`;
         });
     });
-    
+
     return risultato;
 }
+
+export function generaListaGlossario(glossario) {
+    if (!glossario || glossario.length === 0) return '';
+
+    const items = glossario.map((voce, index) => {
+        const audioId = `glossario_audio_${index}`;
+        const parola = voce.parola || '';
+        const traduzione = voce.traduzione_ru || '';
+        const pronuncia = voce.pronuncia_ru || '';
+
+        return `
+            <div class="glossario-item">
+                <span class="glossario-item-parola">${parola}</span>
+                <span class="glossario-item-resto">: ${traduzione} (${pronuncia})</span>
+                ${voce.audio ? `<button type="button" class="glossario-audio-btn" onclick="window.playGlossarioAudio('${audioId}')">🔊</button><audio id="${audioId}" src="${voce.audio}" preload="none"></audio>` : ''}
+            </div>
+        `;
+    }).join('');
+
+    return `
+        <div class="glossario-toggle-wrap">
+            <button type="button" class="glossario-toggle-btn" onclick="window.toggleGlossario()">Mostra glossario</button>
+            <div class="glossario-lista" id="glossario_lista" hidden>
+                <div class="glossario-lista-titolo">📚 Glossario</div>
+                ${items}
+            </div>
+        </div>
+    `;
+}
+
+window.toggleGlossario = function() {
+    const lista = document.getElementById('glossario_lista');
+    const btn = document.querySelector('.glossario-toggle-btn');
+    if (!lista || !btn) return;
+
+    const nascosto = lista.hasAttribute('hidden');
+    if (nascosto) {
+        lista.removeAttribute('hidden');
+        btn.textContent = 'Nascondi glossario';
+    } else {
+        lista.setAttribute('hidden', 'hidden');
+        btn.textContent = 'Mostra glossario';
+    }
+};
+
+window.playGlossarioAudio = function(audioId) {
+    const audio = document.getElementById(audioId);
+    if (!audio) return;
+    audio.currentTime = 0;
+    audio.play();
+};
