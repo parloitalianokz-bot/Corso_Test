@@ -9,9 +9,14 @@ import { getDatabase, ref, push, onValue, update, remove } from "https://www.gst
         .forum-container {
             margin: 20px 0;
             padding: 20px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            border: 2px solid var(--primary-color, #1a6e3a);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.82), rgba(248,241,230,0.92)),
+                url('moduli/img/forumbg.webp');
+            background-size: cover;
+            background-position: center;
+            border-radius: 14px;
+            border: 2px solid rgba(26,110,58,0.18);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
         }
 
         .forum-domanda {
@@ -20,6 +25,10 @@ import { getDatabase, ref, push, onValue, update, remove } from "https://www.gst
             color: var(--primary-color, #1a6e3a);
             margin-bottom: 15px;
             text-align: center;
+            background: rgba(255,255,255,0.88);
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(26,110,58,0.1);
         }
 
         .forum-input-area {
@@ -37,6 +46,7 @@ import { getDatabase, ref, push, onValue, update, remove } from "https://www.gst
             border-radius: 8px;
             font-size: 1em;
             transition: all 0.3s ease;
+            background: rgba(255,255,255,0.95);
         }
 
         .forum-input-area input:focus {
@@ -68,8 +78,8 @@ import { getDatabase, ref, push, onValue, update, remove } from "https://www.gst
             max-height: 400px;
             overflow-y: auto;
             padding: 10px;
-            background: white;
-            border-radius: 8px;
+            background: rgba(255,255,255,0.92);
+            border-radius: 10px;
             border: 1px solid #e9ecef;
         }
 
@@ -172,10 +182,15 @@ import { getDatabase, ref, push, onValue, update, remove } from "https://www.gst
         }
 
         .forum-numero-parole {
-            font-size: 0.85em;
-            color: #7f8c8d;
             margin-top: 10px;
-            text-align: right;
+            text-align: center;
+            font-weight: 700;
+            color: var(--primary-color, #1a6e3a);
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(26,110,58,0.12);
+            border-radius: 999px;
+            padding: 10px 14px;
+            font-size: 0.95rem;
         }
 
         .forum-riapri {
@@ -201,7 +216,6 @@ import { getDatabase, ref, push, onValue, update, remove } from "https://www.gst
             font-weight: bold;
         }
 
-        /* ===== RESPONSIVE FORUM ===== */
         @media (max-width: 600px) {
             .forum-container {
                 padding: 12px;
@@ -260,7 +274,8 @@ import { getDatabase, ref, push, onValue, update, remove } from "https://www.gst
             }
             
             .forum-numero-parole {
-                font-size: 0.75rem;
+                font-size: 0.8rem;
+                padding: 9px 12px;
             }
         }
         
@@ -457,7 +472,7 @@ export function avviaForumListener(basePath, id, isDocente = false) {
 
         if (conteggio) {
             const paroleTotali = messaggi.reduce((acc, msg) => acc + msg.testo.split(/\s+/).filter(Boolean).length, 0);
-            conteggio.textContent = `📊 ${messaggi.length} messaggi · ${paroleTotali} parole totali`;
+            conteggio.textContent = `📊 Abbiamo imparato ${paroleTotali} parole! 🎉`;
         }
     });
 }
