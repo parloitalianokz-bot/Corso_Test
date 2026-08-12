@@ -80,7 +80,7 @@
         } from '../../moduli/index.js';
         import { initLogin, getUtenteCorrente, haAccesso, logout, mostraLogin } from '../../moduli/login.js';
         import { datiLezione } from './dati-lezione.js';
-        import { glossarizzaTesto } from '../../moduli/glossario.js';
+        import { glossarizzaTesto, generaListaGlossario } from '../../moduli/glossario.js';
 
         const firebaseConfig = {
             databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -92,7 +92,6 @@
         initForum(app);
         initLavagna(app);
 
-        // Stato condiviso per le accordion globali
         const STATO_ACCORDION = {
             lavagnaInizializzata: false,
             lavagnaLetturaInizializzata: false,
@@ -155,14 +154,7 @@
             const glossario = (lettura.glossario || []);
 
             const paragrafiGlossati = paragrafi
-                .map(p => {
-                    if (/<[^>]+>/.test(p)) {
-                        return '<p class="lettura-paragrafo">' + p.replace(/>([^<]+)</g, (match, group) => {
-                            return '>' + glossarizzaTesto(group, glossario) + '<';
-                        }) + '</p>';
-                    }
-                    return '<p class="lettura-paragrafo">' + glossarizzaTesto(p, glossario) + '</p>';
-                })
+                .map(p => `<p class="lettura-paragrafo">${glossarizzaTesto(p, glossario)}</p>`)
                 .join('');
 
             return `
@@ -171,6 +163,7 @@
                     <div class="scheda-lettura-pagina">
                         ${paragrafiGlossati}
                     </div>
+                    ${generaListaGlossario(glossario)}
                     <div class="section-separator">
                         ${generaLavagna({
                             id: lettura.brainstorming.id,
@@ -271,7 +264,6 @@
 
                 localStorage.setItem(STORAGE_KEY, id);
 
-                // Inizializza lavagne SOLO quando serve (e solo se abbiamo l’utente pronto)
                 const utente = STATO_ACCORDION.utente;
                 const isDocente = STATO_ACCORDION.isDocente;
                 if (!utente) return;
@@ -314,7 +306,6 @@
             localStorage.removeItem(STORAGE_KEY);
         };
 
-        // Auto-apertura scheda salvata
         function autoOpenSavedAccordion() {
             const schedaSalvata = localStorage.getItem(STORAGE_KEY);
             if (!schedaSalvata) return;
