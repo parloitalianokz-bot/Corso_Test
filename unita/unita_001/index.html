@@ -38,7 +38,8 @@
                 Scheda 2: 🎧 Orecchie aperte! <span id="arrow_scheda_2">▼</span>
             </div>
             <div id="content_scheda_2" class="accordion-content">
-                <p>Contenuto della Scheda 2 (da implementare)</p>
+                <div id="contenitore-ascolto"></div>
+
                 <div class="scheda-azioni">
                     <button onclick="closeAccordion('scheda_2')" class="logout-button">Chiudi scheda</button>
                 </div>
@@ -68,7 +69,10 @@
             initSceltaPersonale,
             initForum,
             avviaSceltaPersonaleListener,
-            avviaForumListener
+            avviaForumListener,
+            generaLavagna,
+            avviaLavagnaListener,
+            initLavagna
         } from '../../moduli/index.js';
         import { initLogin, getUtenteCorrente, haAccesso, logout, mostraLogin } from '../../moduli/login.js';
         import { datiLezione } from './dati-lezione.js';
@@ -81,6 +85,54 @@
         initLogin(app);
         initSceltaPersonale(app);
         initForum(app);
+        initLavagna(app);  // ← INIZIALIZZA LAVAGNA
+
+        function renderScheda2() {
+            const ascolto = datiLezione.ascolto;
+            if (!ascolto) return '';
+
+            const htmlVideo = `
+                <div class="scheda-video-box">
+                    <div class="attivita-label">Attività 1 - Guardate e ascoltate il video</div>
+                    <p class="scheda-istruzioni">${ascolto.istruzioni}</p>
+                    <div class="video-wrapper">
+                        <iframe
+                            src="https://www.youtube.com/embed/${ascolto.videoUrl}?rel=0"
+                            title="Video ascolto"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            `;
+
+            const htmlLavagna = ascolto.scanning
+                ? `
+                    <div class="section-separator">
+                        ${generaLavagna({
+                            id: ascolto.scanning.id,
+                            placeholder: ascolto.scanning.placeholder,
+                            titolo: ascolto.scanning.titolo || 'Attività 2 - Caccia alle parole'
+                        })}
+                    </div>
+                `
+                : '';
+
+            const htmlForum = ascolto.comprensione
+                ? `
+                    <div class="section-separator">
+                        ${generaForum({
+                            forum: {
+                                idFirebase: ascolto.comprensione.id,
+                                domanda: ascolto.comprensione.domanda || 'Attività 3 - Mettiti alla prova, scrivi cosa ricordi',
+                                placeholder: ascolto.comprensione.placeholder
+                            }
+                        })}
+                    </div>
+                `
+                : '';
+
+            return htmlVideo + htmlLavagna + htmlForum;
+        }
 
         function avviaPagina(utente) {
             if (!utente) {
@@ -106,6 +158,7 @@
             initIntestazione(datiConUtente);
 
             const isDocente = utente.ruolo === 'docenti';
+            window.isDocente = isDocente; // per funzioni globali
 
             const htmlScelta = datiLezione.elicitazione?.sceltaPersonale
                 ? `
@@ -136,10 +189,44 @@
 
             document.getElementById('contenitore-dinamico').innerHTML = htmlScelta + htmlFlashcard + htmlForum;
 
-            const BASE_PATH = `unita_001`;
-            avviaSceltaPersonaleListener(BASE_PATH, utente.username, isDocente);
-            avviaForumListener(BASE_PATH, datiLezione.forum?.idFirebase || 'unita001_forum_parole', isDocente);
+            // Renderizza la scheda 2
+            document.getElementById('contenitore-ascolto').innerHTML = renderScheda2();
 
+            const BASE_PATH = 'unita_001';
+
+            avviaSceltaPersonaleListener(BASE_PATH, utente.username, isDocente);
+
+            if (datiLezione.forum?.idFirebase) {
+                avviaForumListener(BASE_PATH, datiLezione.forum.idFirebase, isDocente);
+            }
+
+            if (datiLezione.ascolto?.comprensione?.id) {
+                avviaForumListener(BASE_PATH, datiLezione.ascolto.comprensione.id, isDocente);
+            }
+
+            // Flag per inizializzare la lavagna solo una volta
+            let lavagnaInizializzata = false;
+
+            function initLavagnaSeNecessario() {
+                if (lavagnaInizializzata) return;
+
+                if (datiLezione.ascolto?.scanning?.id) {
+                    console.log('🚀 Inizializzazione lavagna per scheda 2...');
+                    
+                    setTimeout(() => {
+                        avviaLavagnaListener(
+                            BASE_PATH,
+                            datiLezione.ascolto.scanning.id,
+                            isDocente,
+                            utente.username,
+                            `${utente.username}_${Date.now()}`
+                        );
+                        lavagnaInizializzata = true;
+                    }, 100);
+                }
+            }
+
+            // Accordion toggle con inizializzazione lavagna
             const STORAGE_KEY = 'parlo_italiano_unita_001_scheda_aperta';
 
             window.toggleAccordion = function(id) {
@@ -161,6 +248,11 @@
                     const arrow = document.getElementById('arrow_' + id);
                     if (arrow) arrow.textContent = '▲';
                     localStorage.setItem(STORAGE_KEY, id);
+
+                    // Se apriamo la scheda 2, inizializziamo la lavagna
+                    if (id === 'scheda_2') {
+                        initLavagnaSeNecessario();
+                    }
                 } else {
                     localStorage.removeItem(STORAGE_KEY);
                 }
@@ -181,7 +273,12 @@
                     const arrow = document.getElementById('arrow_' + schedaSalvata);
                     if (content) content.classList.add('open');
                     if (arrow) arrow.textContent = '▲';
-                }, 0);
+
+                    // Se all'avvio la scheda 2 è già aperta, inizializza la lavagna
+                    if (schedaSalvata === 'scheda_2') {
+                        initLavagnaSeNecessario();
+                    }
+                }, 200);
             }
 
             window.parloLogout = logout;
