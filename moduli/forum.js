@@ -9,9 +9,6 @@ import { getDatabase, ref, push, onValue, update, remove } from "https://www.gst
         .forum-container {
             margin: 20px 0;
             padding: 20px;
-            background:
-                linear-gradient(180deg, rgba(255,255,255,0.82), rgba(248,241,230,0.92)),
-                url('./moduli/img/forumbg.webp');
             background-size: cover;
             background-position: center;
             border-radius: 14px;
