@@ -1,250 +1,368 @@
-// ================================================================
-// DATI DELLA LEZIONE - Unità 001: Motivazione e Presentazioni
-// ================================================================
+import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-export const datiLezione = {
-    // ============================================================
-    // INTESTAZIONE
-    // ============================================================
-    titolo: "Unità 1 - Un albergo in centro",
-    sottotitolo: "Livello A1 - Iniziamo a viaggiare",
-    bannerImg: "img/banner_unita1.webp",
+let db = null;
+let basePathCorrente = '';
+let eserciziCorrenti = [];
+let isDocenteCorrente = false;
+let myUserNameCorrente = '';
 
-    // ============================================================
-    // SCHEDA 1: ELICITAZIONE
-    // ============================================================
-    elicitazione: {
-        sceltaPersonale: {
-            domanda: '📌 Perché studi l\'italiano?',
-            fraseBase: 'Io studio l\'italiano...',
-            idFirebase: 'unita_001_motivazione',
-            opzioni: [
-                { id: 'turismo', etichetta: 'per turismo', img: 'img/motivazioni/turismo.webp' },
-                { id: 'studio', etichetta: 'per studio', img: 'img/motivazioni/studio.webp' },
-                { id: 'amore', etichetta: 'per amore', img: 'img/motivazioni/amore.webp' },
-                { id: 'lavoro', etichetta: 'per lavoro', img: 'img/motivazioni/lavoro.webp' }
-            ]
+function iniettaCss() {
+    if (document.getElementById('crea-domande-css')) return;
+    const style = document.createElement('style');
+    style.id = 'crea-domande-css';
+    style.textContent = `
+        .scheda-crea-domande { margin: 16px 0; }
+        .scheda-crea-domande h3 {
+            text-align: center;
+            color: var(--primary-color, #1a6e3a);
+            font-size: 1.3rem;
+            margin-bottom: 8px;
         }
-    },
-
-    // ============================================================
-    // SCHEDA 1: VOCABOLARIO (Flashcard)
-    // ============================================================
-    vocabolario: [
-        { parola: "La pizza", audio: "audio/italia/pizza.mp3", img: "img/italia/pizza.webp" },
-        { parola: "La pasta", audio: "audio/italia/pasta.mp3", img: "img/italia/pasta.webp" },
-        { parola: "Il gelato", audio: "audio/italia/gelato.mp3", img: "img/italia/gelato.webp" },
-        { parola: "Il caffè", audio: "audio/italia/caffe.mp3", img: "img/italia/caffe.webp" },
-        { parola: "Il Colosseo", audio: "audio/italia/colosseo.mp3", img: "img/italia/colosseo.webp" },
-        { parola: "La moda", audio: "audio/italia/moda.mp3", img: "img/italia/moda.webp" },
-        { parola: "La Ferrari", audio: "audio/italia/ferrari.mp3", img: "img/italia/ferrari.webp" },
-        { parola: "Il calcio", audio: "audio/italia/calcio.mp3", img: "img/italia/calcio.webp" }
-    ],
-
-    // ============================================================
-    // SCHEDA 1: FORUM
-    // ============================================================
-    forum: {
-        idFirebase: 'unita001_forum_parole',
-        domanda: '🇮🇹 Che altre parole italiane conosci?',
-        placeholder: 'Scrivi una parola italiana...',
-        mostraNumeroParole: true
-    },
-
-    // ============================================================
-    // SCHEDA 2: ASCOLTO
-    // ============================================================
-    ascolto: {
-        videoUrl: '5FpbKA_i074',
-        istruzioni: 'Guarda il video e ascolta attentamente la pronuncia.',
-        scanning: {
-            id: 'u001_ascolto_scanning',
-            placeholder: 'Scrivi qui le parole che hai sentito...',
-            titolo: 'Caccia alle parole'
-        },
-        comprensione: {
-            id: 'u001_ascolto_comprensione',
-            domanda: 'Attività 3 - Mettiti alla prova, scrivi cosa ricordi',
-            placeholder: 'Nel video si parla di...'
+        .crea-domanda-card {
+            background: #fafafa;
+            border: 1px solid #e8e8e8;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
         }
-    },
+        .crea-domanda-risposta {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--primary-color, #1a6e3a);
+        }
+        .crea-domanda-guida {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+        .crea-domanda-form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .crea-domanda-form input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .crea-domanda-form input:focus {
+            border-color: var(--primary-color, #1a6e3a);
+            outline: none;
+        }
+        .crea-domanda-form button {
+            background: var(--primary-color, #1a6e3a);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .crea-domanda-form button:hover { background: #145a30; }
+        .crea-domanda-risposta-studente {
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        .crea-domanda-stato {
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+        .crea-domanda-stato.approvata { color: #168a2f; }
+        .crea-domanda-stato.in_attesa { color: #8a6d3b; }
+        .crea-domanda-stato.da_modificare { color: #b26a00; }
+        .crea-domanda-suggerimento {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #fff7e6;
+            border-left: 4px solid #f0ad4e;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+        .pannello-docente {
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #fff8e1;
+            border-radius: 8px;
+            border: 1px solid #f1c40f;
+        }
+        .pannello-docente strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #6b5300;
+        }
+        .docente-riga {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .docente-riga input {
+            flex: 1;
+            min-width: 150px;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .docente-riga button {
+            border: none;
+            border-radius: 6px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-approva { background: #168a2f; color: #fff; }
+        .btn-modifica { background: #f0ad4e; color: #fff; }
+        .btn-elimina { background: #e74c3c; color: #fff; }
+        .crea-domanda-risposte-lista {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #f0e8d0;
+        }
+        .crea-domanda-risposta-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .crea-domanda-risposta-item .studente { font-weight: 600; }
+        @media (max-width: 600px) {
+            .crea-domanda-form { flex-direction: column; }
+            .crea-domanda-form input { min-width: 100%; }
+            .docente-riga { flex-direction: column; }
+        }
+    `;
+    document.head.appendChild(style);
+}
 
-    // ============================================================
-    // SCHEDA 3: LETTURA
-    // ============================================================
-    lettura: {
-        titolo: 'Un albergo in centro',
-        sfondo: 'img/sfondo_pagina_libro.webp',
-        brainstorming: {
-            id: 'u001_lettura_brainstorming',
-            titolo: '✍️ Vocabolario: Quali parole nuove hai trovato?',
-            placeholder: 'Scrivi qui le parole nuove che hai trovato...'
-        },
-        glossario: [
-            { parola: 'albergo', traduzione_ru: 'гостиница', pronuncia_ru: 'альберго', audio: 'audio/glossario/albergo.mp3' },
-            { parola: 'comodo', traduzione_ru: 'удобный', pronuncia_ru: 'комодо', audio: 'audio/glossario/comodo.mp3' },
-            { parola: 'camere', traduzione_ru: 'комнаты', pronuncia_ru: 'камере', audio: 'audio/glossario/camere.mp3' },
-            { parola: 'stranieri', traduzione_ru: 'иностранцы', pronuncia_ru: 'страниери', audio: 'audio/glossario/stranieri.mp3' },
-            { parola: 'ospiti', traduzione_ru: 'гости', pronuncia_ru: 'оспити', audio: 'audio/glossario/ospiti.mp3' },
-            { parola: 'centro', traduzione_ru: 'центр', pronuncia_ru: 'чентро', audio: 'audio/glossario/centro.mp3' },
-            { parola: 'per affari', traduzione_ru: 'по делам', pronuncia_ru: 'пер аффари', audio: 'audio/glossario/per-affari.mp3' },
-            { parola: 'anche', traduzione_ru: 'тоже / также', pronuncia_ru: 'анке', audio: 'audio/glossario/anche.mp3' },
-            { parola: 'tedeschi', traduzione_ru: 'немцы', pronuncia_ru: 'тедески', audio: 'audio/glossario/tedeschi.mp3' },
-            { parola: 'francese', traduzione_ru: 'французский', pronuncia_ru: 'франчезе', audio: 'audio/glossario/francese.mp3' },
-            { parola: 'avvocato', traduzione_ru: 'адвокат', pronuncia_ru: 'аввокато', audio: 'audio/glossario/avvocato.mp3' },
-            { parola: 'insegnante', traduzione_ru: 'преподаватель', pronuncia_ru: 'инсеньянте', audio: 'audio/glossario/insegnante.mp3' },
-            { parola: 'sposato', traduzione_ru: 'женат', pronuncia_ru: 'спозато', audio: 'audio/glossario/sposato.mp3' },
-            { parola: 'figli', traduzione_ru: 'дети', pronuncia_ru: 'фильи', audio: 'audio/glossario/figli.mp3' },
-            { parola: 'occupato', traduzione_ru: 'занят', pronuncia_ru: 'окупато', audio: 'audio/glossario/occupato.mp3' }
-        ],
-        paragrafi: [
-            'L\'albergo "Ponte Vecchio" <strong>è</strong> a Firenze, in Italia. <strong>È</strong> un albergo grande, con molte camere. <strong>È</strong> un albergo comodo per gli stranieri, perché <strong>è</strong> in centro.',
-            'Chi <strong>sono</strong> gli ospiti dell\'albergo "Ponte Vecchio" in questo momento?',
-            'Victor <strong>è</strong> un cliente dell\'albergo. Victor <strong>è</strong> francese; <strong>è</strong> avvocato. Adesso <strong>è</strong> in Italia per affari.',
-            'Anche Klaus e Karl <strong>sono</strong> clienti dell\'albergo. <strong>Sono</strong> tedeschi e <strong>sono</strong> studenti. <strong>Sono</strong> in Italia per studiare l\'italiano.',
-            'Mary <strong>è</strong> inglese; <strong>è</strong> insegnante, ed <strong>è</strong> in Italia per insegnare l\'inglese. Yoko, invece, <strong>è</strong> giapponese; <strong>è</strong> dentista ed <strong>è</strong> in Italia per una conferenza.',
-            'Olga <strong>è</strong> russa. <strong>È</strong> studentessa. <strong>È</strong> in Italia per studiare l\'italiano e per fare shopping.',
-            'Paolo Rossi <strong>è</strong> il direttore dell\'albergo "Ponte Vecchio". <strong>È</strong> sposato e ha tre figli. <strong>È</strong> sempre molto occupato con i clienti.'
-        ]
-    },
+export function initCreaDomande(app) {
+    db = getDatabase(app);
+    console.log('📦 creaDomande: inizializzato');
+}
 
-    // ============================================================
-    // SCHEDA 4: COMPRENSIONE (Quiz a risposta multipla)
-    // ============================================================
-    comprensione: {
-        titolo: "🧠 Capiamo il testo",
-        istruzioni: "Scegli la risposta corretta per ogni domanda. Clicca direttamente sull'opzione che ritieni giusta.",
-        domande: [
-            {
-                id: "u001_q1",
-                testo: "L'albergo Ponte Vecchio è...",
-                opzioni: [
-                    "a Roma.",
-                    "a Firenze."
-                ],
-                corretta: 1,
-                suggerimento: '📖 Controlla: "L\'albergo Ponte Vecchio è a Firenze, in Italia."'
-            },
-            {
-                id: "u001_q2",
-                testo: "L'albergo Ponte Vecchio è...",
-                opzioni: [
-                    "in periferia",
-                    "in centro"
-                ],
-                corretta: 1,
-                suggerimento: '📖 Controlla: "È un albergo comodo per gli stranieri, perché è in centro."'
-            },
-            {
-                id: "u001_q3",
-                testo: "Victor è...",
-                opzioni: [
-                    "avvocato.",
-                    "direttore."
-                ],
-                corretta: 0,
-                suggerimento: '📖 Controlla: "Victor è francese; è avvocato."'
-            },
-            {
-                id: "u001_q4",
-                testo: "Victor è in Italia per...",
-                opzioni: [
-                    "turismo",
-                    "affari"
-                ],
-                corretta: 1,
-                suggerimento: '📖 Controlla: "Adesso è in Italia per affari."'
-            },
-            {
-                id: "u001_q5",
-                testo: "Karl e Klaus...",
-                opzioni: [
-                    "è studente",
-                    "sono studenti"
-                ],
-                corretta: 1,
-                suggerimento: '📖 Controlla: "Sono tedeschi e sono studenti."'
-            },
-            {
-                id: "u001_q6",
-                testo: "Karl e Klaus studiano...",
-                opzioni: [
-                    "il tedesco",
-                    "l'italiano"
-                ],
-                corretta: 1,
-                suggerimento: '📖 Controlla: "Sono in Italia per studiare l\'italiano."'
-            },
-            {
-                id: "u001_q7",
-                testo: "Mary è in Italia...",
-                opzioni: [
-                    "per insegnare l'inglese",
-                    "per insegnare l'italiano"
-                ],
-                corretta: 0,
-                suggerimento: '📖 Controlla: "Mary è inglese; è insegnante, ed è in Italia per insegnare l\'inglese."'
-            },
-            {
-                id: "u001_q8",
-                testo: "Mary è...",
-                opzioni: [
-                    "un'insegnante inglese",
-                    "un'insegnante italiana"
-                ],
-                corretta: 0,
-                suggerimento: '📖 Controlla: "Mary è inglese; è insegnante..."'
-            },
-            {
-                id: "u001_q9",
-                testo: "Yoko è...",
-                opzioni: [
-                    "insegnante",
-                    "dentista"
-                ],
-                corretta: 1,
-                suggerimento: '📖 Controlla: "Yoko, invece, è giapponese; è dentista..."'
-            },
-            {
-                id: "u001_q10",
-                testo: "Yoko è in Italia...",
-                opzioni: [
-                    "per una conferenza",
-                    "per turismo"
-                ],
-                corretta: 0,
-                suggerimento: '📖 Controlla: "...ed è in Italia per una conferenza."'
-            },
-            {
-                id: "u001_q11",
-                testo: "Olga è in Italia...",
-                opzioni: [
-                    "per conoscere ragazzi",
-                    "per studiare e fare shopping"
-                ],
-                corretta: 1,
-                suggerimento: '📖 Controlla: "È in Italia per studiare l\'italiano e per fare shopping."'
-            },
-            {
-                id: "u001_q12",
-                testo: "Olga è...",
-                opzioni: [
-                    "una studentessa italiana",
-                    "una studentessa di italiano"
-                ],
-                corretta: 1,
-                suggerimento: '📖 Controlla: "Olga è russa. È studentessa. È in Italia per studiare l\'italiano..."'
-            },
-            {
-                id: "u001_q13",
-                testo: "Il direttore...",
-                opzioni: [
-                    "è molto occupato.",
-                    "è molto sposato"
-                ],
-                corretta: 0,
-                suggerimento: '📖 Controlla: "È sempre molto occupato con i clienti."'
-            }
-        ]
+export function generaCreaDomande(dati, isDocente = false) {
+    iniettaCss();
+    if (!dati?.esercizi?.length) return '';
+
+    return `
+        <div class="scheda-crea-domande">
+            <h3>${dati.titolo || '🎤 Creiamo le domande'}</h3>
+            <p class="scheda-istruzioni">${dati.istruzioni || ''}</p>
+            ${dati.esercizi.map(esercizio => `
+                <div class="crea-domanda-card" id="card_${esercizio.id}">
+                    <div class="crea-domanda-risposta">
+                        <strong>Risposta:</strong> ${esercizio.risposta}
+                    </div>
+                    <div class="crea-domanda-guida">${esercizio.guida || ''}</div>
+
+                    <div class="crea-domanda-form" id="form_${esercizio.id}" ${isDocente ? 'style="display:none;"' : ''}>
+                        <input type="text" id="input_${esercizio.id}" placeholder="Scrivi qui la tua domanda..." />
+                        <button onclick="window.inviaCreaDomanda('${esercizio.id}')">Invia</button>
+                    </div>
+
+                    <div class="crea-domanda-risposta-studente" id="testo_${esercizio.id}"></div>
+                    <div class="crea-domanda-stato" id="stato_${esercizio.id}"></div>
+                    <div class="crea-domanda-suggerimento" id="suggerimento_${esercizio.id}"></div>
+
+                    <div id="riapri_${esercizio.id}" style="display:none; margin-top:8px;">
+                        <button onclick="window.riapriInputCreaDomanda('${esercizio.id}')" style="background:var(--primary-color);color:#fff;border:none;border-radius:6px;padding:6px 14px;cursor:pointer;">✏️ Modifica la risposta</button>
+                    </div>
+
+                    ${isDocente ? `
+                        <div class="pannello-docente" id="docente_${esercizio.id}">
+                            <strong>👨‍🏫 Pannello Docente</strong>
+                            <div id="docente_lista_${esercizio.id}" class="crea-domanda-risposte-lista">
+                                <em style="color:#999;">In attesa delle risposte degli studenti...</em>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+export function avviaCreaDomandeListener(basePath, esercizi, isDocente = false, username = '') {
+    if (!db) {
+        console.warn('⚠️ creaDomande: db non inizializzato!');
+        return;
     }
+
+    basePathCorrente = basePath;
+    eserciziCorrenti = esercizi || [];
+    isDocenteCorrente = isDocente;
+    myUserNameCorrente = username;
+
+    eserciziCorrenti.forEach(esercizio => {
+        const risposteRef = ref(db, `${basePath}/creaDomande/${esercizio.id}/risposte`);
+        onValue(risposteRef, (snap) => {
+            aggiornaUI(esercizio.id, snap.val() || {});
+        });
+    });
+}
+
+function aggiornaUI(idEsercizio, dati) {
+    const statoEl = document.getElementById(`stato_${idEsercizio}`);
+    const testoEl = document.getElementById(`testo_${idEsercizio}`);
+    const suggEl = document.getElementById(`suggerimento_${idEsercizio}`);
+    const riapriEl = document.getElementById(`riapri_${idEsercizio}`);
+    const formEl = document.getElementById(`form_${idEsercizio}`);
+    const docenteLista = document.getElementById(`docente_lista_${idEsercizio}`);
+
+    const miaRisposta = dati[myUserNameCorrente] || null;
+
+    if (testoEl && statoEl && suggEl) {
+        if (miaRisposta) {
+            testoEl.textContent = `📝 La tua risposta: "${miaRisposta.domanda || ''}"`;
+            const stato = miaRisposta.stato || 'in_attesa';
+            statoEl.textContent = stato === 'approvata'
+                ? '✅ Approvata!'
+                : stato === 'da_modificare'
+                    ? '✏️ Da modificare'
+                    : '⏳ In attesa di correzione...';
+            statoEl.className = `crea-domanda-stato ${stato}`;
+
+            if (miaRisposta.suggerimento) {
+                suggEl.textContent = `💡 ${miaRisposta.suggerimento}`;
+                suggEl.style.display = 'block';
+            } else {
+                suggEl.textContent = '';
+                suggEl.style.display = 'none';
+            }
+
+            if (stato === 'da_modificare') {
+                if (formEl) formEl.style.display = 'flex';
+                if (riapriEl) riapriEl.style.display = 'none';
+                const input = document.getElementById(`input_${idEsercizio}`);
+                if (input) input.value = miaRisposta.domanda || '';
+            } else {
+                if (formEl) formEl.style.display = 'none';
+                if (riapriEl) riapriEl.style.display = 'none';
+            }
+        } else {
+            testoEl.textContent = '';
+            statoEl.textContent = 'Scegli una domanda...';
+            statoEl.className = 'crea-domanda-stato';
+            suggEl.textContent = '';
+            suggEl.style.display = 'none';
+            if (formEl) formEl.style.display = 'flex';
+            if (riapriEl) riapriEl.style.display = 'none';
+        }
+    }
+
+    if (docenteLista && isDocenteCorrente) {
+        const studenti = Object.keys(dati);
+        if (studenti.length === 0) {
+            docenteLista.innerHTML = '<em style="color:#999;">In attesa delle risposte degli studenti...</em>';
+            return;
+        }
+
+        let html = '';
+        studenti.forEach(nome => {
+            const risposta = dati[nome];
+            const stato = risposta?.stato || 'in_attesa';
+            const icona = stato === 'approvata' ? '🟢' : stato === 'da_modificare' ? '🟡' : '⏳';
+
+            html += `
+                <div class="crea-domanda-risposta-item">
+                    <div>
+                        <span class="studente">${nome}:</span>
+                        <span>${risposta?.domanda || ''}</span>
+                        <span style="font-size:0.9rem;">${icona}</span>
+                        ${risposta?.suggerimento ? `<div style="font-size:0.85rem;color:#b26a00;">💡 ${risposta.suggerimento}</div>` : ''}
+                    </div>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        <button class="btn-approva" onclick="window.approvaCreaDomanda('${idEsercizio}','${nome}')">Approva</button>
+                        <button class="btn-modifica" onclick="window.richiediModificaCreaDomanda('${idEsercizio}','${nome}')">Modifica</button>
+                        <button class="btn-elimina" onclick="window.eliminaCreaDomanda('${idEsercizio}','${nome}')">✖</button>
+                    </div>
+                </div>
+            `;
+        });
+        docenteLista.innerHTML = html;
+    }
+}
+
+window.inviaCreaDomanda = async function(idEsercizio) {
+    if (!db || !myUserNameCorrente) {
+        alert('Errore: non sei connesso.');
+        return;
+    }
+
+    const input = document.getElementById(`input_${idEsercizio}`);
+    if (!input) return;
+
+    const testo = input.value.trim();
+    if (!testo) {
+        alert('Scrivi una domanda!');
+        return;
+    }
+
+    const refRisposta = ref(db, `${basePathCorrente}/creaDomande/${idEsercizio}/risposte/${myUserNameCorrente}`);
+    await set(refRisposta, {
+        domanda: testo,
+        stato: 'in_attesa',
+        suggerimento: '',
+        timestamp: Date.now()
+    });
+
+    input.value = '';
+};
+
+window.riapriInputCreaDomanda = function(idEsercizio) {
+    const form = document.getElementById(`form_${idEsercizio}`);
+    if (form) form.style.display = 'flex';
+    const input = document.getElementById(`input_${idEsercizio}`);
+    if (input) input.focus();
+};
+
+window.approvaCreaDomanda = async function(idEsercizio, studentName) {
+    if (!db || !isDocenteCorrente) return;
+    const refRisposta = ref(db, `${basePathCorrente}/creaDomande/${idEsercizio}/risposte/${studentName}`);
+    await update(refRisposta, {
+        stato: 'approvata',
+        suggerimento: '',
+        timestamp: Date.now()
+    });
+};
+
+window.richiediModificaCreaDomanda = async function(idEsercizio, studentName) {
+    if (!db || !isDocenteCorrente) return;
+
+    // ✅ CHIEDE AL DOCENTE DI SCRIVERE IL SUGGERIMENTO
+    const suggerimento = prompt('✏️ Scrivi un suggerimento per lo studente:');
+    if (suggerimento === null) return;  // Annulla
+    if (suggerimento.trim() === '') {
+        alert('Il suggerimento non può essere vuoto.');
+        return;
+    }
+
+    const refRisposta = ref(db, `${basePathCorrente}/creaDomande/${idEsercizio}/risposte/${studentName}`);
+    await update(refRisposta, {
+        stato: 'da_modificare',
+        suggerimento: suggerimento.trim(),
+        timestamp: Date.now()
+    });
+};
+
+window.eliminaCreaDomanda = async function(idEsercizio, studentName) {
+    if (!db || !isDocenteCorrente) return;
+    if (!confirm(`Eliminare la risposta di ${studentName}?`)) return;
+
+    const refRisposta = ref(db, `${basePathCorrente}/creaDomande/${idEsercizio}/risposte/${studentName}`);
+    await remove(refRisposta);
+};
+
+window.resettaCreaDomanda = async function(idEsercizio) {
+    if (!db || !isDocenteCorrente) return;
+    if (!confirm(`Resettare tutte le risposte per questo esercizio?`)) return;
+
+    const refEsercizio = ref(db, `${basePathCorrente}/creaDomande/${idEsercizio}`);
+    await remove(refEsercizio);
 };
