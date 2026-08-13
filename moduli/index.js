@@ -37,6 +37,12 @@ export {
 } from './sceltaOpzioni.js';
 
 export {
+    generaCreaDomande,
+    initCreaDomande,
+    avviaCreaDomandeListener
+} from './creaDomande.js';
+
+export {
     initLogin,
     haAccesso,
     getGruppi,
