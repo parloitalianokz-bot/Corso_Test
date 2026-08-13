@@ -74,6 +74,19 @@
                 </div>
             </div>
         </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_5')">
+                Scheda 5: 🎤 Creiamo le domande <span id="arrow_scheda_5">▼</span>
+            </div>
+            <div id="content_scheda_5" class="accordion-content">
+                <div id="contenitore-crea-domande"></div>
+
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_5')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -94,7 +107,10 @@
             generaListaGlossario,
             generaSceltaOpzioni,
             avviaSceltaOpzioniListener,
-            initSceltaOpzioni
+            initSceltaOpzioni,
+            generaCreaDomande,
+            initCreaDomande,
+            avviaCreaDomandeListener
         } from '../../moduli/index.js';
         import { initLogin, getUtenteCorrente, haAccesso, logout, mostraLogin } from '../../moduli/login.js';
         import { datiLezione } from './dati-lezione.js';
@@ -109,11 +125,13 @@
         initForum(app);
         initLavagna(app);
         initSceltaOpzioni(app);
+        initCreaDomande(app);
 
         const STATO_ACCORDION = {
             lavagnaInizializzata: false,
             lavagnaLetturaInizializzata: false,
             comprensioneInizializzata: false,
+            creaDomandeInizializzata: false,
             isDocente: false,
             utente: null
         };
@@ -200,6 +218,12 @@
             return generaSceltaOpzioni(comprensione, STATO_ACCORDION.isDocente);
         }
 
+        function renderScheda5() {
+            const produzioneDomande = datiLezione.produzioneDomande;
+            if (!produzioneDomande) return '';
+            return generaCreaDomande(produzioneDomande, STATO_ACCORDION.isDocente);
+        }
+
         function avviaPagina(utente) {
             if (!utente) {
                 mostraLogin((utenteLoggato) => avviaPagina(utenteLoggato));
@@ -259,6 +283,7 @@
             document.getElementById('contenitore-ascolto').innerHTML = renderScheda2();
             document.getElementById('contenitore-lettura').innerHTML = renderScheda3();
             document.getElementById('contenitore-comprensione').innerHTML = renderScheda4();
+            document.getElementById('contenitore-crea-domande').innerHTML = renderScheda5();
 
             const BASE_PATH = 'unita_001';
 
@@ -274,6 +299,14 @@
                 avviaSceltaOpzioniListener(
                     BASE_PATH,
                     datiLezione.comprensione.domande,
+                    isDocente,
+                    utente.username
+                );
+            }
+            if (datiLezione.produzioneDomande?.esercizi?.length) {
+                avviaCreaDomandeListener(
+                    BASE_PATH,
+                    datiLezione.produzioneDomande.esercizi,
                     isDocente,
                     utente.username
                 );
