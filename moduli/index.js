@@ -31,6 +31,12 @@ export {
 } from './glossario.js';
 
 export {
+    generaSceltaOpzioni,
+    initSceltaOpzioni,
+    avviaSceltaOpzioniListener
+} from './sceltaOpzioni.js';
+
+export {
     initLogin,
     haAccesso,
     getGruppi,
