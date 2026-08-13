@@ -3,10 +3,16 @@
 // ================================================================
 
 export const datiLezione = {
+    // ============================================================
+    // INTESTAZIONE
+    // ============================================================
     titolo: "Unità 1 - Un albergo in centro",
     sottotitolo: "Livello A1 - Iniziamo a viaggiare",
     bannerImg: "img/banner_unita1.webp",
 
+    // ============================================================
+    // SCHEDA 1: ELICITAZIONE
+    // ============================================================
     elicitazione: {
         sceltaPersonale: {
             domanda: '📌 Perché studi l\'italiano?',
@@ -21,6 +27,9 @@ export const datiLezione = {
         }
     },
 
+    // ============================================================
+    // SCHEDA 1: VOCABOLARIO (Flashcard)
+    // ============================================================
     vocabolario: [
         { parola: "La pizza", audio: "audio/italia/pizza.mp3", img: "img/italia/pizza.webp" },
         { parola: "La pasta", audio: "audio/italia/pasta.mp3", img: "img/italia/pasta.webp" },
@@ -32,6 +41,9 @@ export const datiLezione = {
         { parola: "Il calcio", audio: "audio/italia/calcio.mp3", img: "img/italia/calcio.webp" }
     ],
 
+    // ============================================================
+    // SCHEDA 1: FORUM
+    // ============================================================
     forum: {
         idFirebase: 'unita001_forum_parole',
         domanda: '🇮🇹 Che altre parole italiane conosci?',
@@ -39,6 +51,9 @@ export const datiLezione = {
         mostraNumeroParole: true
     },
 
+    // ============================================================
+    // SCHEDA 2: ASCOLTO
+    // ============================================================
     ascolto: {
         videoUrl: '5FpbKA_i074',
         istruzioni: 'Guarda il video e ascolta attentamente la pronuncia.',
@@ -54,6 +69,9 @@ export const datiLezione = {
         }
     },
 
+    // ============================================================
+    // SCHEDA 3: LETTURA
+    // ============================================================
     lettura: {
         titolo: 'Un albergo in centro',
         sfondo: 'img/sfondo_pagina_libro.webp',
@@ -63,96 +81,21 @@ export const datiLezione = {
             placeholder: 'Scrivi qui le parole nuove che hai trovato...'
         },
         glossario: [
-            {
-                parola: 'albergo',
-                traduzione_ru: 'гостиница',
-                pronuncia_ru: 'альберго',
-                audio: 'audio/glossario/albergo.mp3'
-            },
-            {
-                parola: 'comodo',
-                traduzione_ru: 'удобный',
-                pronuncia_ru: 'комодо',
-                audio: 'audio/glossario/comodo.mp3'
-            },
-            {
-                parola: 'camere',
-                traduzione_ru: 'комнаты',
-                pronuncia_ru: 'камере',
-                audio: 'audio/glossario/camere.mp3'
-            },
-            {
-                parola: 'stranieri',
-                traduzione_ru: 'иностранцы',
-                pronuncia_ru: 'страниери',
-                audio: 'audio/glossario/stranieri.mp3'
-            },
-            {
-                parola: 'ospiti',
-                traduzione_ru: 'гости',
-                pronuncia_ru: 'оспити',
-                audio: 'audio/glossario/ospiti.mp3'
-            },
-            {
-                parola: 'centro',
-                traduzione_ru: 'центр',
-                pronuncia_ru: 'чентро',
-                audio: 'audio/glossario/centro.mp3'
-            },
-            {
-                parola: 'per affari',
-                traduzione_ru: 'по делам',
-                pronuncia_ru: 'пер аффари',
-                audio: 'audio/glossario/per-affari.mp3'
-            },
-            {
-                parola: 'anche',
-                traduzione_ru: 'тоже / также',
-                pronuncia_ru: 'анке',
-                audio: 'audio/glossario/anche.mp3'
-            },
-            {
-                parola: 'tedeschi',
-                traduzione_ru: 'немцы',
-                pronuncia_ru: 'тедески',
-                audio: 'audio/glossario/tedeschi.mp3'
-            },
-            {
-                parola: 'francese',
-                traduzione_ru: 'французский',
-                pronuncia_ru: 'франчезе',
-                audio: 'audio/glossario/francese.mp3'
-            },
-            {
-                parola: 'avvocato',
-                traduzione_ru: 'адвокат',
-                pronuncia_ru: 'аввокато',
-                audio: 'audio/glossario/avvocato.mp3'
-            },
-            {
-                parola: 'insegnante',
-                traduzione_ru: 'преподаватель',
-                pronuncia_ru: 'инсеньянте',
-                audio: 'audio/glossario/insegnante.mp3'
-            },
-            {
-                parola: 'sposato',
-                traduzione_ru: 'женат',
-                pronuncia_ru: 'спозато',
-                audio: 'audio/glossario/sposato.mp3'
-            },
-            {
-                parola: 'figli',
-                traduzione_ru: 'дети',
-                pronuncia_ru: 'фильи',
-                audio: 'audio/glossario/figli.mp3'
-            },
-            {
-                parola: 'occupato',
-                traduzione_ru: 'занят',
-                pronuncia_ru: 'окупато',
-                audio: 'audio/glossario/occupato.mp3'
-            }
+            { parola: 'albergo', traduzione_ru: 'гостиница', pronuncia_ru: 'альберго', audio: 'audio/glossario/albergo.mp3' },
+            { parola: 'comodo', traduzione_ru: 'удобный', pronuncia_ru: 'комодо', audio: 'audio/glossario/comodo.mp3' },
+            { parola: 'camere', traduzione_ru: 'комнаты', pronuncia_ru: 'камере', audio: 'audio/glossario/camere.mp3' },
+            { parola: 'stranieri', traduzione_ru: 'иностранцы', pronuncia_ru: 'страниери', audio: 'audio/glossario/stranieri.mp3' },
+            { parola: 'ospiti', traduzione_ru: 'гости', pronuncia_ru: 'оспити', audio: 'audio/glossario/ospiti.mp3' },
+            { parola: 'centro', traduzione_ru: 'центр', pronuncia_ru: 'чентро', audio: 'audio/glossario/centro.mp3' },
+            { parola: 'per affari', traduzione_ru: 'по делам', pronuncia_ru: 'пер аффари', audio: 'audio/glossario/per-affari.mp3' },
+            { parola: 'anche', traduzione_ru: 'тоже / также', pronuncia_ru: 'анке', audio: 'audio/glossario/anche.mp3' },
+            { parola: 'tedeschi', traduzione_ru: 'немцы', pronuncia_ru: 'тедески', audio: 'audio/glossario/tedeschi.mp3' },
+            { parola: 'francese', traduzione_ru: 'французский', pronuncia_ru: 'франчезе', audio: 'audio/glossario/francese.mp3' },
+            { parola: 'avvocato', traduzione_ru: 'адвокат', pronuncia_ru: 'аввокато', audio: 'audio/glossario/avvocato.mp3' },
+            { parola: 'insegnante', traduzione_ru: 'преподаватель', pronuncia_ru: 'инсеньянте', audio: 'audio/glossario/insegnante.mp3' },
+            { parola: 'sposato', traduzione_ru: 'женат', pronuncia_ru: 'спозато', audio: 'audio/glossario/sposato.mp3' },
+            { parola: 'figli', traduzione_ru: 'дети', pronuncia_ru: 'фильи', audio: 'audio/glossario/figli.mp3' },
+            { parola: 'occupato', traduzione_ru: 'занят', pronuncia_ru: 'окупато', audio: 'audio/glossario/occupato.mp3' }
         ],
         paragrafi: [
             'L\'albergo "Ponte Vecchio" <strong>è</strong> a Firenze, in Italia. <strong>È</strong> un albergo grande, con molte camere. <strong>È</strong> un albergo comodo per gli stranieri, perché <strong>è</strong> in centro.',
@@ -162,6 +105,146 @@ export const datiLezione = {
             'Mary <strong>è</strong> inglese; <strong>è</strong> insegnante, ed <strong>è</strong> in Italia per insegnare l\'inglese. Yoko, invece, <strong>è</strong> giapponese; <strong>è</strong> dentista ed <strong>è</strong> in Italia per una conferenza.',
             'Olga <strong>è</strong> russa. <strong>È</strong> studentessa. <strong>È</strong> in Italia per studiare l\'italiano e per fare shopping.',
             'Paolo Rossi <strong>è</strong> il direttore dell\'albergo "Ponte Vecchio". <strong>È</strong> sposato e ha tre figli. <strong>È</strong> sempre molto occupato con i clienti.'
+        ]
+    },
+
+    // ============================================================
+    // SCHEDA 4: COMPRENSIONE (Quiz a risposta multipla)
+    // ============================================================
+    comprensione: {
+        titolo: "🧠 Capiamo il testo",
+        istruzioni: "Scegli la risposta corretta per ogni domanda. Clicca direttamente sull'opzione che ritieni giusta.",
+        domande: [
+            {
+                id: "u001_q1",
+                testo: "L'albergo Ponte Vecchio è...",
+                opzioni: [
+                    "a Roma.",
+                    "a Firenze."
+                ],
+                corretta: 1,
+                suggerimento: '📖 Controlla: "L\'albergo Ponte Vecchio è a Firenze, in Italia."'
+            },
+            {
+                id: "u001_q2",
+                testo: "L'albergo Ponte Vecchio è...",
+                opzioni: [
+                    "in periferia",
+                    "in centro"
+                ],
+                corretta: 1,
+                suggerimento: '📖 Controlla: "È un albergo comodo per gli stranieri, perché è in centro."'
+            },
+            {
+                id: "u001_q3",
+                testo: "Victor è...",
+                opzioni: [
+                    "avvocato.",
+                    "direttore."
+                ],
+                corretta: 0,
+                suggerimento: '📖 Controlla: "Victor è francese; è avvocato."'
+            },
+            {
+                id: "u001_q4",
+                testo: "Victor è in Italia per...",
+                opzioni: [
+                    "turismo",
+                    "affari"
+                ],
+                corretta: 1,
+                suggerimento: '📖 Controlla: "Adesso è in Italia per affari."'
+            },
+            {
+                id: "u001_q5",
+                testo: "Karl e Klaus...",
+                opzioni: [
+                    "è studente",
+                    "sono studenti"
+                ],
+                corretta: 1,
+                suggerimento: '📖 Controlla: "Sono tedeschi e sono studenti."'
+            },
+            {
+                id: "u001_q6",
+                testo: "Karl e Klaus studiano...",
+                opzioni: [
+                    "il tedesco",
+                    "l'italiano"
+                ],
+                corretta: 1,
+                suggerimento: '📖 Controlla: "Sono in Italia per studiare l\'italiano."'
+            },
+            {
+                id: "u001_q7",
+                testo: "Mary è in Italia...",
+                opzioni: [
+                    "per insegnare l'inglese",
+                    "per insegnare l'italiano"
+                ],
+                corretta: 0,
+                suggerimento: '📖 Controlla: "Mary è inglese; è insegnante, ed è in Italia per insegnare l\'inglese."'
+            },
+            {
+                id: "u001_q8",
+                testo: "Mary è...",
+                opzioni: [
+                    "un'insegnante inglese",
+                    "un'insegnante italiana"
+                ],
+                corretta: 0,
+                suggerimento: '📖 Controlla: "Mary è inglese; è insegnante..."'
+            },
+            {
+                id: "u001_q9",
+                testo: "Yoko è...",
+                opzioni: [
+                    "insegnante",
+                    "dentista"
+                ],
+                corretta: 1,
+                suggerimento: '📖 Controlla: "Yoko, invece, è giapponese; è dentista..."'
+            },
+            {
+                id: "u001_q10",
+                testo: "Yoko è in Italia...",
+                opzioni: [
+                    "per una conferenza",
+                    "per turismo"
+                ],
+                corretta: 0,
+                suggerimento: '📖 Controlla: "...ed è in Italia per una conferenza."'
+            },
+            {
+                id: "u001_q11",
+                testo: "Olga è in Italia...",
+                opzioni: [
+                    "per conoscere ragazzi",
+                    "per studiare e fare shopping"
+                ],
+                corretta: 1,
+                suggerimento: '📖 Controlla: "È in Italia per studiare l\'italiano e per fare shopping."'
+            },
+            {
+                id: "u001_q12",
+                testo: "Olga è...",
+                opzioni: [
+                    "una studentessa italiana",
+                    "una studentessa di italiano"
+                ],
+                corretta: 1,
+                suggerimento: '📖 Controlla: "Olga è russa. È studentessa. È in Italia per studiare l\'italiano..."'
+            },
+            {
+                id: "u001_q13",
+                testo: "Il direttore...",
+                opzioni: [
+                    "è molto occupato.",
+                    "è molto sposato"
+                ],
+                corretta: 0,
+                suggerimento: '📖 Controlla: "È sempre molto occupato con i clienti."'
+            }
         ]
     }
 };
