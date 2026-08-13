@@ -61,6 +61,19 @@
                 </div>
             </div>
         </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_4')">
+                Scheda 4: 🧠 Capiamo il testo <span id="arrow_scheda_4">▼</span>
+            </div>
+            <div id="content_scheda_4" class="accordion-content">
+                <div id="contenitore-comprensione"></div>
+
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_4')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -78,7 +91,10 @@
             avviaLavagnaListener,
             initLavagna,
             glossarizzaTesto,
-            generaListaGlossario
+            generaListaGlossario,
+            generaSceltaOpzioni,
+            avviaSceltaOpzioniListener,
+            initSceltaOpzioni
         } from '../../moduli/index.js';
         import { initLogin, getUtenteCorrente, haAccesso, logout, mostraLogin } from '../../moduli/login.js';
         import { datiLezione } from './dati-lezione.js';
@@ -92,10 +108,12 @@
         initSceltaPersonale(app);
         initForum(app);
         initLavagna(app);
+        initSceltaOpzioni(app);
 
         const STATO_ACCORDION = {
             lavagnaInizializzata: false,
             lavagnaLetturaInizializzata: false,
+            comprensioneInizializzata: false,
             isDocente: false,
             utente: null
         };
@@ -176,6 +194,12 @@
             `;
         }
 
+        function renderScheda4() {
+            const comprensione = datiLezione.comprensione;
+            if (!comprensione) return '';
+            return generaSceltaOpzioni(comprensione, STATO_ACCORDION.isDocente);
+        }
+
         function avviaPagina(utente) {
             if (!utente) {
                 mostraLogin((utenteLoggato) => avviaPagina(utenteLoggato));
@@ -234,6 +258,7 @@
             document.getElementById('contenitore-dinamico').innerHTML = htmlScelta + htmlFlashcard + htmlForum;
             document.getElementById('contenitore-ascolto').innerHTML = renderScheda2();
             document.getElementById('contenitore-lettura').innerHTML = renderScheda3();
+            document.getElementById('contenitore-comprensione').innerHTML = renderScheda4();
 
             const BASE_PATH = 'unita_001';
 
@@ -244,6 +269,14 @@
             }
             if (datiLezione.ascolto?.comprensione?.id) {
                 avviaForumListener(BASE_PATH, datiLezione.ascolto.comprensione.id, isDocente);
+            }
+            if (datiLezione.comprensione?.domande?.length) {
+                avviaSceltaOpzioniListener(
+                    BASE_PATH,
+                    datiLezione.comprensione.domande,
+                    isDocente,
+                    utente.username
+                );
             }
         }
 
