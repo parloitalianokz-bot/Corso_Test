@@ -2,12 +2,11 @@
 // MODULO: ASSOCIAZIONE GRAFICA
 // ================================================================
 
-import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 let db = null;
 let basePathCorrente = '';
 let eserciziAssociazioneCorrenti = [];
-let isDocenteCorrente = false;
 let myUserNameCorrente = '';
 
 function iniettaCss() {
@@ -16,9 +15,7 @@ function iniettaCss() {
     const style = document.createElement('style');
     style.id = 'associazione-grafica-css';
     style.textContent = `
-        .assoc-container {
-            margin: 16px 0;
-        }
+        .assoc-container { margin: 16px 0; }
         .assoc-fase {
             background: #fafafa;
             border: 1px solid #e8e8e8;
@@ -136,16 +133,11 @@ function iniettaCss() {
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-
         @media (max-width: 700px) {
             .assoc-layout { grid-template-columns: 1fr; }
         }
     `;
     document.head.appendChild(style);
-}
-
-function creaIdDomanda(idAssoc, sinistraId) {
-    return `${idAssoc}__${sinistraId}`;
 }
 
 function scegliDisposizioneCasuale(array) {
@@ -168,7 +160,6 @@ function generaAssociazioneHTML(fase) {
         <div class="assoc-fase" id="assoc_fase_${assoc.id}">
             <div class="titolo-fase">${fase.titolo || ''}</div>
             <div class="assoc-istruzioni">${assoc.istruzioni || ''}</div>
-
             <div class="assoc-layout">
                 <div class="assoc-colonna">
                     ${sinistra.map(item => `
@@ -178,19 +169,16 @@ function generaAssociazioneHTML(fase) {
                         </div>
                     `).join('')}
                 </div>
-
                 <div class="assoc-colonna" id="assoc_destra_${assoc.id}">
                     ${destra.map(item => `
                         <div class="assoc-voce" id="assoc_voce_${assoc.id}_${item.id}" onclick="window.selezionaVoceAssociazione('${assoc.id}','${item.id}')">${item.label}</div>
                     `).join('')}
                 </div>
             </div>
-
             <div class="assoc-azioni">
                 <button class="btn-verifica" onclick="window.verificaAssociazione('${assoc.id}')">✅ Verifica</button>
                 <button class="btn-reset" onclick="window.resetAssociazione('${assoc.id}')">🔄 Reset</button>
             </div>
-
             <div class="assoc-esito" id="assoc_esito_${assoc.id}"></div>
         </div>
     `;
@@ -199,45 +187,35 @@ function generaAssociazioneHTML(fase) {
 export function generaAssociazione(fasi, isDocente = false) {
     iniettaCss();
     if (!fasi?.length) return '';
-
-    return `
-        <div class="assoc-container">
-            ${fasi.map(fase => {
-                if (!fase.associazione) return '';
-                return generaAssociazioneHTML(fase);
-            }).join('')}
-        </div>
-    `;
+    return `<div class="assoc-container">${fasi.map(fase => fase.associazione ? generaAssociazioneHTML(fase) : '').join('')}</div>`;
 }
 
 export function initAssociazione(app) {
     db = getDatabase(app);
-    console.log('📦 associazione: inizializzato');
 }
 
 export function avviaAssociazioneListener(basePath, fasiGrammatica, isDocente = false, username = '') {
-    if (!db) {
-        console.warn('⚠️ associazione: db non inizializzato!');
-        return;
-    }
+    if (!db) return;
 
     basePathCorrente = basePath;
-    isDocenteCorrente = isDocente;
     myUserNameCorrente = username;
+    eserciziAssociazioneCorrenti = (fasiGrammatica || []).filter(f => f.associazione).map(f => f.associazione);
 
-    const esercizi = (fasiGrammatica || [])
-        .filter(f => f.associazione)
-        .map(f => f.associazione);
-
-    eserciziAssociazioneCorrenti = esercizi;
-    window.__associazioniCloze = eserciziAssociazioneCorrenti;
-
-    esercizi.forEach(assoc => {
+    eserciziAssociazioneCorrenti.forEach(assoc => {
         const risposteRef = ref(db, `${basePath}/associazione/${assoc.id}/associazioni`);
-        onValue(risposteRef, (snap) => {
+        onValue(risposteRef, snap => {
             aggiornaUIAssociazione(assoc.id, snap.val() || {});
         });
     });
+}
+
+function getAccettate(corrette, sinistraId) {
+    const v = corrette?.[sinistraId];
+    return Array.isArray(v) ? v : [v];
+}
+
+function trovaSlotDaVoce(idAssoc, destraId) {
+    return document.querySelector(`.assoc-slot[data-assoc-id="${idAssoc}"][data-destra-id="${destraId}"]`);
 }
 
 function aggiornaUIAssociazione(idAssoc, dati) {
@@ -245,23 +223,35 @@ function aggiornaUIAssociazione(idAssoc, dati) {
     const ass = eserciziAssociazioneCorrenti.find(a => a.id === idAssoc);
     if (!ass || !esitoEl) return;
 
+    document.querySelectorAll(`.assoc-slot[data-assoc-id="${idAssoc}"]`).forEach(slot => {
+        slot.textContent = 'vuoto';
+        slot.dataset.destraId = '';
+        slot.classList.remove('piena');
+        const riga = document.getElementById(slot.dataset.rigaId);
+        if (riga) riga.classList.remove('selezionata');
+    });
+
+    document.querySelectorAll(`.assoc-voce[data-assoc-id="${idAssoc}"]`).forEach(voce => {
+        voce.classList.remove('usata');
+    });
+
     const miaRisposta = dati[myUserNameCorrente] || null;
-
-    if (miaRisposta) {
-        const associazioni = miaRisposta.associazioni || {};
-        Object.entries(associazioni).forEach(([sinistraId, destraId]) => {
-            window.spostaAssociazione(idAssoc, sinistraId, destraId, true);
-        });
-
-        const stato = miaRisposta.stato || 'in_attesa';
-        esitoEl.className = `assoc-esito visibile ${stato === 'approvata' ? 'ok' : 'ko'}`;
-        esitoEl.textContent = stato === 'approvata'
-            ? '✅ Perfetto! Tutte le associazioni sono corrette!'
-            : (stato === 'da_modificare' ? '✏️ Da modificare' : '⏳ In attesa di correzione...');
-    } else {
+    if (!miaRisposta) {
         esitoEl.className = 'assoc-esito';
         esitoEl.textContent = '';
+        return;
     }
+
+    const associazioni = miaRisposta.associazioni || {};
+    Object.entries(associazioni).forEach(([sinistraId, destraId]) => {
+        if (destraId) window.spostaAssociazione(idAssoc, sinistraId, destraId, true);
+    });
+
+    const stato = miaRisposta.stato || 'in_attesa';
+    esitoEl.className = `assoc-esito visibile ${stato === 'approvata' ? 'ok' : 'ko'}`;
+    esitoEl.textContent = stato === 'approvata'
+        ? '✅ Perfetto! Tutte le associazioni sono corrette!'
+        : (stato === 'da_modificare' ? '✏️ Da modificare' : '⏳ In attesa di correzione...');
 }
 
 window.spostaAssociazione = function(idAssoc, sinistraId, destraId, daFirebase = false) {
@@ -271,6 +261,14 @@ window.spostaAssociazione = function(idAssoc, sinistraId, destraId, daFirebase =
     const ass = eserciziAssociazioneCorrenti.find(a => a.id === idAssoc);
     if (!ass) return;
 
+    const vecchiaDestraId = slot.dataset.destraId || '';
+    if (vecchiaDestraId && !destraId) {
+        const vecchiaVoce = document.getElementById(`assoc_voce_${idAssoc}_${vecchiaDestraId}`);
+        if (vecchiaVoce) vecchiaVoce.classList.remove('usata');
+    }
+
+    slot.dataset.assocId = idAssoc;
+    slot.dataset.rigaId = `assoc_riga_${idAssoc}_${sinistraId}`;
     slot.textContent = destraId ? (ass.destra.find(x => x.id === destraId)?.label || destraId) : 'vuoto';
     slot.dataset.destraId = destraId || '';
     slot.classList.toggle('piena', !!destraId);
@@ -290,6 +288,11 @@ window.selezionaVoceAssociazione = function(idAssoc, destraId) {
 
     const voce = document.getElementById(`assoc_voce_${idAssoc}_${destraId}`);
     if (voce && voce.classList.contains('usata')) {
+        const slotUsato = document.querySelector(`.assoc-slot[data-assoc-id="${idAssoc}"][data-destra-id="${destraId}"]`);
+        if (slotUsato) {
+            const sinistraId = slotUsato.id.replace(`assoc_slot_${idAssoc}_`, '');
+            window.spostaAssociazione(idAssoc, sinistraId, null);
+        }
         return;
     }
 
@@ -301,8 +304,6 @@ window.selezionaVoceAssociazione = function(idAssoc, destraId) {
     if (!libero) return;
 
     window.spostaAssociazione(idAssoc, libero.id, destraId);
-
-    if (voce) voce.classList.add('usata');
 };
 
 window.verificaAssociazione = async function(idAssoc) {
@@ -317,18 +318,18 @@ window.verificaAssociazione = async function(idAssoc) {
     const corrette = ass.associazioneCorretta || {};
     const slots = Object.keys(corrette);
     let tutteCorrette = true;
-
     const associazioniDaSalvare = {};
 
     slots.forEach(sinistraId => {
         const slot = document.getElementById(`assoc_slot_${idAssoc}_${sinistraId}`);
         const destraId = slot?.dataset?.destraId || '';
         associazioniDaSalvare[sinistraId] = destraId;
-        if (destraId !== corrette[sinistraId]) tutteCorrette = false;
+
+        const accettate = getAccettate(corrette, sinistraId).filter(Boolean);
+        if (!accettate.includes(destraId)) tutteCorrette = false;
     });
 
     const stato = tutteCorrette ? 'approvata' : 'in_attesa';
-
     const refRisposta = ref(db, `${basePathCorrente}/associazione/${idAssoc}/associazioni/${myUserNameCorrente}`);
     await set(refRisposta, {
         associazioni: associazioniDaSalvare,
