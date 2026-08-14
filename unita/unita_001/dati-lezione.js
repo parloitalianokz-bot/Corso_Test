@@ -472,12 +472,12 @@ export const datiLezione = {
                         { id: "sono2", label: "sono" }
                     ],
                     associazioneCorretta: {
-                        "io": "sono1",
+                        "io": ["sono1", "sono2"],
                         "tu": "sei",
                         "lui_lei": "e",
                         "noi": "siamo",
                         "voi": "siete",
-                        "loro": "sono2"
+                        "loro": ["sono1", "sono2"]
                     }
                 }
             },
