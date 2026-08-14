@@ -107,6 +107,18 @@
                 </div>
             </div>
         </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_8')">
+                Scheda 8: 🔍 Alla scoperta della grammatica <span id="arrow_scheda_8">▼</span>
+            </div>
+            <div id="content_scheda_8" class="accordion-content">
+                <div id="contenitore-grammatica"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_8')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -136,7 +148,13 @@
             avviaParliamoneInsiemeListener,
             generaRiordinaDialoghi,
             initRiordinaDialoghi,
-            avviaRiordinaDialoghiListener
+            avviaRiordinaDialoghiListener,
+            generaCloze,
+            initCloze,
+            avviaClozeListener,
+            generaAssociazione,
+            initAssociazione,
+            avviaAssociazioneListener
         } from '../../moduli/index.js';
         import { initLogin, getUtenteCorrente, haAccesso, logout, mostraLogin } from '../../moduli/login.js';
         import { datiLezione } from './dati-lezione.js';
@@ -154,6 +172,8 @@
         initCreaDomande(app);
         initParliamoneInsieme(app);
         initRiordinaDialoghi(app);
+        initCloze(app);
+        initAssociazione(app);
 
         const STATO_ACCORDION = {
             lavagnaInizializzata: false,
@@ -162,6 +182,7 @@
             creaDomandeInizializzata: false,
             parliamoneInizializzato: false,
             riordinoInizializzato: false,
+            grammaticaInizializzata: false,
             isDocente: false,
             utente: null
         };
@@ -266,6 +287,14 @@
             return generaRiordinaDialoghi(riordino, STATO_ACCORDION.isDocente);
         }
 
+        function renderScheda8() {
+            const grammatica = datiLezione.grammatica;
+            if (!grammatica) return '';
+            const fasiCloze = (grammatica.fasi || []).filter(f => f.cloze);
+            const fasiAssociazione = (grammatica.fasi || []).filter(f => f.associazione);
+            return generaCloze(fasiCloze, STATO_ACCORDION.isDocente) + generaAssociazione(fasiAssociazione, STATO_ACCORDION.isDocente);
+        }
+
         function avviaPagina(utente) {
             if (!utente) {
                 mostraLogin((utenteLoggato) => avviaPagina(utenteLoggato));
@@ -328,6 +357,7 @@
             document.getElementById('contenitore-crea-domande').innerHTML = renderScheda5();
             document.getElementById('contenitore-parliamone').innerHTML = renderScheda6();
             document.getElementById('contenitore-riordino').innerHTML = renderScheda7();
+            document.getElementById('contenitore-grammatica').innerHTML = renderScheda8();
 
             const BASE_PATH = 'unita_001';
 
@@ -368,6 +398,20 @@
                     BASE_PATH,
                     datiLezione.riordinoDialoghi.esercizi,
                     isDocente
+                );
+            }
+            if (datiLezione.grammatica?.fasi?.length) {
+                avviaClozeListener(
+                    BASE_PATH,
+                    datiLezione.grammatica.fasi,
+                    isDocente,
+                    utente.username
+                );
+                avviaAssociazioneListener(
+                    BASE_PATH,
+                    datiLezione.grammatica.fasi,
+                    isDocente,
+                    utente.username
                 );
             }
         }
