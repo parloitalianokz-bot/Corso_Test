@@ -275,7 +275,7 @@ export const datiLezione = {
 
     produzioneRisposte: {
         titolo: "💬 Parliamone insieme",
-        istruzioni: "Rispondi alle domande. In modalità orale, le risposte restano nascoste.",
+        istruzioni: "Rispondi alle domande",
         esercizi: [
             { id: "u001_r1", domanda: "1) Dov'è l'albergo Ponte Vecchio?" },
             { id: "u001_r2", domanda: "2) Perché è comodo per i turisti?" },
