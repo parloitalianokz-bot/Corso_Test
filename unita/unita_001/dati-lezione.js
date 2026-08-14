@@ -3,10 +3,16 @@
 // ================================================================
 
 export const datiLezione = {
+    // ============================================================
+    // INTESTAZIONE
+    // ============================================================
     titolo: "Unità 1 - Un albergo in centro",
     sottotitolo: "Livello A1 - Iniziamo a viaggiare",
     bannerImg: "img/banner_unita1.webp",
 
+    // ============================================================
+    // SCHEDA 1: ELICITAZIONE
+    // ============================================================
     elicitazione: {
         sceltaPersonale: {
             domanda: '📌 Perché studi l\'italiano?',
@@ -21,6 +27,9 @@ export const datiLezione = {
         }
     },
 
+    // ============================================================
+    // SCHEDA 1: VOCABOLARIO (Flashcard)
+    // ============================================================
     vocabolario: [
         { parola: "La pizza", audio: "audio/italia/pizza.mp3", img: "img/italia/pizza.webp" },
         { parola: "La pasta", audio: "audio/italia/pasta.mp3", img: "img/italia/pasta.webp" },
@@ -32,6 +41,9 @@ export const datiLezione = {
         { parola: "Il calcio", audio: "audio/italia/calcio.mp3", img: "img/italia/calcio.webp" }
     ],
 
+    // ============================================================
+    // SCHEDA 1: FORUM
+    // ============================================================
     forum: {
         idFirebase: 'unita001_forum_parole',
         domanda: '🇮🇹 Che altre parole italiane conosci?',
@@ -39,6 +51,9 @@ export const datiLezione = {
         mostraNumeroParole: true
     },
 
+    // ============================================================
+    // SCHEDA 2: ASCOLTO
+    // ============================================================
     ascolto: {
         videoUrl: '5FpbKA_i074',
         istruzioni: 'Guarda il video e ascolta attentamente la pronuncia.',
@@ -54,6 +69,9 @@ export const datiLezione = {
         }
     },
 
+    // ============================================================
+    // SCHEDA 3: LETTURA
+    // ============================================================
     lettura: {
         titolo: 'Un albergo in centro',
         sfondo: 'img/sfondo_pagina_libro.webp',
@@ -90,6 +108,9 @@ export const datiLezione = {
         ]
     },
 
+    // ============================================================
+    // SCHEDA 4: COMPRENSIONE (Quiz a risposta multipla)
+    // ============================================================
     comprensione: {
         titolo: "🧠 Capiamo il testo",
         istruzioni: "Scegli la risposta corretta per ogni domanda. Clicca direttamente sull'opzione che ritieni giusta.",
@@ -188,6 +209,9 @@ export const datiLezione = {
         ]
     },
 
+    // ============================================================
+    // SCHEDA 5: PRODUZIONE DOMANDE
+    // ============================================================
     produzioneDomande: {
         titolo: "🎤 Creiamo le domande",
         istruzioni: "Leggi la risposta e scrivi la domanda corretta.",
@@ -273,9 +297,12 @@ export const datiLezione = {
         ]
     },
 
+    // ============================================================
+    // SCHEDA 6: PRODUZIONE RISPOSTE
+    // ============================================================
     produzioneRisposte: {
         titolo: "💬 Parliamone insieme",
-        istruzioni: "Rispondi alle domande",
+        istruzioni: "Rispondi alle domande.",
         esercizi: [
             { id: "u001_r1", domanda: "1) Dov'è l'albergo Ponte Vecchio?" },
             { id: "u001_r2", domanda: "2) Perché è comodo per i turisti?" },
@@ -291,6 +318,70 @@ export const datiLezione = {
             { id: "u001_r12", domanda: "12) Chi è Mary?" },
             { id: "u001_r13", domanda: "13) Perché Mary è in Italia?" },
             { id: "u001_r14", domanda: "14) Chi è il signor Rossi?" }
+        ]
+    },
+
+    // ============================================================
+    // SCHEDA 7: RIORDINA I DIALOGHI
+    // ============================================================
+    riordinoDialoghi: {
+        titolo: "🧩 Riordina i dialoghi",
+        istruzioni: "Metti in ordine le frasi.",
+        esercizi: [
+            {
+                id: "u001_dial_1",
+                immagine: "img/dialogo_1.webp",
+                frasiFisse: [
+                    "— Ciao Olga! Sei inglese?"
+                ],
+                frasiMobili: [
+                    { id: "d1_f1", testo: "— No, non sono inglese; sono russa." },
+                    { id: "d1_f2", testo: "— Tu lavori o studi?" },
+                    { id: "d1_f3", testo: "— Sono studentessa." },
+                    { id: "d1_f4", testo: "— Perché sei in Italia?" },
+                    { id: "d1_f5", testo: "— Perché la moda italiana è bella." }
+                ],
+                ordineCorretto: ["d1_f1", "d1_f2", "d1_f3", "d1_f4", "d1_f5"],
+                variantiAccettate: [
+                    ["d1_f1", "d1_f4", "d1_f5", "d1_f2", "d1_f3"]
+                ]
+            },
+            {
+                id: "u001_dial_2",
+                immagine: "img/dialogo_2.webp",
+                frasiFisse: [
+                    "— Buongiorno Victor! Lei è tedesco?"
+                ],
+                frasiMobili: [
+                    { id: "d2_f1", testo: "— No, non sono tedesco, sono francese." },
+                    { id: "d2_f2", testo: "— Lei è ingegnere?" },
+                    { id: "d2_f3", testo: "— No, sono avvocato." },
+                    { id: "d2_f4", testo: "— Perché è in Italia?" },
+                    { id: "d2_f5", testo: "— Per affari." }
+                ],
+                ordineCorretto: ["d2_f1", "d2_f2", "d2_f3", "d2_f4", "d2_f5"],
+                variantiAccettate: [
+                    ["d2_f1", "d2_f3", "d2_f4", "d2_f5", "d2_f2"]
+                ]
+            },
+            {
+                id: "u001_dial_3",
+                immagine: "img/dialogo_3.webp",
+                frasiFisse: [
+                    "— Buongiorno Karl e Klaus! Voi siete stranieri?"
+                ],
+                frasiMobili: [
+                    { id: "d3_f1", testo: "— Sì, siamo stranieri; siamo tedeschi." },
+                    { id: "d3_f2", testo: "— Siete in Italia per turismo?" },
+                    { id: "d3_f3", testo: "— No, siamo qui per studiare l'italiano." },
+                    { id: "d3_f4", testo: "— Abitate in albergo?" },
+                    { id: "d3_f5", testo: "— Sì, siamo clienti dell'albergo Ponte Vecchio." }
+                ],
+                ordineCorretto: ["d3_f1", "d3_f2", "d3_f3", "d3_f4", "d3_f5"],
+                variantiAccettate: [
+                    ["d3_f1", "d3_f4", "d3_f5", "d3_f2", "d3_f3"]
+                ]
+            }
         ]
     }
 };
