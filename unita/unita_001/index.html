@@ -42,7 +42,6 @@
             </div>
             <div id="content_scheda_2" class="accordion-content">
                 <div id="contenitore-ascolto"></div>
-
                 <div class="scheda-azioni">
                     <button onclick="closeAccordion('scheda_2')" class="logout-button">Chiudi scheda</button>
                 </div>
@@ -55,7 +54,6 @@
             </div>
             <div id="content_scheda_3" class="accordion-content">
                 <div id="contenitore-lettura"></div>
-
                 <div class="scheda-azioni">
                     <button onclick="closeAccordion('scheda_3')" class="logout-button">Chiudi scheda</button>
                 </div>
@@ -68,7 +66,6 @@
             </div>
             <div id="content_scheda_4" class="accordion-content">
                 <div id="contenitore-comprensione"></div>
-
                 <div class="scheda-azioni">
                     <button onclick="closeAccordion('scheda_4')" class="logout-button">Chiudi scheda</button>
                 </div>
@@ -81,9 +78,20 @@
             </div>
             <div id="content_scheda_5" class="accordion-content">
                 <div id="contenitore-crea-domande"></div>
-
                 <div class="scheda-azioni">
                     <button onclick="closeAccordion('scheda_5')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_6')">
+                Scheda 6: 💬 Parliamone insieme <span id="arrow_scheda_6">▼</span>
+            </div>
+            <div id="content_scheda_6" class="accordion-content">
+                <div id="contenitore-parliamone"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_6')" class="logout-button">Chiudi scheda</button>
                 </div>
             </div>
         </div>
@@ -110,7 +118,10 @@
             initSceltaOpzioni,
             generaCreaDomande,
             initCreaDomande,
-            avviaCreaDomandeListener
+            avviaCreaDomandeListener,
+            generaParliamoneInsieme,
+            initParliamoneInsieme,
+            avviaParliamoneInsiemeListener
         } from '../../moduli/index.js';
         import { initLogin, getUtenteCorrente, haAccesso, logout, mostraLogin } from '../../moduli/login.js';
         import { datiLezione } from './dati-lezione.js';
@@ -126,12 +137,14 @@
         initLavagna(app);
         initSceltaOpzioni(app);
         initCreaDomande(app);
+        initParliamoneInsieme(app);
 
         const STATO_ACCORDION = {
             lavagnaInizializzata: false,
             lavagnaLetturaInizializzata: false,
             comprensioneInizializzata: false,
             creaDomandeInizializzata: false,
+            parliamoneInizializzato: false,
             isDocente: false,
             utente: null
         };
@@ -224,6 +237,12 @@
             return generaCreaDomande(produzioneDomande, STATO_ACCORDION.isDocente);
         }
 
+        function renderScheda6() {
+            const produzioneRisposte = datiLezione.produzioneRisposte;
+            if (!produzioneRisposte) return '';
+            return generaParliamoneInsieme(produzioneRisposte, STATO_ACCORDION.isDocente);
+        }
+
         function avviaPagina(utente) {
             if (!utente) {
                 mostraLogin((utenteLoggato) => avviaPagina(utenteLoggato));
@@ -284,6 +303,7 @@
             document.getElementById('contenitore-lettura').innerHTML = renderScheda3();
             document.getElementById('contenitore-comprensione').innerHTML = renderScheda4();
             document.getElementById('contenitore-crea-domande').innerHTML = renderScheda5();
+            document.getElementById('contenitore-parliamone').innerHTML = renderScheda6();
 
             const BASE_PATH = 'unita_001';
 
@@ -307,6 +327,14 @@
                 avviaCreaDomandeListener(
                     BASE_PATH,
                     datiLezione.produzioneDomande.esercizi,
+                    isDocente,
+                    utente.username
+                );
+            }
+            if (datiLezione.produzioneRisposte?.esercizi?.length) {
+                avviaParliamoneInsiemeListener(
+                    BASE_PATH,
+                    datiLezione.produzioneRisposte.esercizi,
                     isDocente,
                     utente.username
                 );
