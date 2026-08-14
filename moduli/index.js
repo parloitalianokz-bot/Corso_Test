@@ -49,6 +49,12 @@ export {
 } from './parliamoneInsieme.js';
 
 export {
+    generaRiordinaDialoghi,
+    initRiordinaDialoghi,
+    avviaRiordinaDialoghiListener
+} from './riordinaDialoghi.js';
+
+export {
     initLogin,
     haAccesso,
     getGruppi,
