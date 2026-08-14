@@ -3,16 +3,10 @@
 // ================================================================
 
 export const datiLezione = {
-    // ============================================================
-    // INTESTAZIONE
-    // ============================================================
     titolo: "Unità 1 - Un albergo in centro",
     sottotitolo: "Livello A1 - Iniziamo a viaggiare",
     bannerImg: "img/banner_unita1.webp",
 
-    // ============================================================
-    // SCHEDA 1: ELICITAZIONE
-    // ============================================================
     elicitazione: {
         sceltaPersonale: {
             domanda: '📌 Perché studi l\'italiano?',
@@ -27,9 +21,6 @@ export const datiLezione = {
         }
     },
 
-    // ============================================================
-    // SCHEDA 1: VOCABOLARIO (Flashcard)
-    // ============================================================
     vocabolario: [
         { parola: "La pizza", audio: "audio/italia/pizza.mp3", img: "img/italia/pizza.webp" },
         { parola: "La pasta", audio: "audio/italia/pasta.mp3", img: "img/italia/pasta.webp" },
@@ -41,9 +32,6 @@ export const datiLezione = {
         { parola: "Il calcio", audio: "audio/italia/calcio.mp3", img: "img/italia/calcio.webp" }
     ],
 
-    // ============================================================
-    // SCHEDA 1: FORUM
-    // ============================================================
     forum: {
         idFirebase: 'unita001_forum_parole',
         domanda: '🇮🇹 Che altre parole italiane conosci?',
@@ -51,9 +39,6 @@ export const datiLezione = {
         mostraNumeroParole: true
     },
 
-    // ============================================================
-    // SCHEDA 2: ASCOLTO
-    // ============================================================
     ascolto: {
         videoUrl: '5FpbKA_i074',
         istruzioni: 'Guarda il video e ascolta attentamente la pronuncia.',
@@ -69,9 +54,6 @@ export const datiLezione = {
         }
     },
 
-    // ============================================================
-    // SCHEDA 3: LETTURA
-    // ============================================================
     lettura: {
         titolo: 'Un albergo in centro',
         sfondo: 'img/sfondo_pagina_libro.webp',
@@ -108,9 +90,6 @@ export const datiLezione = {
         ]
     },
 
-    // ============================================================
-    // SCHEDA 4: COMPRENSIONE (Quiz a risposta multipla)
-    // ============================================================
     comprensione: {
         titolo: "🧠 Capiamo il testo",
         istruzioni: "Scegli la risposta corretta per ogni domanda. Clicca direttamente sull'opzione che ritieni giusta.",
@@ -209,9 +188,6 @@ export const datiLezione = {
         ]
     },
 
-    // ============================================================
-    // SCHEDA 5: PRODUZIONE DOMANDE
-    // ============================================================
     produzioneDomande: {
         titolo: "🎤 Creiamo le domande",
         istruzioni: "Leggi la risposta e scrivi la domanda corretta.",
@@ -297,9 +273,6 @@ export const datiLezione = {
         ]
     },
 
-    // ============================================================
-    // SCHEDA 6: PRODUZIONE RISPOSTE
-    // ============================================================
     produzioneRisposte: {
         titolo: "💬 Parliamone insieme",
         istruzioni: "Rispondi alle domande.",
@@ -321,9 +294,6 @@ export const datiLezione = {
         ]
     },
 
-    // ============================================================
-    // SCHEDA 7: RIORDINA I DIALOGHI
-    // ============================================================
     riordinoDialoghi: {
         titolo: "🧩 Riordina i dialoghi",
         istruzioni: "Metti in ordine le frasi.",
@@ -381,6 +351,168 @@ export const datiLezione = {
                 variantiAccettate: [
                     ["d3_f1", "d3_f4", "d3_f5", "d3_f2", "d3_f3"]
                 ]
+            }
+        ]
+    },
+
+    grammatica: {
+        titolo: "🔍 Alla scoperta della grammatica",
+        fasi: [
+            {
+                id: "fase1",
+                titolo: "1️⃣ Tu, Lei, Io",
+                dialoghi: [
+                    {
+                        parlanti: "Olga",
+                        testo: '— Ciao Olga! <strong>Tu</strong> <strong>sei</strong> inglese?<br>— No, non sono inglese; <strong>io</strong> <strong>sono</strong> russa.'
+                    },
+                    {
+                        parlanti: "Victor",
+                        testo: '— Buongiorno Victor! <strong>Lei</strong> <strong>è</strong> tedesco?<br>— No, non sono tedesco, <strong>io</strong> <strong>sono</strong> francese.'
+                    }
+                ],
+                domandeLAD: [
+                    '🤔 В чем разница? В каком диалоге обращение неформальное (на «ты»), а в каком — формальное (на «Вы»)?',
+                    '🗣️ Какую форму глагола используют Ольга e Виктор, чтобы говорить о себе?'
+                ],
+                cloze: {
+                    id: "u001_gram_f1",
+                    testo: 'Buongiorno Mary, Lei ____ inglese? Sì, io ____ inglese.',
+                    risposte: [
+                        ["è", "e'", "e"],
+                        ["sono"]
+                    ],
+                    suggerimenti: [
+                        '💡 Quale è la forma del verbo quando il dialogo è formale? (Lei)',
+                        '💡 Quale è la forma del verbo per "io"?'
+                    ]
+                }
+            },
+            {
+                id: "fase2",
+                titolo: "2️⃣ Passiamo al plurale",
+                dialoghi: [
+                    {
+                        parlanti: "Karl e Klaus",
+                        testo: '— Buongiorno Karl e Klaus! <strong>Voi</strong> <strong>siete</strong> stranieri?<br>— Sì, <strong>noi</strong> <strong>siamo</strong> stranieri; <strong>noi</strong> <strong>siamo</strong> tedeschi.'
+                    }
+                ],
+                domandeLAD: [
+                    '🤔 Что вы замечаете? Какую форму используют Клаус e Карл, чтобы ответить вместе? Какую форму мы используем, чтобы обратиться a entrambi?'
+                ],
+                cloze: {
+                    id: "u001_gram_f2",
+                    testo: 'Ciao ragazzi, voi ____ spagnoli? No, noi ____ argentini.',
+                    risposte: [
+                        ["siete"],
+                        ["siamo"]
+                    ],
+                    suggerimenti: [
+                        '💡 Quale è la forma del verbo per "voi"?',
+                        '💡 Quale è la forma del verbo per "noi"?'
+                    ]
+                }
+            },
+            {
+                id: "fase3",
+                titolo: "3️⃣ Lui, Lei, Loro",
+                dialoghi: [
+                    {
+                        parlanti: "Mary",
+                        testo: 'Mary <strong>è</strong> inglese. <strong>Lei</strong> <strong>è</strong> insegnante.'
+                    },
+                    {
+                        parlanti: "Paolo Rossi",
+                        testo: 'Paolo Rossi <strong>è</strong> italiano. <strong>Lui</strong> <strong>è</strong> il direttore.'
+                    },
+                    {
+                        parlanti: "Karl e Klaus",
+                        testo: 'Karl e Klaus <strong>sono</strong> tedeschi. <strong>Loro</strong> <strong>sono</strong> studenti.'
+                    }
+                ],
+                domandeLAD: [
+                    '🤔 Какую форму глагола мы используем per «он», «она» e «они»?'
+                ],
+                cloze: {
+                    id: "u001_gram_f3",
+                    testo: 'Mary ____ inglese. Paolo Rossi ____ italiano. Karl e Klaus ____ tedeschi.',
+                    risposte: [
+                        ["è", "e'", "e"],
+                        ["è", "e'", "e"],
+                        ["sono"]
+                    ],
+                    suggerimenti: [
+                        '💡 Quale è la forma del verbo per "Lei/Lui"?',
+                        '💡 Quale è la forma del verbo per "Lei/Lui"?',
+                        '💡 Quale è la forma del verbo per "loro"?'
+                    ]
+                }
+            },
+            {
+                id: "fase4",
+                titolo: "4️⃣ Tabella del verbo essere",
+                soloInformativa: false,
+                associazione: {
+                    id: "u001_gram_associazione",
+                    istruzioni: "Collega ogni pronome alla forma corretta del verbo 'essere':",
+                    sinistra: [
+                        { id: "io", label: "io" },
+                        { id: "tu", label: "tu" },
+                        { id: "lui_lei", label: "lui / lei / Lei" },
+                        { id: "noi", label: "noi" },
+                        { id: "voi", label: "voi" },
+                        { id: "loro", label: "loro" }
+                    ],
+                    destra: [
+                        { id: "sono1", label: "sono" },
+                        { id: "sei", label: "sei" },
+                        { id: "e", label: "è" },
+                        { id: "siamo", label: "siamo" },
+                        { id: "siete", label: "siete" },
+                        { id: "sono2", label: "sono" }
+                    ],
+                    associazioneCorretta: {
+                        "io": "sono1",
+                        "tu": "sei",
+                        "lui_lei": "e",
+                        "noi": "siamo",
+                        "voi": "siete",
+                        "loro": "sono2"
+                    }
+                }
+            },
+            {
+                id: "fase5",
+                titolo: "5️⃣ Capire il soggetto",
+                soloInformativa: true,
+                contenuto: `
+                    <div class="grammatica-esempi">
+                        <div class="esempio">
+                            <span class="icona">👤</span>
+                            <p>Ciao Olga, sei italiana? No, <strong>SONO</strong> russa.</p>
+                        </div>
+                        <div class="esempio">
+                            <span class="icona">👤</span>
+                            <p>I clienti dell'albergo <strong>SONO</strong> stranieri.</p>
+                        </div>
+                    </div>
+                    <div class="domanda-lad">
+                        🤔 Как мы понимаем, говорим ли мы об «я» или об «они»?
+                    </div>
+                    <div class="grammatica-esempi">
+                        <div class="esempio">
+                            <span class="icona">👔</span>
+                            <p>Buongiorno Victor, <strong>Lei</strong> è francese? Sì, sono francese.</p>
+                        </div>
+                        <div class="esempio">
+                            <span class="icona">👤</span>
+                            <p>Yoko è giapponese, <strong>lei</strong> è dentista.</p>
+                        </div>
+                    </div>
+                    <div class="domanda-lad">
+                        🤔 Как мы понимаем, говорим ли мы о «он/она» o in modo formale a «Lei»?
+                    </div>
+                `
             }
         ]
     }
