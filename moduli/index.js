@@ -55,6 +55,18 @@ export {
 } from './riordinaDialoghi.js';
 
 export {
+    generaCloze,
+    initCloze,
+    avviaClozeListener
+} from './cloze.js';
+
+export {
+    generaAssociazione,
+    initAssociazione,
+    avviaAssociazioneListener
+} from './associazione.js';
+
+export {
     initLogin,
     haAccesso,
     getGruppi,
