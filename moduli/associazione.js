@@ -15,42 +15,44 @@ function iniettaCss() {
     const style = document.createElement('style');
     style.id = 'associazione-grafica-css';
     style.textContent = `
-        .assoc-container { margin: 16px 0; }
+        .assoc-container { margin: 12px 0; }
         .assoc-fase {
             background: #fafafa;
             border: 1px solid #e8e8e8;
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 24px;
+            padding: 12px;
+            margin-bottom: 18px;
         }
         .assoc-fase .titolo-fase {
             font-weight: 700;
             color: var(--primary-color, #1a6e3a);
-            font-size: 1.1rem;
-            margin-bottom: 12px;
+            font-size: 1rem;
+            margin-bottom: 8px;
         }
         .assoc-istruzioni {
-            margin-bottom: 14px;
+            margin-bottom: 10px;
             font-weight: 600;
             color: #234;
+            font-size: 0.95rem;
         }
         .assoc-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            gap: 10px;
+            align-items: start;
         }
         .assoc-colonna {
             background: #fff;
             border-radius: 10px;
-            padding: 12px;
+            padding: 8px;
             border: 1px solid #ececec;
         }
         .assoc-riga {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px;
-            margin-bottom: 8px;
+            gap: 8px;
+            padding: 8px;
+            margin-bottom: 6px;
             background: #fafafa;
             border-radius: 10px;
             border: 2px solid transparent;
@@ -61,14 +63,16 @@ function iniettaCss() {
             background: #edf8f1;
         }
         .assoc-label {
-            min-width: 120px;
+            min-width: 88px;
             font-weight: 700;
             color: #223;
+            font-size: 0.92rem;
+            line-height: 1.1;
         }
         .assoc-slot {
-            min-height: 36px;
-            min-width: 110px;
-            padding: 6px 10px;
+            min-height: 32px;
+            min-width: 86px;
+            padding: 5px 8px;
             border-radius: 8px;
             display: inline-flex;
             align-items: center;
@@ -79,6 +83,8 @@ function iniettaCss() {
             border: 1px dashed #cfcfcf;
             color: #888;
             cursor: pointer;
+            font-size: 0.9rem;
+            flex: 1;
         }
         .assoc-slot.piena {
             background: #eafaf1;
@@ -91,10 +97,13 @@ function iniettaCss() {
             color: #224;
             cursor: pointer;
             border-radius: 10px;
-            padding: 10px 12px;
-            margin-bottom: 8px;
+            padding: 8px 10px;
+            margin-bottom: 6px;
             font-weight: 700;
             box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            font-size: 0.92rem;
+            line-height: 1.1;
+            text-align: center;
         }
         .assoc-voce.usata {
             opacity: 0.35;
@@ -102,25 +111,27 @@ function iniettaCss() {
         }
         .assoc-azioni {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-top: 14px;
+            margin-top: 12px;
         }
         .assoc-azioni button {
             border: none;
             border-radius: 8px;
-            padding: 8px 16px;
+            padding: 7px 14px;
             cursor: pointer;
             font-weight: 700;
+            font-size: 0.9rem;
         }
         .assoc-azioni .btn-verifica { background: var(--primary-color, #1a6e3a); color: #fff; }
         .assoc-azioni .btn-reset { background: #f39c12; color: #fff; }
         .assoc-esito {
-            margin-top: 10px;
-            padding: 10px 14px;
+            margin-top: 8px;
+            padding: 9px 12px;
             border-radius: 8px;
             display: none;
             font-weight: 600;
+            font-size: 0.92rem;
         }
         .assoc-esito.visibile { display: block; }
         .assoc-esito.ok {
@@ -133,8 +144,44 @@ function iniettaCss() {
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+
         @media (max-width: 700px) {
-            .assoc-layout { grid-template-columns: 1fr; }
+            .assoc-layout {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .assoc-colonna {
+                padding: 6px;
+            }
+            .assoc-riga {
+                padding: 6px;
+            }
+            .assoc-label {
+                min-width: 100%;
+            }
+            .assoc-slot {
+                min-width: 100%;
+            }
+            .assoc-voce {
+                padding: 7px 8px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .assoc-layout {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+            .assoc-fase {
+                padding: 10px;
+            }
+            .assoc-label {
+                font-size: 0.85rem;
+            }
+            .assoc-slot,
+            .assoc-voce {
+                font-size: 0.82rem;
+            }
         }
     `;
     document.head.appendChild(style);
@@ -212,10 +259,6 @@ export function avviaAssociazioneListener(basePath, fasiGrammatica, isDocente = 
 function getAccettate(corrette, sinistraId) {
     const v = corrette?.[sinistraId];
     return Array.isArray(v) ? v : [v];
-}
-
-function trovaSlotDaVoce(idAssoc, destraId) {
-    return document.querySelector(`.assoc-slot[data-assoc-id="${idAssoc}"][data-destra-id="${destraId}"]`);
 }
 
 function aggiornaUIAssociazione(idAssoc, dati) {
