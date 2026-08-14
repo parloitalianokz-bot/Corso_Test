@@ -43,6 +43,12 @@ export {
 } from './creaDomande.js';
 
 export {
+    generaParliamoneInsieme,
+    initParliamoneInsieme,
+    avviaParliamoneInsiemeListener
+} from './parliamoneInsieme.js';
+
+export {
     initLogin,
     haAccesso,
     getGruppi,
