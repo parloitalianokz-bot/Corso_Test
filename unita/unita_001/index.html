@@ -95,6 +95,18 @@
                 </div>
             </div>
         </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_7')">
+                Scheda 7: 🧩 Riordina i dialoghi <span id="arrow_scheda_7">▼</span>
+            </div>
+            <div id="content_scheda_7" class="accordion-content">
+                <div id="contenitore-riordino"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_7')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -121,7 +133,10 @@
             avviaCreaDomandeListener,
             generaParliamoneInsieme,
             initParliamoneInsieme,
-            avviaParliamoneInsiemeListener
+            avviaParliamoneInsiemeListener,
+            generaRiordinaDialoghi,
+            initRiordinaDialoghi,
+            avviaRiordinaDialoghiListener
         } from '../../moduli/index.js';
         import { initLogin, getUtenteCorrente, haAccesso, logout, mostraLogin } from '../../moduli/login.js';
         import { datiLezione } from './dati-lezione.js';
@@ -138,6 +153,7 @@
         initSceltaOpzioni(app);
         initCreaDomande(app);
         initParliamoneInsieme(app);
+        initRiordinaDialoghi(app);
 
         const STATO_ACCORDION = {
             lavagnaInizializzata: false,
@@ -145,6 +161,7 @@
             comprensioneInizializzata: false,
             creaDomandeInizializzata: false,
             parliamoneInizializzato: false,
+            riordinoInizializzato: false,
             isDocente: false,
             utente: null
         };
@@ -243,6 +260,12 @@
             return generaParliamoneInsieme(produzioneRisposte, STATO_ACCORDION.isDocente);
         }
 
+        function renderScheda7() {
+            const riordino = datiLezione.riordinoDialoghi;
+            if (!riordino) return '';
+            return generaRiordinaDialoghi(riordino, STATO_ACCORDION.isDocente);
+        }
+
         function avviaPagina(utente) {
             if (!utente) {
                 mostraLogin((utenteLoggato) => avviaPagina(utenteLoggato));
@@ -304,6 +327,7 @@
             document.getElementById('contenitore-comprensione').innerHTML = renderScheda4();
             document.getElementById('contenitore-crea-domande').innerHTML = renderScheda5();
             document.getElementById('contenitore-parliamone').innerHTML = renderScheda6();
+            document.getElementById('contenitore-riordino').innerHTML = renderScheda7();
 
             const BASE_PATH = 'unita_001';
 
@@ -337,6 +361,13 @@
                     datiLezione.produzioneRisposte.esercizi,
                     isDocente,
                     utente.username
+                );
+            }
+            if (datiLezione.riordinoDialoghi?.esercizi?.length) {
+                avviaRiordinaDialoghiListener(
+                    BASE_PATH,
+                    datiLezione.riordinoDialoghi.esercizi,
+                    isDocente
                 );
             }
         }
