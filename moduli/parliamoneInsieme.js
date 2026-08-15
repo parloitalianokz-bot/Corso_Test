@@ -1,3 +1,11 @@
+// ================================================================
+// MODULO: PARLIAMONE INSIEME (Scheda 6, 9, 10 - Produzione Risposte)
+// ================================================================
+// Lo studente legge una domanda e scrive una risposta.
+// Il docente approva o richiede modifica con suggerimento manuale.
+// Supporta modalità Scrittura / Orale (gestita dal docente) - OPZIONALE.
+// ================================================================
+
 import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 let db = null;
@@ -6,6 +14,10 @@ let eserciziCorrenti = [];
 let isDocenteCorrente = false;
 let myUserNameCorrente = '';
 let modalitaCorrente = 'scrittura';
+
+// ================================================================
+// 1. CSS
+// ================================================================
 
 function iniettaCss() {
     if (document.getElementById('parliamone-insieme-css')) return;
@@ -19,6 +31,8 @@ function iniettaCss() {
             font-size: 1.3rem;
             margin-bottom: 8px;
         }
+        
+        /* Regia Docente (solo per scheda 6) */
         .parliamone-regia {
             background: #e8f4f8;
             padding: 15px 20px;
@@ -75,6 +89,21 @@ function iniettaCss() {
             border-radius: 20px;
             border: 1px solid #ddd;
         }
+        
+        .parliamone-msg-orale {
+            display: none;
+            background: #fff3cd;
+            border: 1px solid #f1c40f;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 10px 0;
+            color: #856404;
+            font-weight: 500;
+        }
+        .parliamone-msg-orale.visibile {
+            display: block;
+        }
+        
         .parliamone-card {
             background: #fafafa;
             border: 1px solid #e8e8e8;
@@ -88,6 +117,7 @@ function iniettaCss() {
             color: var(--primary-color, #1a6e3a);
             margin-bottom: 12px;
         }
+        
         .parliamone-studente {
             display: block;
         }
@@ -126,6 +156,7 @@ function iniettaCss() {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(26, 110, 58, 0.3);
         }
+        
         .parliamone-mia-risposta {
             margin-top: 10px;
             padding: 12px 16px;
@@ -140,6 +171,7 @@ function iniettaCss() {
         .parliamone-stato.approvata { color: #168a2f; }
         .parliamone-stato.in_attesa { color: #8a6d3b; }
         .parliamone-stato.da_modificare { color: #b26a00; }
+        
         .parliamone-suggerimento {
             margin-top: 8px;
             padding: 8px 12px;
@@ -163,6 +195,7 @@ function iniettaCss() {
         .parliamone-riapri button:hover {
             background: #145a30;
         }
+        
         .parliamone-docente-panel {
             margin-top: 12px;
             padding: 12px 16px;
@@ -179,7 +212,7 @@ function iniettaCss() {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            padding: 6px 0;
             gap: 10px;
             flex-wrap: wrap;
             border-bottom: 1px solid #f0e8d0;
@@ -193,6 +226,7 @@ function iniettaCss() {
         .parliamone-risposta-item .testo-risposta {
             color: #333;
         }
+        
         .parliamone-azioni {
             display: flex;
             gap: 6px;
@@ -213,11 +247,13 @@ function iniettaCss() {
         .btn-approva { background: #168a2f; color: #fff; }
         .btn-modifica { background: #f0ad4e; color: #fff; }
         .btn-elimina { background: #e74c3c; color: #fff; }
+        
         .parliamone-vuoto {
             color: #999;
             font-style: italic;
             padding: 4px 0;
         }
+        
         @media (max-width: 600px) {
             .parliamone-regia {
                 flex-direction: column;
@@ -236,36 +272,63 @@ function iniettaCss() {
                 flex-direction: column;
                 align-items: stretch;
             }
+            .parliamone-card {
+                padding: 12px;
+            }
         }
     `;
     document.head.appendChild(style);
 }
 
+// ================================================================
+// 2. FUNZIONI UTILITY
+// ================================================================
+
+function normalizza(valore) {
+    return (valore || '').trim().toLowerCase();
+}
+
+// ================================================================
+// 3. GENERA HTML
+// ================================================================
+
 export function generaParliamoneInsieme(dati, isDocente = false) {
     iniettaCss();
     if (!dati?.esercizi?.length) return '';
 
+    const mostraRegia = dati.mostraRegia || false;
+
     return `
         <div class="parliamone-container">
             <h3>${dati.titolo || '💬 Parliamone insieme'}</h3>
-            <p class="scheda-istruzioni">${dati.istruzioni || ''}</p>
+            ${dati.istruzioni ? `<p class="scheda-istruzioni">${dati.istruzioni}</p>` : ''}
 
-            ${isDocente ? `
+            ${mostraRegia && isDocente ? `
                 <div class="parliamone-regia" id="regia-parliamone">
                     <strong>🎛️ Regia Docente</strong>
-                    <button class="btn-scrittura attiva" onclick="window.impostaModalitaParliamone('scrittura')">✍️ Modalità Scrittura</button>
-                    <button class="btn-orale" onclick="window.impostaModalitaParliamone('orale')">🗣️ Modalità Orale</button>
+                    <button class="btn-scrittura attiva" onclick="window.impostaModalitaParliamone('scrittura')">
+                        ✍️ Modalità Scrittura
+                    </button>
+                    <button class="btn-orale" onclick="window.impostaModalitaParliamone('orale')">
+                        🗣️ Modalità Orale
+                    </button>
                     <span class="modalita-label" id="modalita-label-parliamone">📝 Scrittura</span>
                 </div>
             ` : ''}
 
-            ${dati.esercizi.map(esercizio => `
+            ${dati.esercizi.map((esercizio, idx) => `
                 <div class="parliamone-card" id="card_${esercizio.id}">
-                    <div class="domanda">${esercizio.domanda}</div>
+                    <div class="domanda">${idx + 1}. ${esercizio.domanda}</div>
 
+                    <!-- Messaggio modalità orale -->
+                    <div class="parliamone-msg-orale" id="msg_orale_${esercizio.id}">
+                        🎤 Modalità Orale – Racconta la risposta a voce! Usa la domanda come traccia.
+                    </div>
+
+                    <!-- Wrapper studente -->
                     <div class="parliamone-studente" id="studente_${esercizio.id}">
                         <div class="parliamone-form" id="form_${esercizio.id}" ${isDocente ? 'style="display:none;"' : ''}>
-                            <input type="text" id="input_parliamone_${esercizio.id}" placeholder="Scrivi qui la tua risposta..." />
+                            <input type="text" id="input_parliamone_${esercizio.id}" placeholder="${esercizio.placeholder || 'Scrivi qui la tua risposta...'}" />
                             <button onclick="window.inviaRispostaParliamone('${esercizio.id}')">Invia</button>
                         </div>
 
@@ -294,10 +357,18 @@ export function generaParliamoneInsieme(dati, isDocente = false) {
     `;
 }
 
+// ================================================================
+// 4. INIZIALIZZAZIONE
+// ================================================================
+
 export function initParliamoneInsieme(app) {
     db = getDatabase(app);
     console.log('📦 parliamoneInsieme: inizializzato');
 }
+
+// ================================================================
+// 5. LISTENER
+// ================================================================
 
 export function avviaParliamoneInsiemeListener(basePath, esercizi, isDocente = false, username = '') {
     if (!db) {
@@ -317,6 +388,7 @@ export function avviaParliamoneInsiemeListener(basePath, esercizi, isDocente = f
         });
     });
 
+    // Ascolta la modalità (solo se serve)
     const modalitaRef = ref(db, `${basePath}/system/modalita_parliamoneInsieme`);
     onValue(modalitaRef, (snap) => {
         modalitaCorrente = snap.val() || 'scrittura';
@@ -326,6 +398,10 @@ export function avviaParliamoneInsiemeListener(basePath, esercizi, isDocente = f
         });
     });
 }
+
+// ================================================================
+// 6. AGGIORNA UI
+// ================================================================
 
 function aggiornaModalitaUI() {
     const btnScrittura = document.querySelector('.btn-scrittura');
@@ -347,12 +423,19 @@ function aggiornaUIEsercizio(idEsercizio, dati, soloModalita = false) {
     const suggEl = document.getElementById(`suggerimento_${idEsercizio}`);
     const riapriEl = document.getElementById(`riapri_${idEsercizio}`);
     const formEl = document.getElementById(`form_${idEsercizio}`);
+    const msgOrale = document.getElementById(`msg_orale_${idEsercizio}`);
     const docenteLista = document.getElementById(`docente_lista_${idEsercizio}`);
 
     const isOrale = modalitaCorrente === 'orale';
 
+    // Gestione modalità orale (nasconde tutto lo studente)
     if (studenteEl) {
         studenteEl.style.display = isOrale ? 'none' : 'block';
+    }
+
+    // Messaggio orale
+    if (msgOrale) {
+        msgOrale.classList.toggle('visibile', isOrale && !isDocenteCorrente);
     }
 
     if (soloModalita) return;
@@ -432,6 +515,10 @@ function aggiornaUIEsercizio(idEsercizio, dati, soloModalita = false) {
     }
 }
 
+// ================================================================
+// 7. FUNZIONI GLOBALI (Studente)
+// ================================================================
+
 window.inviaRispostaParliamone = async function(idEsercizio) {
     if (!db || !myUserNameCorrente) {
         alert('Errore: non sei connesso.');
@@ -470,6 +557,10 @@ window.riapriInputParliamone = function(idEsercizio) {
     const input = document.getElementById(`input_parliamone_${idEsercizio}`);
     if (input) input.focus();
 };
+
+// ================================================================
+// 8. FUNZIONI GLOBALI (Docente)
+// ================================================================
 
 window.approvaRispostaParliamone = async function(idEsercizio, studentName) {
     if (!db || !isDocenteCorrente) return;
@@ -515,10 +606,19 @@ window.resettaRisposteParliamone = async function(idEsercizio) {
     await remove(refEsercizio);
 };
 
+// ================================================================
+// 9. FUNZIONE: IMPOSTA MODALITÀ (Docente - opzionale)
+// ================================================================
+
 window.impostaModalitaParliamone = async function(modalita) {
     if (!db || !isDocenteCorrente) return;
     if (modalita !== 'scrittura' && modalita !== 'orale') return;
 
     const modalitaRef = ref(db, `${basePathCorrente}/system/modalita_parliamoneInsieme`);
     await set(modalitaRef, modalita);
+
+    const label = document.getElementById('modalita-label-parliamone');
+    if (label) {
+        label.textContent = modalita === 'scrittura' ? '📝 Scrittura' : '🎤 Orale';
+    }
 };
