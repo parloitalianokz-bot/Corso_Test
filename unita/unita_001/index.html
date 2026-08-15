@@ -155,43 +155,59 @@
                 </div>
             </div>
         </div>
+
+        <!-- Scheda 12: Autovalutazione -->
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_12')">
+                Scheda 12: ✅ Autovalutazione <span id="arrow_scheda_12">▼</span>
+            </div>
+            <div id="content_scheda_12" class="accordion-content">
+                <div id="contenitore-autovalutazione"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_12')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import {
-            generaSceltaPersonale,
-            generaFlashcard,
-            generaForum,
-            initIntestazione,
-            initSceltaPersonale,
-            initForum,
-            avviaSceltaPersonaleListener,
-            avviaForumListener,
-            generaLavagna,
-            avviaLavagnaListener,
-            initLavagna,
-            glossarizzaTesto,
-            generaListaGlossario,
-            generaSceltaOpzioni,
-            avviaSceltaOpzioniListener,
-            initSceltaOpzioni,
-            generaCreaDomande,
-            initCreaDomande,
-            avviaCreaDomandeListener,
-            generaParliamoneInsieme,
-            initParliamoneInsieme,
-            avviaParliamoneInsiemeListener,
-            generaRiordinaDialoghi,
-            initRiordinaDialoghi,
-            avviaRiordinaDialoghiListener,
-            generaCloze,
-            initCloze,
-            avviaClozeListener,
-            generaAssociazione,
-            initAssociazione,
-            avviaAssociazioneListener
-        } from '../../moduli/index.js';
+    generaSceltaPersonale,
+    generaFlashcard,
+    generaForum,
+    initIntestazione,
+    initSceltaPersonale,
+    initForum,
+    avviaSceltaPersonaleListener,
+    avviaForumListener,
+    generaLavagna,
+    avviaLavagnaListener,
+    initLavagna,
+    glossarizzaTesto,
+    generaListaGlossario,
+    generaSceltaOpzioni,
+    avviaSceltaOpzioniListener,
+    initSceltaOpzioni,
+    generaCreaDomande,
+    initCreaDomande,
+    avviaCreaDomandeListener,
+    generaParliamoneInsieme,
+    initParliamoneInsieme,
+    avviaParliamoneInsiemeListener,
+    generaRiordinaDialoghi,
+    initRiordinaDialoghi,
+    avviaRiordinaDialoghiListener,
+    generaCloze,
+    initCloze,
+    avviaClozeListener,
+    generaAssociazione,
+    initAssociazione,
+    avviaAssociazioneListener,   // ✅ AGGIUNTA LA VIRGOLA
+    generaAutovalutazione,       // ✅ AGGIUNTA LA VIRGOLA
+    initAutovalutazione,         // ✅ AGGIUNTA LA VIRGOLA
+    avviaAutovalutazioneListener // ✅ COMPLETATO IL NOME
+} from '../../moduli/index.js';
         import { initLogin, getUtenteCorrente, haAccesso, logout, mostraLogin } from '../../moduli/login.js';
         import { datiLezione } from './dati-lezione.js';
 
@@ -210,6 +226,7 @@
         initRiordinaDialoghi(app);
         initCloze(app);
         initAssociazione(app);
+        initAutovalutazione(app);
 
         const STATO_ACCORDION = {
             lavagnaInizializzata: false,
@@ -414,6 +431,12 @@
             return generaParliamoneInsieme(datiPerModulo, STATO_ACCORDION.isDocente);
         }
 
+        function renderScheda12() {
+            const autovalutazione = datiLezione.autovalutazione;
+            if (!autovalutazione) return '';
+            return generaAutovalutazione(autovalutazione, STATO_ACCORDION.isDocente);
+        }
+
         function avviaPagina(utente) {
             if (!utente) {
                 mostraLogin((utenteLoggato) => avviaPagina(utenteLoggato));
@@ -451,6 +474,7 @@
             document.getElementById('contenitore-negazione').innerHTML = renderScheda9();
             document.getElementById('contenitore-dialoghi').innerHTML = renderScheda10();
             document.getElementById('contenitore-presentazione').innerHTML = renderScheda11();
+            document.getElementById('contenitore-autovalutazione').innerHTML = renderScheda12();
 
             const BASE_PATH = 'unita_001';
 
@@ -518,6 +542,15 @@
                         id: ex.id,
                         domanda: ex.domanda
                     })),
+                    isDocente,
+                    utente.username
+                );
+            }
+
+            if (datiLezione.autovalutazione?.obiettivi?.length) {
+                avviaAutovalutazioneListener(
+                    BASE_PATH,
+                    datiLezione.autovalutazione.obiettivi,
                     isDocente,
                     utente.username
                 );
