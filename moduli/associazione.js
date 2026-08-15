@@ -13,23 +13,26 @@ let eserciziCorrenti = [];
 let myUserNameCorrente = '';
 let ultimaSelezione = null;
 
-// ================================================================
-// 1. CSS
-// ================================================================
-
 function iniettaCss() {
     if (document.getElementById('associazione-universale-css')) return;
 
     const style = document.createElement('style');
     style.id = 'associazione-universale-css';
     style.textContent = `
-        .assoc-universale-container { margin: 16px 0; }
+        .assoc-universale-container {
+            margin: 16px 0;
+            display: flex;
+            justify-content: center;
+        }
         .assoc-universale-fase {
+            width: 100%;
+            max-width: 860px;
             background: #fafafa;
             border: 1px solid #e8e8e8;
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 24px;
+            box-sizing: border-box;
         }
         .assoc-universale-fase .titolo-fase {
             font-weight: 700;
@@ -43,15 +46,17 @@ function iniettaCss() {
             color: #234;
         }
         .assoc-universale-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            display: flex;
+            justify-content: center;
         }
         .assoc-universale-colonna {
+            width: 100%;
+            max-width: 720px;
             background: #fff;
             border-radius: 10px;
             padding: 12px;
             border: 1px solid #ececec;
+            box-sizing: border-box;
         }
         .assoc-universale-riga {
             display: grid;
@@ -64,6 +69,7 @@ function iniettaCss() {
             border-radius: 10px;
             border: 2px solid transparent;
             min-height: 44px;
+            box-sizing: border-box;
         }
         .assoc-universale-riga.selezionata {
             border-color: var(--primary-color, #1a6e3a);
@@ -88,6 +94,7 @@ function iniettaCss() {
             color: #224;
             cursor: pointer;
             user-select: none;
+            box-sizing: border-box;
         }
         .assoc-universale-casella:hover {
             background: #dbe8ff;
@@ -148,18 +155,14 @@ function iniettaCss() {
         }
 
         @media (max-width: 700px) {
-            .assoc-universale-layout { grid-template-columns: 1fr; }
+            .assoc-universale-fase { padding: 12px; }
+            .assoc-universale-colonna { padding: 10px; }
             .assoc-universale-riga { grid-template-columns: 1fr 1fr; gap: 6px; }
             .assoc-universale-label { text-align: left; }
-            .assoc-universale-fase { padding: 12px; }
         }
     `;
     document.head.appendChild(style);
 }
-
-// ================================================================
-// 2. FUNZIONI UTILITY
-// ================================================================
 
 function shuffleArray(array) {
     const arr = [...array];
@@ -169,10 +172,6 @@ function shuffleArray(array) {
     }
     return arr;
 }
-
-// ================================================================
-// 3. GENERA HTML
-// ================================================================
 
 export function generaAssociazione(fasi, isDocente = false) {
     iniettaCss();
@@ -187,15 +186,10 @@ export function generaAssociazione(fasi, isDocente = false) {
                 const sinistra = assoc.sinistra || [];
                 const destra = shuffleArray(assoc.destra || []);
 
-                // Genera gli elementi per la colonna di destra (mescolati)
-                const elementiDestra = destra.map((item, i) => ({
-                    ...item,
-                    posizione: i
-                }));
-
                 return `
                     <div class="assoc-universale-fase" id="assoc_fase_${assoc.id}">
                         <div class="titolo-fase">${fase.titolo || `Fase ${idx + 1}`}</div>
+
                         ${fase.dialoghi ? `
                             <div class="cloze-dialoghi">
                                 ${fase.dialoghi.map(d => `
@@ -206,6 +200,7 @@ export function generaAssociazione(fasi, isDocente = false) {
                                 `).join('')}
                             </div>
                         ` : ''}
+
                         ${fase.domandeLAD ? `
                             <div class="cloze-domande-lad">
                                 ${fase.domandeLAD.map(d => `<p>${d}</p>`).join('')}
@@ -219,7 +214,7 @@ export function generaAssociazione(fasi, isDocente = false) {
                                 ${sinistra.map((item, index) => `
                                     <div class="assoc-universale-riga" id="riga_${assoc.id}_${item.id}">
                                         <div class="assoc-universale-label">${item.label}</div>
-                                        <div class="assoc-universale-casella" 
+                                        <div class="assoc-universale-casella"
                                              id="casella_${assoc.id}_${item.id}"
                                              data-assoc-id="${assoc.id}"
                                              data-sinistra-id="${item.id}"
@@ -229,9 +224,6 @@ export function generaAssociazione(fasi, isDocente = false) {
                                         </div>
                                     </div>
                                 `).join('')}
-                            </div>
-                            <div class="assoc-universale-colonna">
-                                <!-- Colonna destra (vuota, per simmetria) -->
                             </div>
                         </div>
 
@@ -248,18 +240,10 @@ export function generaAssociazione(fasi, isDocente = false) {
     `;
 }
 
-// ================================================================
-// 4. INIZIALIZZAZIONE
-// ================================================================
-
 export function initAssociazione(app) {
     db = getDatabase(app);
     console.log('📦 associazione: inizializzato');
 }
-
-// ================================================================
-// 5. LISTENER
-// ================================================================
 
 export function avviaAssociazioneListener(basePath, fasiGrammatica, isDocente = false, username = '') {
     if (!db) {
@@ -284,10 +268,6 @@ export function avviaAssociazioneListener(basePath, fasiGrammatica, isDocente = 
     });
 }
 
-// ================================================================
-// 6. AGGIORNA UI
-// ================================================================
-
 function aggiornaUIAssociazione(idAssoc, dati) {
     const esitoEl = document.getElementById(`esito_${idAssoc}`);
     const ass = eserciziCorrenti.find(a => a.id === idAssoc);
@@ -297,7 +277,6 @@ function aggiornaUIAssociazione(idAssoc, dati) {
 
     if (miaRisposta) {
         const ordine = miaRisposta.ordine || [];
-        // Ripristina l'ordine salvato
         if (ordine.length) {
             ass.sinistra.forEach((item, index) => {
                 const casella = document.getElementById(`casella_${idAssoc}_${item.id}`);
@@ -318,10 +297,6 @@ function aggiornaUIAssociazione(idAssoc, dati) {
     }
 }
 
-// ================================================================
-// 7. FUNZIONI GLOBALI
-// ================================================================
-
 window.selezionaCasellaAssociazione = function(idAssoc, sinistraId) {
     const casella = document.getElementById(`casella_${idAssoc}_${sinistraId}`);
     if (!casella) return;
@@ -329,38 +304,29 @@ window.selezionaCasellaAssociazione = function(idAssoc, sinistraId) {
     const ass = eserciziCorrenti.find(a => a.id === idAssoc);
     if (!ass) return;
 
-    // Se non c'è una selezione precedente, seleziona questa
     if (!ultimaSelezione) {
         casella.classList.add('selezionata');
         ultimaSelezione = { idAssoc, sinistraId, casella };
         return;
     }
 
-    // Se è la stessa casella, deseleziona
     if (ultimaSelezione.sinistraId === sinistraId && ultimaSelezione.idAssoc === idAssoc) {
         casella.classList.remove('selezionata');
         ultimaSelezione = null;
         return;
     }
 
-    // Scambia le due caselle
     const primaCasella = ultimaSelezione.casella;
-    const primaSinistraId = ultimaSelezione.sinistraId;
-
-    // Leggi i valori attuali
     const valore1 = primaCasella.textContent;
     const valore2 = casella.textContent;
 
-    // Scambia i valori
     primaCasella.textContent = valore2;
     casella.textContent = valore1;
 
-    // Rimuovi selezioni
     primaCasella.classList.remove('selezionata');
     casella.classList.remove('selezionata');
     ultimaSelezione = null;
 
-    // Salva su Firebase
     salvaOrdineAssociazione(idAssoc);
 };
 
@@ -406,7 +372,6 @@ window.verificaAssociazione = async function(idAssoc) {
         if (valore !== ordineCorretto[index]) tutteCorrette = false;
     });
 
-    // Evidenzia le caselle
     ass.sinistra.forEach((item, index) => {
         const casella = document.getElementById(`casella_${idAssoc}_${item.id}`);
         if (casella) {
@@ -459,7 +424,5 @@ window.resetAssociazione = function(idAssoc) {
     }
 
     ultimaSelezione = null;
-
-    // Salva il nuovo ordine random su Firebase
     salvaOrdineAssociazione(idAssoc);
 };
