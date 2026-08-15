@@ -119,6 +119,18 @@
                 </div>
             </div>
         </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_9')">
+                Scheda 9: 🚫 Dire di no <span id="arrow_scheda_9">▼</span>
+            </div>
+            <div id="content_scheda_9" class="accordion-content">
+                <div id="contenitore-negazione"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_9')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -183,6 +195,7 @@
             parliamoneInizializzato: false,
             riordinoInizializzato: false,
             grammaticaInizializzata: false,
+            negazioneInizializzata: false,
             isDocente: false,
             utente: null
         };
@@ -290,27 +303,22 @@
         function renderScheda8() {
             const grammatica = datiLezione.grammatica;
             if (!grammatica) return '';
-            
+
             const fasi = grammatica.fasi || [];
-            
-            // Separa le fasi per tipo
             const fasiCloze = fasi.filter(f => f.cloze);
             const fasiAssociazione = fasi.filter(f => f.associazione);
             const fasiInfo = fasi.filter(f => f.soloInformativa);
-            
+
             let html = '';
-            
-            // 1. Cloze (fasi 1, 2, 3)
+
             if (fasiCloze.length) {
                 html += generaCloze(fasiCloze, STATO_ACCORDION.isDocente);
             }
-            
-            // 2. Associazione (fase 4)
+
             if (fasiAssociazione.length) {
                 html += generaAssociazione(fasiAssociazione, STATO_ACCORDION.isDocente);
             }
-            
-            // 3. Informativa (fase 5)
+
             if (fasiInfo.length) {
                 html += `
                     <div class="cloze-container">
@@ -323,7 +331,61 @@
                     </div>
                 `;
             }
-            
+
+            return html;
+        }
+
+        function renderScheda9() {
+            const negazione = datiLezione.negazione;
+            if (!negazione) return '';
+
+            const fasi = negazione.fasi || [];
+            let html = '';
+
+            fasi.forEach((fase, idx) => {
+                if (fase.soloInformativa) {
+                    html += `
+                        <div class="negazione-fase" id="fase_${fase.id}">
+                            <div class="titolo-fase">${fase.titolo || `Fase ${idx + 1}`}</div>
+                            ${fase.contenuto || ''}
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (fase.esercizi) {
+                    html += `
+                        <div class="negazione-fase" id="fase_${fase.id}">
+                            <div class="titolo-fase">${fase.titolo || `Fase ${idx + 1}`}</div>
+                            ${fase.introduzione || ''}
+                            ${fase.esercizi.map(ex => `
+                                <div class="negazione-esercizio">
+                                    <p><strong>${ex.domanda}</strong></p>
+                                    ${generaForum({
+                                        forum: {
+                                            idFirebase: `u001_negazione_${ex.id}`,
+                                            domanda: "Scrivi la risposta:",
+                                            placeholder: "Es. No, Yoko non è francese. Yoko è giapponese."
+                                        }
+                                    })}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (fase.forum) {
+                    html += `
+                        <div class="negazione-fase" id="fase_${fase.id}">
+                            <div class="titolo-fase">${fase.titolo || `Fase ${idx + 1}`}</div>
+                            ${fase.introduzione || ''}
+                            ${generaForum({ forum: fase.forum })}
+                        </div>
+                    `;
+                }
+            });
+
             return html;
         }
 
@@ -390,6 +452,7 @@
             document.getElementById('contenitore-parliamone').innerHTML = renderScheda6();
             document.getElementById('contenitore-riordino').innerHTML = renderScheda7();
             document.getElementById('contenitore-grammatica').innerHTML = renderScheda8();
+            document.getElementById('contenitore-negazione').innerHTML = renderScheda9();
 
             const BASE_PATH = 'unita_001';
 
@@ -432,12 +495,10 @@
                     isDocente
                 );
             }
-            
-            // Scheda 8 - Grammatica
+
             if (datiLezione.grammatica?.fasi?.length) {
                 const fasi = datiLezione.grammatica.fasi;
-                
-                // Listener per cloze (fasi 1, 2, 3)
+
                 const fasiCloze = fasi.filter(f => f.cloze);
                 if (fasiCloze.length) {
                     avviaClozeListener(
@@ -447,8 +508,7 @@
                         utente.username
                     );
                 }
-                
-                // Listener per associazione (fase 4)
+
                 const fasiAssociazione = fasi.filter(f => f.associazione);
                 if (fasiAssociazione.length) {
                     avviaAssociazioneListener(
@@ -458,6 +518,22 @@
                         utente.username
                     );
                 }
+            }
+
+            if (datiLezione.negazione?.fasi?.length) {
+                const fasiNegazione = datiLezione.negazione.fasi;
+
+                fasiNegazione.forEach(fase => {
+                    if (fase.esercizi?.length) {
+                        fase.esercizi.forEach(ex => {
+                            avviaForumListener(BASE_PATH, `u001_negazione_${ex.id}`, isDocente);
+                        });
+                    }
+
+                    if (fase.forum?.idFirebase) {
+                        avviaForumListener(BASE_PATH, fase.forum.idFirebase, isDocente);
+                    }
+                });
             }
         }
 
