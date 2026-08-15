@@ -83,7 +83,7 @@ export const datiLezione = {
             'L\'albergo "Ponte Vecchio" <strong>è</strong> a Firenze, in Italia. <strong>È</strong> un albergo grande, con molte camere. <strong>È</strong> un albergo comodo per gli stranieri, perché <strong>è</strong> in centro.',
             'Chi <strong>sono</strong> gli ospiti dell\'albergo "Ponte Vecchio" in questo momento?',
             'Victor <strong>è</strong> un cliente dell\'albergo. Victor <strong>è</strong> francese; <strong>è</strong> avvocato. Adesso <strong>è</strong> in Italia per affari.',
-            'Anche Klaus e Karl <strong>sono</strong> clienti dell\'albergo. <strong>Sono</strong> tedeschi e <strong>sono</strong> studenti. <strong>Sono</strong> in Italia per studiare l\'italiano.',
+            'Anche Klaus e Karl <strong>sono</strong> clienti dell\'albergo. <strong>Sono</strong> tedeschi e <strong>Sono</strong> studenti. <strong>Sono</strong> in Italia per studiare l\'italiano.',
             'Mary <strong>è</strong> inglese; <strong>è</strong> insegnante, ed <strong>è</strong> in Italia per insegnare l\'inglese. Yoko, invece, <strong>è</strong> giapponese; <strong>è</strong> dentista ed <strong>è</strong> in Italia per una conferenza.',
             'Olga <strong>è</strong> russa. <strong>È</strong> studentessa. <strong>È</strong> in Italia per studiare l\'italiano e per fare shopping.',
             'Paolo Rossi <strong>è</strong> il direttore dell\'albergo "Ponte Vecchio". <strong>È</strong> sposato e ha tre figli. <strong>È</strong> sempre molto occupato con i clienti.'
@@ -368,7 +368,7 @@ export const datiLezione = {
                     },
                     {
                         parlanti: "Victor",
-                        testo: '— Buongiorno Victor! <strong>Lei</strong> <strong>è</strong> tedesco?<br>— No, non sono tedesco, <strong>io</strong> <strong>sono</strong> francese.'
+                        testo: '— Buongiorno Victor! <strong>Lei</strong> <strong>è</strong> tedesco?<br>— No, non sono tedesco; <strong>io</strong> <strong>sono</strong> francese.'
                     }
                 ],
                 domandeLAD: [
@@ -449,31 +449,31 @@ export const datiLezione = {
                 }
             },
             {
-    id: "fase4",
-    titolo: "4️⃣ Tabella del verbo essere",
-    soloInformativa: false,
-    associazione: {
-        id: "u001_gram_associazione",
-        istruzioni: "Clicca su due caselle per scambiarle di posto e mettere le forme del verbo nell'ordine corretto:",
-        sinistra: [
-            { id: "io", label: "io" },
-            { id: "tu", label: "tu" },
-            { id: "lui_lei", label: "lui / lei / Lei" },
-            { id: "noi", label: "noi" },
-            { id: "voi", label: "voi" },
-            { id: "loro", label: "loro" }
-        ],
-        destra: [
-            { id: "sono1", label: "sono" },
-            { id: "sei", label: "sei" },
-            { id: "e", label: "è" },
-            { id: "siamo", label: "siamo" },
-            { id: "siete", label: "siete" },
-            { id: "sono2", label: "sono" }
-        ],
-        ordineCorretto: ["sono", "sei", "è", "siamo", "siete", "sono"]
-    }
-},
+                id: "fase4",
+                titolo: "4️⃣ Tabella del verbo essere",
+                soloInformativa: false,
+                associazione: {
+                    id: "u001_gram_associazione",
+                    istruzioni: "Clicca su due caselle per scambiarle di posto e mettere le forme del verbo nell'ordine corretto:",
+                    sinistra: [
+                        { id: "io", label: "io" },
+                        { id: "tu", label: "tu" },
+                        { id: "lui_lei", label: "lui / lei / Lei" },
+                        { id: "noi", label: "noi" },
+                        { id: "voi", label: "voi" },
+                        { id: "loro", label: "loro" }
+                    ],
+                    destra: [
+                        { id: "sono1", label: "sono" },
+                        { id: "sei", label: "sei" },
+                        { id: "e", label: "è" },
+                        { id: "siamo", label: "siamo" },
+                        { id: "siete", label: "siete" },
+                        { id: "sono2", label: "sono" }
+                    ],
+                    ordineCorretto: ["sono", "sei", "è", "siamo", "siete", "sono"]
+                }
+            },
             {
                 id: "fase5",
                 titolo: "5️⃣ Capire il soggetto",
@@ -506,6 +506,80 @@ export const datiLezione = {
                         🤔 Как мы понимаем, говорим ли мы о «он/она» o in modo formale a «Lei»?
                     </div>
                 `
+            }
+        ]
+    },
+
+    negazione: {
+        titolo: "🚫 Dire di no",
+        fasi: [
+            {
+                id: "fase1",
+                titolo: "👀 Fase 1: Osservazione",
+                soloInformativa: true,
+                contenuto: `
+                    <div class="negazione-esempi">
+                        <div class="esempio">
+                            <span class="icona">➡️</span>
+                            <p><strong>Io SONO italiano</strong> ➡️ <strong>Io non SONO inglese</strong></p>
+                        </div>
+                        <div class="esempio">
+                            <span class="icona">➡️</span>
+                            <p><strong>Yoko È giapponese</strong> ➡️ <strong>Mary non È giapponese</strong></p>
+                        </div>
+                        <div class="esempio">
+                            <span class="icona">➡️</span>
+                            <p><strong>Paolo Rossi È sposato</strong> ➡️ <strong>Karl e Klaus non SONO sposati</strong></p>
+                        </div>
+                    </div>
+                    <div class="domande-lad">
+                        <p>🤔 Какие предложения утверждают, а какие отрицают?</p>
+                        <p>🤔 Что мы добавляем, чтобы сказать прямо противоположное?</p>
+                        <p>🤔 Слово «non» ставится перед глаголом или после него?</p>
+                        <p>🤔 Меняется ли слово «non», если мы используем «я» (io), «ты» (tu) или «он» (lui)?</p>
+                    </div>
+                `
+            },
+            {
+                id: "fase2",
+                titolo: "✍️ Fase 2: Pratica",
+                introduzione: `
+                    <p><strong>Fate come nell'esempio:</strong></p>
+                    <p style="color: var(--primary-color);">Victor è inglese? ➡️ No, Victor non è inglese. Victor è francese.</p>
+                    <hr style="margin: 12px 0; border: none; border-top: 1px dashed #ddd;">
+                    <p><strong>Rispondi a queste domande usando la negazione:</strong></p>
+                `,
+                esercizi: [
+                    { id: "u001_neg_1", domanda: "1) Yoko è francese?" },
+                    { id: "u001_neg_2", domanda: "2) Karl e Klaus sono russi?" },
+                    { id: "u001_neg_3", domanda: "3) Yoko è avvocatessa?" },
+                    { id: "u001_neg_4", domanda: "4) Victor è dentista?" },
+                    { id: "u001_neg_5", domanda: "5) Mary è studentessa?" },
+                    { id: "u001_neg_6", domanda: "6) Il signor Rossi è un cliente dell'albergo?" },
+                    { id: "u001_neg_7", domanda: "7) Olga è insegnante?" },
+                    { id: "u001_neg_8", domanda: "8) Olga è tedesca?" },
+                    { id: "u001_neg_9", domanda: "9) L'albergo \"Ponte Vecchio\" è a Milano?" }
+                ]
+            },
+            {
+                id: "fase3",
+                titolo: "🧠 Fase 3: La regola",
+                introduzione: `
+                    <p><strong>📌 Prova a formulare la regola per la negazione in italiano.</strong></p>
+                    <p>🇷🇺 Попробуй сформулировать правило отрицания in lingua italiana.</p>
+                    <p>💡 Usa queste domande come guida / Используй эти вопросы come подсказку:</p>
+                    <ol style="margin: 8px 0 0 20px; line-height: 1.8;">
+                        <li>Dove si mette "non" nella frase? (Где ставится "non" в предложении?)</li>
+                        <li>Cambia la forma del verbo? (Меняется ли форма глагола?)</li>
+                        <li>Cosa succede a "sono" → "non sono"? (Что происходит con "sono" → "non sono"?)</li>
+                    </ol>
+                    <p style="margin-top: 16px;"><strong>✍️ Scrivi la regola / Напиши правило:</strong></p>
+                `,
+                forum: {
+                    idFirebase: "u001_negazione_regola",
+                    domanda: "Scrivi la regola per la negazione in italiano.",
+                    placeholder: "Scrivi qui la tua regola..."
+                }
             }
         ]
     }
