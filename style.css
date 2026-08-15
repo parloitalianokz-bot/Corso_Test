@@ -514,35 +514,36 @@ h1 {
     gap: 10px;
 }
 
-.personaggio-domande .forum-container {
+.personaggio-domande .parliamone-container {
     margin: 0;
-    padding: 12px 14px;
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
 }
 
-.personaggio-domande .forum-domanda {
-    font-size: 1rem;
+.personaggio-domande .parliamone-card {
     margin-bottom: 10px;
 }
 
-.personaggio-domande .forum-input-area {
-    margin-bottom: 10px;
+.personaggio-domande .parliamone-card:last-child {
+    margin-bottom: 0;
 }
 
-.personaggio-domande .forum-messaggi {
-    max-height: 220px;
+.personaggio-domande .parliamone-form {
+    margin-top: 6px;
 }
 
-/* DESKTOP: box affiancati per la scheda 10 */
+.personaggio-domande .parliamone-mia-risposta {
+    margin-top: 8px;
+}
+
+.personaggio-domande .parliamone-docente-panel {
+    margin-top: 10px;
+}
+
 @media (min-width: 901px) {
     .personaggio-box {
         display: grid;
-        grid-template-columns: 290px 1fr;
+        grid-template-columns: minmax(220px, 260px) 1fr;
         gap: 18px;
         align-items: center;
-        min-height: 100%;
     }
 
     .personaggio-header {
@@ -558,15 +559,23 @@ h1 {
         min-height: 100%;
     }
 
+    .personaggio-avatar-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100%;
+    }
+
     .personaggio-avatar {
-        width: 180px;
-        height: 320px;
+        width: 210px;
+        height: 374px;
         object-fit: cover;
         border-radius: 12px;
     }
 
     .personaggio-nome {
         font-size: 1.15rem;
+        margin-top: 10px;
     }
 
     .personaggio-domande {
@@ -575,26 +584,26 @@ h1 {
         justify-content: center;
     }
 
-    .personaggio-domande .forum-container {
+    .personaggio-domande .parliamone-card {
         padding: 12px 14px;
     }
 
-    .personaggio-domande .forum-domanda {
+    .personaggio-domande .parliamone-card .domanda {
         font-size: 0.98rem;
         margin-bottom: 8px;
     }
 
-    .personaggio-domande .forum-messaggi {
-        max-height: 190px;
-    }
-
-    .personaggio-domande .forum-input-area input {
+    .personaggio-domande .parliamone-form input {
         min-width: 160px;
         padding: 9px 12px;
     }
 
-    .personaggio-domande .forum-btn-invia {
+    .personaggio-domande .parliamone-form button {
         padding: 9px 16px;
+    }
+
+    .personaggio-domande .parliamone-vuoto {
+        padding: 2px 0;
     }
 }
 
@@ -688,7 +697,7 @@ h1 {
         height: 100px;
     }
 
-    .personaggio-domande .forum-container {
+    .personaggio-domande .parliamone-card {
         padding: 12px;
     }
 }
