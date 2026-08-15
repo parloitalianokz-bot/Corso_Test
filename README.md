@@ -1,4 +1,3 @@
-```markdown
 # 🏗️ Architettura del Progetto
 
 ## Principio Fondamentale
