@@ -192,84 +192,19 @@ export const datiLezione = {
         titolo: "🎤 Creiamo le domande",
         istruzioni: "Leggi la risposta e scrivi la domanda corretta.",
         esercizi: [
-            {
-                id: "u001_p1",
-                risposta: "L'albergo Ponte Vecchio è a Firenze.",
-                guida: "💡 Dove?",
-                modello: "Dov'è l'albergo Ponte Vecchio?"
-            },
-            {
-                id: "u001_p2",
-                risposta: "L'albergo Ponte Vecchio è in centro.",
-                guida: "💡 Dove?",
-                modello: "Dov'è l'albergo Ponte Vecchio?"
-            },
-            {
-                id: "u001_p3",
-                risposta: "Victor è un avvocato.",
-                guida: "💡 Chi? Che lavoro fa?",
-                modello: "Chi è Victor?"
-            },
-            {
-                id: "u001_p4",
-                risposta: "Victor è in Italia per affari.",
-                guida: "💡 Perché?",
-                modello: "Perché Victor è in Italia?"
-            },
-            {
-                id: "u001_p5",
-                risposta: "Karl e Klaus sono studenti.",
-                guida: "💡 Chi?",
-                modello: "Chi sono Karl e Klaus?"
-            },
-            {
-                id: "u001_p6",
-                risposta: "Karl e Klaus studiano l'italiano.",
-                guida: "💡 Perché?",
-                modello: "Perché Karl e Klaus sono in Italia?"
-            },
-            {
-                id: "u001_p7",
-                risposta: "Mary è in Italia per insegnare l'inglese.",
-                guida: "💡 Perché?",
-                modello: "Perché Mary è in Italia?"
-            },
-            {
-                id: "u001_p8",
-                risposta: "Mary è un'insegnante inglese.",
-                guida: "💡 Chi? Che lavoro fa?",
-                modello: "Chi è Mary?"
-            },
-            {
-                id: "u001_p9",
-                risposta: "Yoko è dentista.",
-                guida: "💡 Che lavoro fa?",
-                modello: "Che lavoro fa Yoko?"
-            },
-            {
-                id: "u001_p10",
-                risposta: "Yoko è in Italia per una conferenza.",
-                guida: "💡 Perché?",
-                modello: "Perché Yoko è in Italia?"
-            },
-            {
-                id: "u001_p11",
-                risposta: "Olga è in Italia per studiare e per fare shopping.",
-                guida: "💡 Perché?",
-                modello: "Perché Olga è in Italia?"
-            },
-            {
-                id: "u001_p12",
-                risposta: "Olga è una studentessa di italiano.",
-                guida: "💡 Chi?",
-                modello: "Chi è Olga?"
-            },
-            {
-                id: "u001_p13",
-                risposta: "Il direttore è molto occupato.",
-                guida: "💡 Com'è?",
-                modello: "Com'è il direttore?"
-            }
+            { id: "u001_p1", risposta: "L'albergo Ponte Vecchio è a Firenze.", guida: "💡 Dove?", modello: "Dov'è l'albergo Ponte Vecchio?" },
+            { id: "u001_p2", risposta: "L'albergo Ponte Vecchio è in centro.", guida: "💡 Dove?", modello: "Dov'è l'albergo Ponte Vecchio?" },
+            { id: "u001_p3", risposta: "Victor è un avvocato.", guida: "💡 Chi? Che lavoro fa?", modello: "Chi è Victor?" },
+            { id: "u001_p4", risposta: "Victor è in Italia per affari.", guida: "💡 Perché?", modello: "Perché Victor è in Italia?" },
+            { id: "u001_p5", risposta: "Karl e Klaus sono studenti.", guida: "💡 Chi?", modello: "Chi sono Karl e Klaus?" },
+            { id: "u001_p6", risposta: "Karl e Klaus studiano l'italiano.", guida: "💡 Perché?", modello: "Perché Karl e Klaus sono in Italia?" },
+            { id: "u001_p7", risposta: "Mary è in Italia per insegnare l'inglese.", guida: "💡 Perché?", modello: "Perché Mary è in Italia?" },
+            { id: "u001_p8", risposta: "Mary è un'insegnante inglese.", guida: "💡 Chi? Che lavoro fa?", modello: "Chi è Mary?" },
+            { id: "u001_p9", risposta: "Yoko è dentista.", guida: "💡 Che lavoro fa?", modello: "Che lavoro fa Yoko?" },
+            { id: "u001_p10", risposta: "Yoko è in Italia per una conferenza.", guida: "💡 Perché?", modello: "Perché Yoko è in Italia?" },
+            { id: "u001_p11", risposta: "Olga è in Italia per studiare e per fare shopping.", guida: "💡 Perché?", modello: "Perché Olga è in Italia?" },
+            { id: "u001_p12", risposta: "Olga è una studentessa di italiano.", guida: "💡 Chi?", modello: "Chi è Olga?" },
+            { id: "u001_p13", risposta: "Il direttore è molto occupato.", guida: "💡 Com'è?", modello: "Com'è il direttore?" }
         ]
     },
 
@@ -301,9 +236,7 @@ export const datiLezione = {
             {
                 id: "u001_dial_1",
                 immagine: "img/dialogo_1.webp",
-                frasiFisse: [
-                    "— Ciao Olga! Sei inglese?"
-                ],
+                frasiFisse: ["— Ciao Olga! Sei inglese?"],
                 frasiMobili: [
                     { id: "d1_f1", testo: "— No, non sono inglese; sono russa." },
                     { id: "d1_f2", testo: "— Tu lavori o studi?" },
@@ -312,16 +245,12 @@ export const datiLezione = {
                     { id: "d1_f5", testo: "— Perché la moda italiana è bella." }
                 ],
                 ordineCorretto: ["d1_f1", "d1_f2", "d1_f3", "d1_f4", "d1_f5"],
-                variantiAccettate: [
-                    ["d1_f1", "d1_f4", "d1_f5", "d1_f2", "d1_f3"]
-                ]
+                variantiAccettate: [["d1_f1", "d1_f4", "d1_f5", "d1_f2", "d1_f3"]]
             },
             {
                 id: "u001_dial_2",
                 immagine: "img/dialogo_2.webp",
-                frasiFisse: [
-                    "— Buongiorno Victor! Lei è tedesco?"
-                ],
+                frasiFisse: ["— Buongiorno Victor! Lei è tedesco?"],
                 frasiMobili: [
                     { id: "d2_f1", testo: "— No, non sono tedesco, sono francese." },
                     { id: "d2_f2", testo: "— Lei è ingegnere?" },
@@ -330,16 +259,12 @@ export const datiLezione = {
                     { id: "d2_f5", testo: "— Per affari." }
                 ],
                 ordineCorretto: ["d2_f1", "d2_f2", "d2_f3", "d2_f4", "d2_f5"],
-                variantiAccettate: [
-                    ["d2_f1", "d2_f3", "d2_f4", "d2_f5", "d2_f2"]
-                ]
+                variantiAccettate: [["d2_f1", "d2_f3", "d2_f4", "d2_f5", "d2_f2"]]
             },
             {
                 id: "u001_dial_3",
                 immagine: "img/dialogo_3.webp",
-                frasiFisse: [
-                    "— Buongiorno Karl e Klaus! Voi siete stranieri?"
-                ],
+                frasiFisse: ["— Buongiorno Karl e Klaus! Voi siete stranieri?"],
                 frasiMobili: [
                     { id: "d3_f1", testo: "— Sì, siamo stranieri; siamo tedeschi." },
                     { id: "d3_f2", testo: "— Siete in Italia per turismo?" },
@@ -348,9 +273,7 @@ export const datiLezione = {
                     { id: "d3_f5", testo: "— Sì, siamo clienti dell'albergo Ponte Vecchio." }
                 ],
                 ordineCorretto: ["d3_f1", "d3_f2", "d3_f3", "d3_f4", "d3_f5"],
-                variantiAccettate: [
-                    ["d3_f1", "d3_f4", "d3_f5", "d3_f2", "d3_f3"]
-                ]
+                variantiAccettate: [["d3_f1", "d3_f4", "d3_f5", "d3_f2", "d3_f3"]]
             }
         ]
     },
@@ -362,14 +285,8 @@ export const datiLezione = {
                 id: "fase1",
                 titolo: "1️⃣ Tu, Lei, Io",
                 dialoghi: [
-                    {
-                        parlanti: "Olga",
-                        testo: '— Ciao Olga! <strong>Tu</strong> <strong>sei</strong> inglese?<br>— No, non sono inglese; <strong>io</strong> <strong>sono</strong> russa.'
-                    },
-                    {
-                        parlanti: "Victor",
-                        testo: '— Buongiorno Victor! <strong>Lei</strong> <strong>è</strong> tedesco?<br>— No, non sono tedesco; <strong>io</strong> <strong>sono</strong> francese.'
-                    }
+                    { parlanti: "Olga", testo: '— Ciao Olga! <strong>Tu</strong> <strong>sei</strong> inglese?<br>— No, non sono inglese; <strong>io</strong> <strong>sono</strong> russa.' },
+                    { parlanti: "Victor", testo: '— Buongiorno Victor! <strong>Lei</strong> <strong>è</strong> tedesco?<br>— No, non sono tedesco; <strong>io</strong> <strong>sono</strong> francese.' }
                 ],
                 domandeLAD: [
                     '🤔 В чем разница? В каком диалоге обращение неформальное (на «ты»), а в каком — формальное (на «Вы»)?',
@@ -378,10 +295,7 @@ export const datiLezione = {
                 cloze: {
                     id: "u001_gram_f1",
                     testo: 'Buongiorno Mary, Lei ____ inglese? Sì, io ____ inglese.',
-                    risposte: [
-                        ["è", "e'", "e"],
-                        ["sono"]
-                    ],
+                    risposte: [["è", "e'", "e"], ["sono"]],
                     suggerimenti: [
                         '💡 Quale è la forma del verbo quando il dialogo è formale? (Lei)',
                         '💡 Quale è la forma del verbo per "io"?'
@@ -392,10 +306,7 @@ export const datiLezione = {
                 id: "fase2",
                 titolo: "2️⃣ Passiamo al plurale",
                 dialoghi: [
-                    {
-                        parlanti: "Karl e Klaus",
-                        testo: '— Buongiorno Karl e Klaus! <strong>Voi</strong> <strong>siete</strong> stranieri?<br>— Sì, <strong>noi</strong> <strong>siamo</strong> stranieri; <strong>noi</strong> <strong>siamo</strong> tedeschi.'
-                    }
+                    { parlanti: "Karl e Klaus", testo: '— Buongiorno Karl e Klaus! <strong>Voi</strong> <strong>siete</strong> stranieri?<br>— Sì, <strong>noi</strong> <strong>siamo</strong> stranieri; <strong>noi</strong> <strong>siamo</strong> tedeschi.' }
                 ],
                 domandeLAD: [
                     '🤔 Что вы замечаете? Какую форму используют Клаус e Карл, чтобы ответить вместе? Какую форму мы используем, чтобы обратиться a entrambi?'
@@ -403,10 +314,7 @@ export const datiLezione = {
                 cloze: {
                     id: "u001_gram_f2",
                     testo: 'Ciao ragazzi, voi ____ spagnoli? No, noi ____ argentini.',
-                    risposte: [
-                        ["siete"],
-                        ["siamo"]
-                    ],
+                    risposte: [["siete"], ["siamo"]],
                     suggerimenti: [
                         '💡 Quale è la forma del verbo per "voi"?',
                         '💡 Quale è la forma del verbo per "noi"?'
@@ -417,18 +325,9 @@ export const datiLezione = {
                 id: "fase3",
                 titolo: "3️⃣ Lui, Lei, Loro",
                 dialoghi: [
-                    {
-                        parlanti: "Mary",
-                        testo: 'Mary <strong>è</strong> inglese. <strong>Lei</strong> <strong>è</strong> insegnante.'
-                    },
-                    {
-                        parlanti: "Paolo Rossi",
-                        testo: 'Paolo Rossi <strong>è</strong> italiano. <strong>Lui</strong> <strong>è</strong> il direttore.'
-                    },
-                    {
-                        parlanti: "Karl e Klaus",
-                        testo: 'Karl e Klaus <strong>sono</strong> tedeschi. <strong>Loro</strong> <strong>sono</strong> studenti.'
-                    }
+                    { parlanti: "Mary", testo: 'Mary <strong>è</strong> inglese. <strong>Lei</strong> <strong>è</strong> insegnante.' },
+                    { parlanti: "Paolo Rossi", testo: 'Paolo Rossi <strong>è</strong> italiano. <strong>Lui</strong> <strong>è</strong> il direttore.' },
+                    { parlanti: "Karl e Klaus", testo: 'Karl e Klaus <strong>sono</strong> tedeschi. <strong>Loro</strong> <strong>sono</strong> studenti.' }
                 ],
                 domandeLAD: [
                     '🤔 Какую форму глагола мы используем per «он», «она» e «они»?'
@@ -436,11 +335,7 @@ export const datiLezione = {
                 cloze: {
                     id: "u001_gram_f3",
                     testo: 'Mary ____ inglese. Paolo Rossi ____ italiano. Karl e Klaus ____ tedeschi.',
-                    risposte: [
-                        ["è", "e'", "e"],
-                        ["è", "e'", "e"],
-                        ["sono"]
-                    ],
+                    risposte: [["è", "e'", "e"], ["è", "e'", "e"], ["sono"]],
                     suggerimenti: [
                         '💡 Quale è la forma del verbo per "Lei/Lui"?',
                         '💡 Quale è la forma del verbo per "Lei/Lui"?',
@@ -451,7 +346,6 @@ export const datiLezione = {
             {
                 id: "fase4",
                 titolo: "4️⃣ Tabella del verbo essere",
-                soloInformativa: false,
                 associazione: {
                     id: "u001_gram_associazione",
                     istruzioni: "Clicca su due caselle per scambiarle di posto e mettere le forme del verbo nell'ordine corretto:",
@@ -489,9 +383,7 @@ export const datiLezione = {
                             <p>I clienti dell'albergo <strong>SONO</strong> stranieri.</p>
                         </div>
                     </div>
-                    <div class="domanda-lad">
-                        🤔 Как мы понимаем, говорим ли мы об «я» или об «они»?
-                    </div>
+                    <div class="domanda-lad">🤔 Как мы понимаем, говорим ли мы об «я» или об «они»?</div>
                     <div class="grammatica-esempi">
                         <div class="esempio">
                             <span class="icona">👔</span>
@@ -502,9 +394,7 @@ export const datiLezione = {
                             <p>Yoko è giapponese, <strong>lei</strong> è dentista.</p>
                         </div>
                     </div>
-                    <div class="domanda-lad">
-                        🤔 Как мы понимаем, говорим ли мы о «он/она» o in modo formale a «Lei»?
-                    </div>
+                    <div class="domanda-lad">🤔 Как мы понимаем, говорим ли мы о «он/она» o in modo formale a «Lei»?</div>
                 `
             }
         ]
@@ -580,6 +470,74 @@ export const datiLezione = {
                     domanda: "Scrivi la regola per la negazione in italiano.",
                     placeholder: "Scrivi qui la tua regola..."
                 }
+            }
+        ]
+    },
+
+    produzioneDialoghi: {
+        titolo: "🎭 Completa i dialoghi",
+        istruzioni: "Rispondi alle domande per ogni personaggio:",
+        personaggi: [
+            {
+                id: "olga",
+                nome: "Olga",
+                immagine: "img/olga.webp",
+                domande: [
+                    { id: "u001_dial_olga_1", testo: "Sei americana?" },
+                    { id: "u001_dial_olga_2", testo: "Tu lavori o sei studentessa?" },
+                    { id: "u001_dial_olga_3", testo: "Sei sposata?" },
+                    { id: "u001_dial_olga_4", testo: "Perché sei in Italia?" }
+                ]
+            },
+            {
+                id: "victor",
+                nome: "Victor",
+                immagine: "img/victor.webp",
+                domande: [
+                    { id: "u001_dial_victor_1", testo: "Lei è straniero?" },
+                    { id: "u001_dial_victor_2", testo: "Lei lavora?" },
+                    { id: "u001_dial_victor_3", testo: "Perché è in Italia?" }
+                ]
+            },
+            {
+                id: "karl_klaus",
+                nome: "Karl e Klaus",
+                immagine: "img/karlklaus.webp",
+                domande: [
+                    { id: "u001_dial_kk_1", testo: "Voi siete svizzeri?" },
+                    { id: "u001_dial_kk_2", testo: "Voi lavorate o siete studenti?" },
+                    { id: "u001_dial_kk_3", testo: "Perché siete in Italia?" }
+                ]
+            },
+            {
+                id: "mary",
+                nome: "Mary",
+                immagine: "img/mary.webp",
+                domande: [
+                    { id: "u001_dial_mary_1", testo: "Lei è italiana?" },
+                    { id: "u001_dial_mary_2", testo: "Lei è studentessa?" },
+                    { id: "u001_dial_mary_3", testo: "Perché è in Italia?" }
+                ]
+            },
+            {
+                id: "rossi",
+                nome: "Signor Rossi",
+                immagine: "img/paolorossi.webp",
+                domande: [
+                    { id: "u001_dial_rossi_1", testo: "Lei è italiano?" },
+                    { id: "u001_dial_rossi_2", testo: "Lei è un cliente dell'albergo?" },
+                    { id: "u001_dial_rossi_3", testo: "Lei è sposato?" }
+                ]
+            },
+            {
+                id: "yoko",
+                nome: "Yoko",
+                immagine: "img/yoko.webp",
+                domande: [
+                    { id: "u001_dial_yoko_1", testo: "Lei è cinese?" },
+                    { id: "u001_dial_yoko_2", testo: "Lei lavora?" },
+                    { id: "u001_dial_yoko_3", testo: "Perché è in Italia?" }
+                ]
             }
         ]
     }
