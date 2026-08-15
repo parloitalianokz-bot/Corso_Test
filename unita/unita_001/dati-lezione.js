@@ -449,38 +449,31 @@ export const datiLezione = {
                 }
             },
             {
-                id: "fase4",
-                titolo: "4️⃣ Tabella del verbo essere",
-                soloInformativa: false,
-                associazione: {
-                    id: "u001_gram_associazione",
-                    istruzioni: "Collega ogni pronome alla forma corretta del verbo 'essere':",
-                    sinistra: [
-                        { id: "io", label: "io" },
-                        { id: "tu", label: "tu" },
-                        { id: "lui_lei", label: "lui / lei / Lei" },
-                        { id: "noi", label: "noi" },
-                        { id: "voi", label: "voi" },
-                        { id: "loro", label: "loro" }
-                    ],
-                    destra: [
-                        { id: "sono1", label: "sono" },
-                        { id: "sei", label: "sei" },
-                        { id: "e", label: "è" },
-                        { id: "siamo", label: "siamo" },
-                        { id: "siete", label: "siete" },
-                        { id: "sono2", label: "sono" }
-                    ],
-                    associazioneCorretta: {
-                        "io": ["sono1", "sono2"],
-                        "tu": "sei",
-                        "lui_lei": "e",
-                        "noi": "siamo",
-                        "voi": "siete",
-                        "loro": ["sono1", "sono2"]
-                    }
-                }
-            },
+    id: "fase4",
+    titolo: "4️⃣ Tabella del verbo essere",
+    soloInformativa: false,
+    associazione: {
+        id: "u001_gram_associazione",
+        istruzioni: "Clicca su due caselle per scambiarle di posto e mettere le forme del verbo nell'ordine corretto:",
+        sinistra: [
+            { id: "io", label: "io" },
+            { id: "tu", label: "tu" },
+            { id: "lui_lei", label: "lui / lei / Lei" },
+            { id: "noi", label: "noi" },
+            { id: "voi", label: "voi" },
+            { id: "loro", label: "loro" }
+        ],
+        destra: [
+            { id: "sono1", label: "sono" },
+            { id: "sei", label: "sei" },
+            { id: "e", label: "è" },
+            { id: "siamo", label: "siamo" },
+            { id: "siete", label: "siete" },
+            { id: "sono2", label: "sono" }
+        ],
+        ordineCorretto: ["sono", "sei", "è", "siamo", "siete", "sono"]
+    }
+},
             {
                 id: "fase5",
                 titolo: "5️⃣ Capire il soggetto",
