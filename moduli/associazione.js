@@ -1,352 +1,387 @@
 // ================================================================
-// MODULO: ASSOCIAZIONE GRAFICA
+// MODULO: ASSOCIAZIONE (Universale)
+// ================================================================
+// Gestisce esercizi di associazione/riordino dove lo studente
+// scambia elementi di posto cliccando su due caselle.
 // ================================================================
 
 import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 let db = null;
 let basePathCorrente = '';
-let eserciziAssociazioneCorrenti = [];
+let eserciziCorrenti = [];
 let myUserNameCorrente = '';
+let ultimaSelezione = null;
+
+// ================================================================
+// 1. CSS
+// ================================================================
 
 function iniettaCss() {
-    if (document.getElementById('associazione-grafica-css')) return;
+    if (document.getElementById('associazione-universale-css')) return;
 
     const style = document.createElement('style');
-    style.id = 'associazione-grafica-css';
+    style.id = 'associazione-universale-css';
     style.textContent = `
-        .assoc-container { margin: 12px 0; }
-        .assoc-fase {
+        .assoc-universale-container { margin: 16px 0; }
+        .assoc-universale-fase {
             background: #fafafa;
             border: 1px solid #e8e8e8;
             border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 18px;
+            padding: 16px;
+            margin-bottom: 24px;
         }
-        .assoc-fase .titolo-fase {
+        .assoc-universale-fase .titolo-fase {
             font-weight: 700;
             color: var(--primary-color, #1a6e3a);
-            font-size: 1rem;
-            margin-bottom: 8px;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
         }
-        .assoc-istruzioni {
-            margin-bottom: 10px;
+        .assoc-universale-istruzioni {
+            margin-bottom: 14px;
             font-weight: 600;
             color: #234;
-            font-size: 0.95rem;
         }
-        .assoc-layout {
+        .assoc-universale-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .assoc-universale-colonna {
+            background: #fff;
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #ececec;
+        }
+        .assoc-universale-riga {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            align-items: start;
-        }
-        .assoc-colonna {
-            background: #fff;
-            border-radius: 10px;
-            padding: 8px;
-            border: 1px solid #ececec;
-        }
-        .assoc-riga {
-            display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px;
-            margin-bottom: 6px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
             background: #fafafa;
             border-radius: 10px;
             border: 2px solid transparent;
-            flex-wrap: wrap;
+            min-height: 44px;
         }
-        .assoc-riga.selezionata {
+        .assoc-universale-riga.selezionata {
             border-color: var(--primary-color, #1a6e3a);
             background: #edf8f1;
         }
-        .assoc-label {
-            min-width: 88px;
+        .assoc-universale-label {
+            text-align: right;
             font-weight: 700;
             color: #223;
-            font-size: 0.92rem;
-            line-height: 1.1;
         }
-        .assoc-slot {
-            min-height: 32px;
-            min-width: 86px;
-            padding: 5px 8px;
+        .assoc-universale-casella {
+            min-height: 36px;
+            padding: 6px 10px;
             border-radius: 8px;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
             transition: all .2s ease;
-            background: #f5f5f5;
-            border: 1px dashed #cfcfcf;
-            color: #888;
-            cursor: pointer;
-            font-size: 0.9rem;
-            flex: 1;
-        }
-        .assoc-slot.piena {
-            background: #eafaf1;
-            border-style: solid;
-            color: #155724;
-        }
-        .assoc-voce {
             background: #eef4ff;
-            border: 1px solid #cfe0ff;
+            border: 2px solid #cfe0ff;
             color: #224;
             cursor: pointer;
-            border-radius: 10px;
-            padding: 8px 10px;
-            margin-bottom: 6px;
-            font-weight: 700;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-            font-size: 0.92rem;
-            line-height: 1.1;
-            text-align: center;
+            user-select: none;
         }
-        .assoc-voce.usata {
-            opacity: 0.35;
-            text-decoration: line-through;
+        .assoc-universale-casella:hover {
+            background: #dbe8ff;
+            transform: scale(1.02);
         }
-        .assoc-azioni {
+        .assoc-universale-casella.selezionata {
+            border-color: var(--primary-color, #1a6e3a);
+            background: #edf8f1;
+            transform: scale(1.04);
+            box-shadow: 0 0 0 3px rgba(26, 110, 58, 0.2);
+        }
+        .assoc-universale-casella.corretta {
+            border-color: #27ae60;
+            background: #eafaf1;
+        }
+        .assoc-universale-casella.sbagliata {
+            border-color: #e74c3c;
+            background: #fdedec;
+        }
+        .assoc-universale-azioni {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             flex-wrap: wrap;
-            margin-top: 12px;
+            margin-top: 14px;
         }
-        .assoc-azioni button {
+        .assoc-universale-azioni button {
             border: none;
             border-radius: 8px;
-            padding: 7px 14px;
+            padding: 8px 16px;
             cursor: pointer;
             font-weight: 700;
-            font-size: 0.9rem;
         }
-        .assoc-azioni .btn-verifica { background: var(--primary-color, #1a6e3a); color: #fff; }
-        .assoc-azioni .btn-reset { background: #f39c12; color: #fff; }
-        .assoc-esito {
-            margin-top: 8px;
-            padding: 9px 12px;
+        .assoc-universale-azioni .btn-verifica {
+            background: var(--primary-color, #1a6e3a);
+            color: #fff;
+        }
+        .assoc-universale-azioni .btn-reset {
+            background: #f39c12;
+            color: #fff;
+        }
+        .assoc-universale-esito {
+            margin-top: 10px;
+            padding: 10px 14px;
             border-radius: 8px;
             display: none;
             font-weight: 600;
-            font-size: 0.92rem;
         }
-        .assoc-esito.visibile { display: block; }
-        .assoc-esito.ok {
+        .assoc-universale-esito.visibile { display: block; }
+        .assoc-universale-esito.ok {
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
-        .assoc-esito.ko {
+        .assoc-universale-esito.ko {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
 
         @media (max-width: 700px) {
-            .assoc-layout {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-            .assoc-colonna {
-                padding: 6px;
-            }
-            .assoc-riga {
-                padding: 6px;
-            }
-            .assoc-label {
-                min-width: 100%;
-            }
-            .assoc-slot {
-                min-width: 100%;
-            }
-            .assoc-voce {
-                padding: 7px 8px;
-            }
-        }
-
-        @media (max-width: 420px) {
-            .assoc-layout {
-                grid-template-columns: 1fr 1fr;
-                gap: 6px;
-            }
-            .assoc-fase {
-                padding: 10px;
-            }
-            .assoc-label {
-                font-size: 0.85rem;
-            }
-            .assoc-slot,
-            .assoc-voce {
-                font-size: 0.82rem;
-            }
+            .assoc-universale-layout { grid-template-columns: 1fr; }
+            .assoc-universale-riga { grid-template-columns: 1fr 1fr; gap: 6px; }
+            .assoc-universale-label { text-align: left; }
+            .assoc-universale-fase { padding: 12px; }
         }
     `;
     document.head.appendChild(style);
 }
 
-function scegliDisposizioneCasuale(array) {
-    const copia = [...array];
-    for (let i = copia.length - 1; i > 0; i--) {
+// ================================================================
+// 2. FUNZIONI UTILITY
+// ================================================================
+
+function shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [copia[i], copia[j]] = [copia[j], copia[i]];
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    return copia;
+    return arr;
 }
 
-function generaAssociazioneHTML(fase) {
-    const assoc = fase.associazione;
-    if (!assoc) return '';
-
-    const sinistra = assoc.sinistra || [];
-    const destra = scegliDisposizioneCasuale(assoc.destra || []);
-
-    return `
-        <div class="assoc-fase" id="assoc_fase_${assoc.id}">
-            <div class="titolo-fase">${fase.titolo || ''}</div>
-            <div class="assoc-istruzioni">${assoc.istruzioni || ''}</div>
-            <div class="assoc-layout">
-                <div class="assoc-colonna">
-                    ${sinistra.map(item => `
-                        <div class="assoc-riga" id="assoc_riga_${assoc.id}_${item.id}">
-                            <div class="assoc-label">${item.label}</div>
-                            <div class="assoc-slot" id="assoc_slot_${assoc.id}_${item.id}" onclick="window.spostaAssociazione('${assoc.id}','${item.id}', null)">vuoto</div>
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="assoc-colonna" id="assoc_destra_${assoc.id}">
-                    ${destra.map(item => `
-                        <div class="assoc-voce" id="assoc_voce_${assoc.id}_${item.id}" onclick="window.selezionaVoceAssociazione('${assoc.id}','${item.id}')">${item.label}</div>
-                    `).join('')}
-                </div>
-            </div>
-            <div class="assoc-azioni">
-                <button class="btn-verifica" onclick="window.verificaAssociazione('${assoc.id}')">✅ Verifica</button>
-                <button class="btn-reset" onclick="window.resetAssociazione('${assoc.id}')">🔄 Reset</button>
-            </div>
-            <div class="assoc-esito" id="assoc_esito_${assoc.id}"></div>
-        </div>
-    `;
-}
+// ================================================================
+// 3. GENERA HTML
+// ================================================================
 
 export function generaAssociazione(fasi, isDocente = false) {
     iniettaCss();
     if (!fasi?.length) return '';
-    return `<div class="assoc-container">${fasi.map(fase => fase.associazione ? generaAssociazioneHTML(fase) : '').join('')}</div>`;
+
+    return `
+        <div class="assoc-universale-container">
+            ${fasi.map((fase, idx) => {
+                const assoc = fase.associazione;
+                if (!assoc) return '';
+
+                const sinistra = assoc.sinistra || [];
+                const destra = shuffleArray(assoc.destra || []);
+
+                // Genera gli elementi per la colonna di destra (mescolati)
+                const elementiDestra = destra.map((item, i) => ({
+                    ...item,
+                    posizione: i
+                }));
+
+                return `
+                    <div class="assoc-universale-fase" id="assoc_fase_${assoc.id}">
+                        <div class="titolo-fase">${fase.titolo || `Fase ${idx + 1}`}</div>
+                        ${fase.dialoghi ? `
+                            <div class="cloze-dialoghi">
+                                ${fase.dialoghi.map(d => `
+                                    <div class="dialogo">
+                                        <span class="parlante">${d.parlanti || ''}</span>
+                                        ${d.testo || ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        ${fase.domandeLAD ? `
+                            <div class="cloze-domande-lad">
+                                ${fase.domandeLAD.map(d => `<p>${d}</p>`).join('')}
+                            </div>
+                        ` : ''}
+
+                        <div class="assoc-universale-istruzioni">${assoc.istruzioni || ''}</div>
+
+                        <div class="assoc-universale-layout" id="assoc_layout_${assoc.id}">
+                            <div class="assoc-universale-colonna">
+                                ${sinistra.map((item, index) => `
+                                    <div class="assoc-universale-riga" id="riga_${assoc.id}_${item.id}">
+                                        <div class="assoc-universale-label">${item.label}</div>
+                                        <div class="assoc-universale-casella" 
+                                             id="casella_${assoc.id}_${item.id}"
+                                             data-assoc-id="${assoc.id}"
+                                             data-sinistra-id="${item.id}"
+                                             data-indice="${index}"
+                                             onclick="window.selezionaCasellaAssociazione('${assoc.id}','${item.id}')">
+                                            ${destra[index]?.label || ''}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="assoc-universale-colonna">
+                                <!-- Colonna destra (vuota, per simmetria) -->
+                            </div>
+                        </div>
+
+                        <div class="assoc-universale-azioni">
+                            <button class="btn-verifica" onclick="window.verificaAssociazione('${assoc.id}')">✅ Verifica</button>
+                            <button class="btn-reset" onclick="window.resetAssociazione('${assoc.id}')">🔄 Reset</button>
+                        </div>
+
+                        <div class="assoc-universale-esito" id="esito_${assoc.id}"></div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
 }
+
+// ================================================================
+// 4. INIZIALIZZAZIONE
+// ================================================================
 
 export function initAssociazione(app) {
     db = getDatabase(app);
+    console.log('📦 associazione: inizializzato');
 }
 
+// ================================================================
+// 5. LISTENER
+// ================================================================
+
 export function avviaAssociazioneListener(basePath, fasiGrammatica, isDocente = false, username = '') {
-    if (!db) return;
+    if (!db) {
+        console.warn('⚠️ associazione: db non inizializzato!');
+        return;
+    }
 
     basePathCorrente = basePath;
     myUserNameCorrente = username;
-    eserciziAssociazioneCorrenti = (fasiGrammatica || []).filter(f => f.associazione).map(f => f.associazione);
 
-    eserciziAssociazioneCorrenti.forEach(assoc => {
-        const risposteRef = ref(db, `${basePath}/associazione/${assoc.id}/associazioni`);
-        onValue(risposteRef, snap => {
+    const esercizi = (fasiGrammatica || [])
+        .filter(f => f.associazione)
+        .map(f => f.associazione);
+
+    eserciziCorrenti = esercizi;
+
+    esercizi.forEach(assoc => {
+        const refDati = ref(db, `${basePath}/associazione/${assoc.id}/dati`);
+        onValue(refDati, (snap) => {
             aggiornaUIAssociazione(assoc.id, snap.val() || {});
         });
     });
 }
 
-function getAccettate(corrette, sinistraId) {
-    const v = corrette?.[sinistraId];
-    return Array.isArray(v) ? v : [v];
-}
+// ================================================================
+// 6. AGGIORNA UI
+// ================================================================
 
 function aggiornaUIAssociazione(idAssoc, dati) {
-    const esitoEl = document.getElementById(`assoc_esito_${idAssoc}`);
-    const ass = eserciziAssociazioneCorrenti.find(a => a.id === idAssoc);
+    const esitoEl = document.getElementById(`esito_${idAssoc}`);
+    const ass = eserciziCorrenti.find(a => a.id === idAssoc);
     if (!ass || !esitoEl) return;
 
-    document.querySelectorAll(`.assoc-slot[data-assoc-id="${idAssoc}"]`).forEach(slot => {
-        slot.textContent = 'vuoto';
-        slot.dataset.destraId = '';
-        slot.classList.remove('piena');
-        const riga = document.getElementById(slot.dataset.rigaId);
-        if (riga) riga.classList.remove('selezionata');
-    });
-
-    document.querySelectorAll(`.assoc-voce[data-assoc-id="${idAssoc}"]`).forEach(voce => {
-        voce.classList.remove('usata');
-    });
-
     const miaRisposta = dati[myUserNameCorrente] || null;
-    if (!miaRisposta) {
-        esitoEl.className = 'assoc-esito';
+
+    if (miaRisposta) {
+        const ordine = miaRisposta.ordine || [];
+        // Ripristina l'ordine salvato
+        if (ordine.length) {
+            ass.sinistra.forEach((item, index) => {
+                const casella = document.getElementById(`casella_${idAssoc}_${item.id}`);
+                if (casella && ordine[index]) {
+                    casella.textContent = ordine[index];
+                }
+            });
+        }
+
+        const stato = miaRisposta.stato || 'in_attesa';
+        esitoEl.className = `assoc-universale-esito visibile ${stato === 'approvata' ? 'ok' : 'ko'}`;
+        esitoEl.textContent = stato === 'approvata'
+            ? '✅ Perfetto! Tutte le associazioni sono corrette!'
+            : (stato === 'da_modificare' ? '✏️ Da modificare' : '⏳ In attesa di correzione...');
+    } else {
+        esitoEl.className = 'assoc-universale-esito';
         esitoEl.textContent = '';
-        return;
     }
-
-    const associazioni = miaRisposta.associazioni || {};
-    Object.entries(associazioni).forEach(([sinistraId, destraId]) => {
-        if (destraId) window.spostaAssociazione(idAssoc, sinistraId, destraId, true);
-    });
-
-    const stato = miaRisposta.stato || 'in_attesa';
-    esitoEl.className = `assoc-esito visibile ${stato === 'approvata' ? 'ok' : 'ko'}`;
-    esitoEl.textContent = stato === 'approvata'
-        ? '✅ Perfetto! Tutte le associazioni sono corrette!'
-        : (stato === 'da_modificare' ? '✏️ Da modificare' : '⏳ In attesa di correzione...');
 }
 
-window.spostaAssociazione = function(idAssoc, sinistraId, destraId, daFirebase = false) {
-    const slot = document.getElementById(`assoc_slot_${idAssoc}_${sinistraId}`);
-    if (!slot) return;
+// ================================================================
+// 7. FUNZIONI GLOBALI
+// ================================================================
 
-    const ass = eserciziAssociazioneCorrenti.find(a => a.id === idAssoc);
+window.selezionaCasellaAssociazione = function(idAssoc, sinistraId) {
+    const casella = document.getElementById(`casella_${idAssoc}_${sinistraId}`);
+    if (!casella) return;
+
+    const ass = eserciziCorrenti.find(a => a.id === idAssoc);
     if (!ass) return;
 
-    const vecchiaDestraId = slot.dataset.destraId || '';
-    if (vecchiaDestraId && !destraId) {
-        const vecchiaVoce = document.getElementById(`assoc_voce_${idAssoc}_${vecchiaDestraId}`);
-        if (vecchiaVoce) vecchiaVoce.classList.remove('usata');
-    }
-
-    slot.dataset.assocId = idAssoc;
-    slot.dataset.rigaId = `assoc_riga_${idAssoc}_${sinistraId}`;
-    slot.textContent = destraId ? (ass.destra.find(x => x.id === destraId)?.label || destraId) : 'vuoto';
-    slot.dataset.destraId = destraId || '';
-    slot.classList.toggle('piena', !!destraId);
-
-    const riga = document.getElementById(`assoc_riga_${idAssoc}_${sinistraId}`);
-    if (riga) riga.classList.toggle('selezionata', !!destraId);
-
-    if (!daFirebase && destraId) {
-        const voce = document.getElementById(`assoc_voce_${idAssoc}_${destraId}`);
-        if (voce) voce.classList.add('usata');
-    }
-};
-
-window.selezionaVoceAssociazione = function(idAssoc, destraId) {
-    const ass = eserciziAssociazioneCorrenti.find(a => a.id === idAssoc);
-    if (!ass) return;
-
-    const voce = document.getElementById(`assoc_voce_${idAssoc}_${destraId}`);
-    if (voce && voce.classList.contains('usata')) {
-        const slotUsato = document.querySelector(`.assoc-slot[data-assoc-id="${idAssoc}"][data-destra-id="${destraId}"]`);
-        if (slotUsato) {
-            const sinistraId = slotUsato.id.replace(`assoc_slot_${idAssoc}_`, '');
-            window.spostaAssociazione(idAssoc, sinistraId, null);
-        }
+    // Se non c'è una selezione precedente, seleziona questa
+    if (!ultimaSelezione) {
+        casella.classList.add('selezionata');
+        ultimaSelezione = { idAssoc, sinistraId, casella };
         return;
     }
 
-    const libero = (ass.sinistra || []).find(item => {
-        const slot = document.getElementById(`assoc_slot_${idAssoc}_${item.id}`);
-        return slot && !slot.dataset.destraId;
+    // Se è la stessa casella, deseleziona
+    if (ultimaSelezione.sinistraId === sinistraId && ultimaSelezione.idAssoc === idAssoc) {
+        casella.classList.remove('selezionata');
+        ultimaSelezione = null;
+        return;
+    }
+
+    // Scambia le due caselle
+    const primaCasella = ultimaSelezione.casella;
+    const primaSinistraId = ultimaSelezione.sinistraId;
+
+    // Leggi i valori attuali
+    const valore1 = primaCasella.textContent;
+    const valore2 = casella.textContent;
+
+    // Scambia i valori
+    primaCasella.textContent = valore2;
+    casella.textContent = valore1;
+
+    // Rimuovi selezioni
+    primaCasella.classList.remove('selezionata');
+    casella.classList.remove('selezionata');
+    ultimaSelezione = null;
+
+    // Salva su Firebase
+    salvaOrdineAssociazione(idAssoc);
+};
+
+window.salvaOrdineAssociazione = async function(idAssoc) {
+    if (!db || !myUserNameCorrente) return;
+
+    const ass = eserciziCorrenti.find(a => a.id === idAssoc);
+    if (!ass) return;
+
+    const ordine = [];
+    ass.sinistra.forEach(item => {
+        const casella = document.getElementById(`casella_${idAssoc}_${item.id}`);
+        ordine.push(casella?.textContent || '');
     });
 
-    if (!libero) return;
-
-    window.spostaAssociazione(idAssoc, libero.id, destraId);
+    const refDati = ref(db, `${basePathCorrente}/associazione/${idAssoc}/dati/${myUserNameCorrente}`);
+    await set(refDati, {
+        ordine,
+        stato: 'in_attesa',
+        timestamp: Date.now()
+    });
 };
 
 window.verificaAssociazione = async function(idAssoc) {
@@ -355,56 +390,76 @@ window.verificaAssociazione = async function(idAssoc) {
         return;
     }
 
-    const ass = eserciziAssociazioneCorrenti.find(a => a.id === idAssoc);
+    const ass = eserciziCorrenti.find(a => a.id === idAssoc);
     if (!ass) return;
 
-    const corrette = ass.associazioneCorretta || {};
-    const slots = Object.keys(corrette);
+    const ordineCorretto = ass.ordineCorretto || [];
+    const ordineCorrente = [];
+
+    ass.sinistra.forEach(item => {
+        const casella = document.getElementById(`casella_${idAssoc}_${item.id}`);
+        ordineCorrente.push(casella?.textContent || '');
+    });
+
     let tutteCorrette = true;
-    const associazioniDaSalvare = {};
+    ordineCorrente.forEach((valore, index) => {
+        if (valore !== ordineCorretto[index]) tutteCorrette = false;
+    });
 
-    slots.forEach(sinistraId => {
-        const slot = document.getElementById(`assoc_slot_${idAssoc}_${sinistraId}`);
-        const destraId = slot?.dataset?.destraId || '';
-        associazioniDaSalvare[sinistraId] = destraId;
-
-        const accettate = getAccettate(corrette, sinistraId).filter(Boolean);
-        if (!accettate.includes(destraId)) tutteCorrette = false;
+    // Evidenzia le caselle
+    ass.sinistra.forEach((item, index) => {
+        const casella = document.getElementById(`casella_${idAssoc}_${item.id}`);
+        if (casella) {
+            casella.classList.remove('corretta', 'sbagliata');
+            if (tutteCorrette) {
+                casella.classList.add('corretta');
+            } else {
+                const isCorretto = ordineCorrente[index] === ordineCorretto[index];
+                casella.classList.add(isCorretto ? 'corretta' : 'sbagliata');
+            }
+        }
     });
 
     const stato = tutteCorrette ? 'approvata' : 'in_attesa';
-    const refRisposta = ref(db, `${basePathCorrente}/associazione/${idAssoc}/associazioni/${myUserNameCorrente}`);
-    await set(refRisposta, {
-        associazioni: associazioniDaSalvare,
+
+    const refDati = ref(db, `${basePathCorrente}/associazione/${idAssoc}/dati/${myUserNameCorrente}`);
+    await set(refDati, {
+        ordine: ordineCorrente,
         stato,
         timestamp: Date.now()
     });
 
-    const esitoEl = document.getElementById(`assoc_esito_${idAssoc}`);
+    const esitoEl = document.getElementById(`esito_${idAssoc}`);
     if (esitoEl) {
-        esitoEl.className = `assoc-esito visibile ${tutteCorrette ? 'ok' : 'ko'}`;
+        esitoEl.className = `assoc-universale-esito visibile ${tutteCorrette ? 'ok' : 'ko'}`;
         esitoEl.textContent = tutteCorrette
             ? '✅ Perfetto! Tutte le associazioni sono corrette!'
-            : '❌ C’è qualche errore. Riprova!';
+            : '❌ C\'è qualche errore. Riprova!';
     }
 };
 
 window.resetAssociazione = function(idAssoc) {
-    const ass = eserciziAssociazioneCorrenti.find(a => a.id === idAssoc);
+    const ass = eserciziCorrenti.find(a => a.id === idAssoc);
     if (!ass) return;
 
-    (ass.sinistra || []).forEach(item => {
-        window.spostaAssociazione(idAssoc, item.id, null);
+    const destra = shuffleArray(ass.destra || []);
+
+    ass.sinistra.forEach((item, index) => {
+        const casella = document.getElementById(`casella_${idAssoc}_${item.id}`);
+        if (casella) {
+            casella.textContent = destra[index]?.label || '';
+            casella.classList.remove('corretta', 'sbagliata', 'selezionata');
+        }
     });
 
-    (ass.destra || []).forEach(item => {
-        const voce = document.getElementById(`assoc_voce_${idAssoc}_${item.id}`);
-        if (voce) voce.classList.remove('usata');
-    });
-
-    const esitoEl = document.getElementById(`assoc_esito_${idAssoc}`);
+    const esitoEl = document.getElementById(`esito_${idAssoc}`);
     if (esitoEl) {
-        esitoEl.className = 'assoc-esito';
+        esitoEl.className = 'assoc-universale-esito';
         esitoEl.textContent = '';
     }
+
+    ultimaSelezione = null;
+
+    // Salva il nuovo ordine random su Firebase
+    salvaOrdineAssociazione(idAssoc);
 };
