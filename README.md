@@ -84,3 +84,17 @@ function renderSchedaX() {
     
     return html;
 }
+
+
+/Corso_Test/
+├── moduli/                    # Moduli universali
+│   ├── index.js              # Entry point
+│   ├── forum.js
+│   ├── cloze.js
+│   └── ...
+├── unita/
+│   └── unita_001/
+│       ├── index.html        # Pagina dell'unità
+│       ├── dati-lezione.js   # Configurazione
+│       └── img/              # Immagini specifiche
+└── style.css                 # Stili globali
