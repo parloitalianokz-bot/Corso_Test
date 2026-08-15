@@ -482,21 +482,21 @@ h1 {
     background: #fafafa;
     border: 1px solid #e8e8e8;
     border-radius: 12px;
-    padding: 16px;
+    padding: 14px 16px;
 }
 
 .personaggio-header {
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
     border-bottom: 2px solid var(--primary-color, #1a6e3a);
 }
 
 .personaggio-avatar {
-    width: 60px;
-    height: 75px;
+    width: 72px;
+    height: 92px;
     object-fit: cover;
     border-radius: 8px;
     border: 2px solid var(--primary-color, #1a6e3a);
@@ -511,15 +511,87 @@ h1 {
 .personaggio-domande {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
 }
 
 .personaggio-domande .forum-container {
     margin: 0;
-    padding: 16px;
+    padding: 12px 14px;
     background: white;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
+}
+
+.personaggio-domande .forum-domanda {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.personaggio-domande .forum-input-area {
+    margin-bottom: 10px;
+}
+
+.personaggio-domande .forum-messaggi {
+    max-height: 220px;
+}
+
+/* DESKTOP: box affiancati per la scheda 10 */
+@media (min-width: 901px) {
+    .personaggio-box {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 18px;
+        align-items: center;
+    }
+
+    .personaggio-header {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+        border-right: 2px solid rgba(26, 110, 58, 0.16);
+        padding-right: 18px;
+        min-height: 100%;
+    }
+
+    .personaggio-avatar {
+        width: 150px;
+        height: 185px;
+    }
+
+    .personaggio-nome {
+        font-size: 1.15rem;
+    }
+
+    .personaggio-domande {
+        padding-left: 4px;
+        gap: 8px;
+    }
+
+    .personaggio-domande .forum-container {
+        padding: 12px 14px;
+    }
+
+    .personaggio-domande .forum-domanda {
+        font-size: 0.98rem;
+        margin-bottom: 8px;
+    }
+
+    .personaggio-domande .forum-messaggi {
+        max-height: 190px;
+    }
+
+    .personaggio-domande .forum-input-area input {
+        min-width: 160px;
+        padding: 9px 12px;
+    }
+
+    .personaggio-domande .forum-btn-invia {
+        padding: 9px 16px;
+    }
 }
 
 /* ============================================================ */
