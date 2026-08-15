@@ -540,5 +540,32 @@ export const datiLezione = {
                 ]
             }
         ]
+    },
+
+    presentazionePersonale: {
+        titolo: "🎤 Mi presento",
+        istruzioni: "Scrivi le tue informazioni. Usa queste frasi come base:",
+        esercizi: [
+            {
+                id: "u001_pres_nome",
+                domanda: "Nome:",
+                placeholder: "Io sono..."
+            },
+            {
+                id: "u001_pres_naz",
+                domanda: "Nazionalità:",
+                placeholder: "Sono..."
+            },
+            {
+                id: "u001_pres_prof",
+                domanda: "Professione:",
+                placeholder: "Sono..."
+            },
+            {
+                id: "u001_pres_perche",
+                domanda: "Perché studio italiano:",
+                placeholder: "Studio l'italiano perché..."
+            }
+        ]
     }
 };
