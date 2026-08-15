@@ -324,7 +324,6 @@
             let html = '';
             
             fasi.forEach((fase, idx) => {
-                // Fase 1: Informativa
                 if (fase.soloInformativa) {
                     html += `
                         <div class="negazione-fase" id="fase_${fase.id}">
@@ -335,7 +334,6 @@
                     return;
                 }
                 
-                // Fase 2: Pratica → parliamoneInsieme
                 if (fase.esercizi?.length) {
                     const datiPerModulo = {
                         titolo: fase.titolo || `Fase ${idx + 1}`,
@@ -350,7 +348,6 @@
                     return;
                 }
                 
-                // Fase 3: La regola (forum singolo)
                 if (fase.forum) {
                     html += `
                         <div class="negazione-fase" id="fase_${fase.id}">
@@ -465,51 +462,32 @@
                 if (fasiAssociazione.length) avviaAssociazioneListener(BASE_PATH, fasiAssociazione, isDocente, utente.username);
             }
 
-            // Scheda 9 - Negazione
             if (datiLezione.negazione?.fasi?.length) {
                 const fasi = datiLezione.negazione.fasi;
-                
-                // Fase 2: pratica → parliamoneInsieme
                 const fasePratica = fasi.find(f => f.esercizi?.length);
                 if (fasePratica) {
                     const esercizi = fasePratica.esercizi.map(ex => ({
                         id: ex.id,
                         domanda: ex.domanda
                     }));
-                    avviaParliamoneInsiemeListener(
-                        BASE_PATH,
-                        esercizi,
-                        isDocente,
-                        utente.username
-                    );
+                    avviaParliamoneInsiemeListener(BASE_PATH, esercizi, isDocente, utente.username);
                 }
-                
-                // Fase 3: regola → forum
                 const faseRegola = fasi.find(f => f.forum);
                 if (faseRegola?.forum?.idFirebase) {
                     avviaForumListener(BASE_PATH, faseRegola.forum.idFirebase, isDocente);
                 }
             }
 
-            // Scheda 10 - Dialoghi
             if (datiLezione.produzioneDialoghi?.personaggi?.length) {
-                const tuttiEsercizi = [];
                 datiLezione.produzioneDialoghi.personaggi.forEach(personaggio => {
-                    personaggio.domande.forEach(domanda => {
-                        tuttiEsercizi.push({
-                            id: domanda.id,
-                            domanda: domanda.testo
-                        });
-                    });
+                    const eserciziPersonaggio = (personaggio.domande || []).map(domanda => ({
+                        id: domanda.id,
+                        domanda: domanda.testo
+                    }));
+                    if (eserciziPersonaggio.length) {
+                        avviaParliamoneInsiemeListener(BASE_PATH, eserciziPersonaggio, isDocente, utente.username);
+                    }
                 });
-                if (tuttiEsercizi.length) {
-                    avviaParliamoneInsiemeListener(
-                        BASE_PATH,
-                        tuttiEsercizi,
-                        isDocente,
-                        utente.username
-                    );
-                }
             }
         }
 
