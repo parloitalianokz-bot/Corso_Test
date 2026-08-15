@@ -300,7 +300,7 @@ function aggiornaUIAssociazione(idAssoc, dati) {
         esitoEl.className = `assoc-universale-esito visibile ${stato === 'approvata' ? 'ok' : 'ko'}`;
         esitoEl.textContent = stato === 'approvata'
             ? '✅ Perfetto! Tutte le associazioni sono corrette!'
-            : (stato === 'da_modificare' ? '✏️ Da modificare' : '⏳ In attesa di correzione...');
+            : (stato === 'da_modificare' ? '✏️ Da modificare' : '⏳ ...');
     } else {
         esitoEl.className = 'assoc-universale-esito';
         esitoEl.textContent = '';
