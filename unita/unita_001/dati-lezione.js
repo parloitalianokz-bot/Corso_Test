@@ -80,13 +80,13 @@ export const datiLezione = {
             { parola: 'occupato', traduzione_ru: 'занят', pronuncia_ru: 'окупато', audio: 'audio/glossario/occupato.mp3' }
         ],
         paragrafi: [
-            'L\'albergo "Ponte Vecchio" <strong>è</strong> a Firenze, in Italia. <strong>È</strong> un albergo grande, con molte camere. <strong>È</strong> un albergo comodo per gli stranieri, perché <strong>è</strong> in centro.',
-            'Chi <strong>sono</strong> gli ospiti dell\'albergo "Ponte Vecchio" in questo momento?',
-            'Victor <strong>è</strong> un cliente dell\'albergo. Victor <strong>è</strong> francese; <strong>è</strong> avvocato. Adesso <strong>è</strong> in Italia per affari.',
-            'Anche Klaus e Karl <strong>sono</strong> clienti dell\'albergo. <strong>Sono</strong> tedeschi e <strong>Sono</strong> studenti. <strong>Sono</strong> in Italia per studiare l\'italiano.',
-            'Mary <strong>è</strong> inglese; <strong>è</strong> insegnante, ed <strong>è</strong> in Italia per insegnare l\'inglese. Yoko, invece, <strong>è</strong> giapponese; <strong>è</strong> dentista ed <strong>è</strong> in Italia per una conferenza.',
-            'Olga <strong>è</strong> russa. <strong>È</strong> studentessa. <strong>È</strong> in Italia per studiare l\'italiano e per fare shopping.',
-            'Paolo Rossi <strong>è</strong> il direttore dell\'albergo "Ponte Vecchio". <strong>È</strong> sposato e ha tre figli. <strong>È</strong> sempre molto occupato con i clienti.'
+            `L'albergo "Ponte Vecchio" <strong>è</strong> a Firenze, in Italia. <strong>È</strong> un albergo grande, con molte camere. <strong>È</strong> un albergo comodo per gli stranieri, perché <strong>è</strong> in centro.`,
+            `Chi <strong>sono</strong> gli ospiti dell'albergo "Ponte Vecchio" in questo momento?`,
+            `Victor <strong>è</strong> un cliente dell'albergo. Victor <strong>è</strong> francese; <strong>è</strong> avvocato. Adesso <strong>è</strong> in Italia per affari.`,
+            `Anche Klaus e Karl <strong>sono</strong> clienti dell'albergo. <strong>Sono</strong> tedeschi e <strong>sono</strong> studenti. <strong>Sono</strong> in Italia per studiare l'italiano.`,
+            `Mary <strong>è</strong> inglese; <strong>è</strong> insegnante, ed <strong>è</strong> in Italia per insegnare l'inglese. Yoko, invece, <strong>è</strong> giapponese; <strong>è</strong> dentista ed <strong>è</strong> in Italia per una conferenza.`,
+            `Olga <strong>è</strong> russa. <strong>È</strong> studentessa. <strong>È</strong> in Italia per studiare l'italiano e per fare shopping.`,
+            `Paolo Rossi <strong>è</strong> il direttore dell'albergo "Ponte Vecchio". <strong>È</strong> sposato e ha tre figli. <strong>È</strong> sempre molto occupato con i clienti.`
         ]
     },
 
@@ -285,8 +285,8 @@ export const datiLezione = {
                 id: "fase1",
                 titolo: "1️⃣ Tu, Lei, Io",
                 dialoghi: [
-                    { parlanti: "Olga", testo: '— Ciao Olga! <strong>Tu</strong> <strong>sei</strong> inglese?<br>— No, non sono inglese; <strong>io</strong> <strong>sono</strong> russa.' },
-                    { parlanti: "Victor", testo: '— Buongiorno Victor! <strong>Lei</strong> <strong>è</strong> tedesco?<br>— No, non sono tedesco; <strong>io</strong> <strong>sono</strong> francese.' }
+                    { parlanti: "Olga", testo: `— Ciao Olga! <strong>Tu</strong> <strong>sei</strong> inglese?<br>— No, non sono inglese; <strong>io</strong> <strong>sono</strong> russa.` },
+                    { parlanti: "Victor", testo: `— Buongiorno Victor! <strong>Lei</strong> <strong>è</strong> tedesco?<br>— No, non sono tedesco; <strong>io</strong> <strong>sono</strong> francese.` }
                 ],
                 domandeLAD: [
                     '🤔 В чем разница? В каком диалоге обращение неформальное (на «ты»), а в каком — формальное (на «Вы»)?',
@@ -306,7 +306,7 @@ export const datiLezione = {
                 id: "fase2",
                 titolo: "2️⃣ Passiamo al plurale",
                 dialoghi: [
-                    { parlanti: "Karl e Klaus", testo: '— Buongiorno Karl e Klaus! <strong>Voi</strong> <strong>siete</strong> stranieri?<br>— Sì, <strong>noi</strong> <strong>siamo</strong> stranieri; <strong>noi</strong> <strong>siamo</strong> tedeschi.' }
+                    { parlanti: "Karl e Klaus", testo: `— Buongiorno Karl e Klaus! <strong>Voi</strong> <strong>siete</strong> stranieri?<br>— Sì, <strong>noi</strong> <strong>siamo</strong> stranieri; <strong>noi</strong> <strong>siamo</strong> tedeschi.` }
                 ],
                 domandeLAD: [
                     '🤔 Что вы замечаете? Какую форму используют Клаус e Карл, чтобы ответить вместе? Какую форму мы используем, чтобы обратиться a entrambi?'
@@ -325,9 +325,9 @@ export const datiLezione = {
                 id: "fase3",
                 titolo: "3️⃣ Lui, Lei, Loro",
                 dialoghi: [
-                    { parlanti: "Mary", testo: 'Mary <strong>è</strong> inglese. <strong>Lei</strong> <strong>è</strong> insegnante.' },
-                    { parlanti: "Paolo Rossi", testo: 'Paolo Rossi <strong>è</strong> italiano. <strong>Lui</strong> <strong>è</strong> il direttore.' },
-                    { parlanti: "Karl e Klaus", testo: 'Karl e Klaus <strong>sono</strong> tedeschi. <strong>Loro</strong> <strong>sono</strong> studenti.' }
+                    { parlanti: "Mary", testo: `Mary <strong>è</strong> inglese. <strong>Lei</strong> <strong>è</strong> insegnante.` },
+                    { parlanti: "Paolo Rossi", testo: `Paolo Rossi <strong>è</strong> italiano. <strong>Lui</strong> <strong>è</strong> il direttore.` },
+                    { parlanti: "Karl e Klaus", testo: `Karl e Klaus <strong>sono</strong> tedeschi. <strong>Loro</strong> <strong>sono</strong> studenti.` }
                 ],
                 domandeLAD: [
                     '🤔 Какую форму глагола мы используем per «он», «она» e «они»?'
