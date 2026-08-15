@@ -457,6 +457,72 @@ h1 {
 }
 
 /* ============================================================ */
+/* SCHEDA 10: DIALOGHI                                         */
+/* ============================================================ */
+
+.dialoghi-container {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.scheda-dialoghi-titolo {
+    text-align: center;
+    color: var(--primary-color, #1a6e3a);
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+}
+
+.scheda-istruzioni {
+    text-align: center;
+    margin: 0 0 12px 0;
+}
+
+.personaggio-box {
+    background: #fafafa;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.personaggio-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--primary-color, #1a6e3a);
+}
+
+.personaggio-avatar {
+    width: 60px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--primary-color, #1a6e3a);
+}
+
+.personaggio-nome {
+    margin: 0;
+    color: var(--primary-color, #1a6e3a);
+    font-size: 1.2rem;
+}
+
+.personaggio-domande {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.personaggio-domande .forum-container {
+    margin: 0;
+    padding: 16px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+/* ============================================================ */
 /* RESPONSIVE                                                   */
 /* ============================================================ */
 
@@ -533,6 +599,20 @@ h1 {
     }
 
     .negazione-esercizio {
+        padding: 12px;
+    }
+
+    .personaggio-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .personaggio-avatar {
+        width: 80px;
+        height: 100px;
+    }
+
+    .personaggio-domande .forum-container {
         padding: 12px;
     }
 }
