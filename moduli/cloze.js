@@ -1,8 +1,8 @@
 // ================================================================
 // MODULO: CLOZE (Scheda 8 - Esercizi di completamento)
 // ================================================================
-// Gestisce gli esercizi di completamento delle fasi grammaticali.
-// Le risposte accettate sono definite come array di array nei dati.
+// Gestisce SOLO le fasi con esercizi di tipo cloze (fill-in-the-blanks).
+// Le fasi con associazione o soloInformativa vengono IGNORATE.
 // ================================================================
 
 import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -209,112 +209,7 @@ function iniettaCss() {
             padding: 4px 0;
         }
 
-        .associazione-box {
-            margin-top: 12px;
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 16px;
-        }
-        .associazione-istruzioni {
-            margin-bottom: 14px;
-            font-weight: 600;
-            color: #234;
-        }
-        .associazione-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-        .associazione-colonna {
-            background: #fafafa;
-            border-radius: 10px;
-            padding: 12px;
-            border: 1px solid #ececec;
-        }
-        .associazione-riga {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 10px;
-            margin-bottom: 8px;
-            background: white;
-            border-radius: 10px;
-            border: 2px solid transparent;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-        }
-        .associazione-riga.selezionata {
-            border-color: var(--primary-color, #1a6e3a);
-            background: #edf8f1;
-        }
-        .associazione-label {
-            font-weight: 600;
-            color: #223;
-        }
-        .associazione-slot,
-        .associazione-voce {
-            min-width: 90px;
-            min-height: 34px;
-            padding: 6px 10px;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            transition: all .2s ease;
-        }
-        .associazione-slot {
-            background: #f5f5f5;
-            border: 1px dashed #cfcfcf;
-            color: #888;
-            cursor: pointer;
-        }
-        .associazione-slot.piena {
-            background: #eafaf1;
-            border-style: solid;
-            color: #155724;
-            cursor: pointer;
-        }
-        .associazione-voce {
-            background: #eef4ff;
-            border: 1px solid #cfe0ff;
-            color: #224;
-            cursor: pointer;
-            margin-bottom: 8px;
-        }
-        .associazione-voce.usata {
-            opacity: 0.35;
-            text-decoration: line-through;
-        }
-        .associazione-azioni {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 14px;
-        }
-        .associazione-azioni button {
-            border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
-            cursor: pointer;
-            font-weight: 700;
-        }
-        .associazione-azioni .btn-verifica { background: var(--primary-color, #1a6e3a); color: #fff; }
-        .associazione-azioni .btn-reset { background: #f39c12; color: #fff; }
-        .associazione-esito {
-            margin-top: 10px;
-            padding: 10px 14px;
-            border-radius: 8px;
-            display: none;
-            font-weight: 600;
-        }
-        .associazione-esito.visibile { display: block; }
-        .associazione-esito.ok { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .associazione-esito.ko { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-
         @media (max-width: 700px) {
-            .associazione-layout { grid-template-columns: 1fr; }
             .cloze-fase { padding: 12px; }
             .cloze-esercizio .testo .cloze-input input { width: 70px; }
             .cloze-risposta-item { flex-direction: column; align-items: stretch; }
@@ -344,138 +239,82 @@ function generaTestoConInput(clozeData) {
     return html;
 }
 
-function generaAssociazione(fase) {
-    const assoc = fase.associazione;
-    if (!assoc) return '';
-
-    const sinistra = assoc.sinistra || [];
-    const destra = [...(assoc.destra || [])];
-
-    return `
-        <div class="associazione-box" id="associazione_box_${assoc.id}">
-            <div class="associazione-istruzioni">${assoc.istruzioni || ''}</div>
-            <div class="associazione-layout">
-                <div class="associazione-colonna">
-                    ${sinistra.map(item => `
-                        <div class="associazione-riga" id="riga_${assoc.id}_${item.id}">
-                            <div class="associazione-label">${item.label}</div>
-                            <div class="associazione-slot" id="slot_${assoc.id}_${item.id}" onclick="window.spostaAssociazione('${assoc.id}','${item.id}', null)">vuoto</div>
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="associazione-colonna">
-                    ${destra.map(item => `
-                        <div class="associazione-voce" id="voce_${assoc.id}_${item.id}" onclick="window.selezionaVoceAssociazione('${assoc.id}','${item.id}')">${item.label}</div>
-                    `).join('')}
-                </div>
-            </div>
-
-            <div class="associazione-azioni">
-                <button class="btn-verifica" onclick="window.verificaAssociazione('${assoc.id}')">✅ Verifica</button>
-                <button class="btn-reset" onclick="window.resetAssociazione('${assoc.id}')">🔄 Reset</button>
-            </div>
-
-            <div class="associazione-esito" id="associazione_esito_${assoc.id}"></div>
-        </div>
-    `;
-}
+// ================================================================
+// GENERA HTML - SOLO PER LE FASI CON CLOZE
+// ================================================================
 
 export function generaCloze(datiFasi, isDocente = false) {
     iniettaCss();
-    if (!datiFasi?.length) return '';
+    
+    // 🔑 FILTRA: prende SOLO le fasi che hanno la proprietà "cloze"
+    const fasiCloze = (datiFasi || []).filter(f => f?.cloze);
+    if (!fasiCloze.length) return '';
 
     return `
         <div class="cloze-container">
-            ${datiFasi.map((fase, idx) => {
-                if (fase.associazione) {
-                    return `
-                        <div class="cloze-fase" id="fase_${fase.id}">
-                            <div class="titolo-fase">${fase.titolo || `Fase ${idx + 1}`}</div>
-                            ${fase.dialoghi ? `
-                                <div class="cloze-dialoghi">
-                                    ${fase.dialoghi.map(d => `
-                                        <div class="dialogo">
-                                            <span class="parlante">${d.parlanti || ''}</span>
-                                            ${d.testo || ''}
-                                        </div>
-                                    `).join('')}
+            ${fasiCloze.map((fase, idx) => `
+                <div class="cloze-fase" id="fase_${fase.id}">
+                    <div class="titolo-fase">${fase.titolo || `Fase ${idx + 1}`}</div>
+
+                    ${fase.dialoghi ? `
+                        <div class="cloze-dialoghi">
+                            ${fase.dialoghi.map(d => `
+                                <div class="dialogo">
+                                    <span class="parlante">${d.parlanti || ''}</span>
+                                    ${d.testo || ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+
+                    ${fase.domandeLAD ? `
+                        <div class="cloze-domande-lad">
+                            ${fase.domandeLAD.map(d => `<p>${d}</p>`).join('')}
+                        </div>
+                    ` : ''}
+
+                    ${fase.cloze ? `
+                        <div class="cloze-esercizio" id="cloze_box_${fase.cloze.id}">
+                            <div class="testo" id="cloze_testo_${fase.cloze.id}">
+                                ${generaTestoConInput(fase.cloze)}
+                            </div>
+
+                            <div class="cloze-azioni">
+                                <button class="btn-invia" id="btn_invia_${fase.cloze.id}" onclick="window.inviaCloze('${fase.cloze.id}')" ${isDocente ? 'disabled style="display:none;"' : ''}>Invia</button>
+                                <button class="btn-invia" id="btn_riapri_${fase.cloze.id}" onclick="window.riapriCloze('${fase.cloze.id}')" style="display:none; background:#f39c12;">✏️ Modifica</button>
+                            </div>
+
+                            <div class="cloze-stato" id="cloze_stato_${fase.cloze.id}"></div>
+                            <div class="cloze-suggerimento" id="cloze_suggerimento_${fase.cloze.id}"></div>
+
+                            ${isDocente ? `
+                                <div class="cloze-docente-panel" id="docente_${fase.cloze.id}">
+                                    <div class="titolo">👨‍🏫 Pannello Docente</div>
+                                    <div id="docente_lista_${fase.cloze.id}">
+                                        <div class="cloze-vuoto">In attesa delle risposte degli studenti...</div>
+                                    </div>
                                 </div>
                             ` : ''}
-                            ${fase.domandeLAD ? `
-                                <div class="cloze-domande-lad">
-                                    ${fase.domandeLAD.map(d => `<p>${d}</p>`).join('')}
-                                </div>
-                            ` : ''}
-                            ${generaAssociazione(fase)}
                         </div>
-                    `;
-                }
-
-                if (fase.soloInformativa) {
-                    return `
-                        <div class="cloze-fase" id="fase_${fase.id}">
-                            <div class="titolo-fase">${fase.titolo || `Fase ${idx + 1}`}</div>
-                            ${fase.contenuto || ''}
-                        </div>
-                    `;
-                }
-
-                return `
-                    <div class="cloze-fase" id="fase_${fase.id}">
-                        <div class="titolo-fase">${fase.titolo || `Fase ${idx + 1}`}</div>
-
-                        ${fase.dialoghi ? `
-                            <div class="cloze-dialoghi">
-                                ${fase.dialoghi.map(d => `
-                                    <div class="dialogo">
-                                        <span class="parlante">${d.parlanti || ''}</span>
-                                        ${d.testo || ''}
-                                    </div>
-                                `).join('')}
-                            </div>
-                        ` : ''}
-
-                        ${fase.domandeLAD ? `
-                            <div class="cloze-domande-lad">
-                                ${fase.domandeLAD.map(d => `<p>${d}</p>`).join('')}
-                            </div>
-                        ` : ''}
-
-                        ${fase.cloze ? `
-                            <div class="cloze-esercizio" id="cloze_box_${fase.cloze.id}">
-                                <div class="testo" id="cloze_testo_${fase.cloze.id}">
-                                    ${generaTestoConInput(fase.cloze)}
-                                </div>
-
-                                <div class="cloze-azioni">
-                                    <button class="btn-invia" id="btn_invia_${fase.cloze.id}" onclick="window.inviaCloze('${fase.cloze.id}')" ${isDocente ? 'disabled style="display:none;"' : ''}>Invia</button>
-                                    <button class="btn-invia" id="btn_riapri_${fase.cloze.id}" onclick="window.riapriCloze('${fase.cloze.id}')" style="display:none; background:#f39c12;">✏️ Modifica</button>
-                                </div>
-
-                                <div class="cloze-stato" id="cloze_stato_${fase.cloze.id}"></div>
-                                <div class="cloze-suggerimento" id="cloze_suggerimento_${fase.cloze.id}"></div>
-
-                                ${isDocente ? `
-                                    <div class="cloze-docente-panel" id="docente_${fase.cloze.id}">
-                                        <div class="titolo">👨‍🏫 Pannello Docente</div>
-                                        <div id="docente_lista_${fase.cloze.id}">
-                                            <div class="cloze-vuoto">In attesa delle risposte degli studenti...</div>
-                                        </div>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('')}
+                    ` : ''}
+                </div>
+            `).join('')}
         </div>
     `;
 }
+
+// ================================================================
+// INIZIALIZZAZIONE
+// ================================================================
 
 export function initCloze(app) {
     db = getDatabase(app);
     console.log('📦 cloze: inizializzato');
 }
+
+// ================================================================
+// LISTENER - SOLO PER LE FASI CON CLOZE
+// ================================================================
 
 export function avviaClozeListener(basePath, fasiGrammatica, isDocente = false, username = '') {
     if (!db) {
@@ -487,29 +326,22 @@ export function avviaClozeListener(basePath, fasiGrammatica, isDocente = false, 
     isDocenteCorrente = isDocente;
     myUserNameCorrente = username;
 
-    const eserciziCloze = [];
-    fasiGrammatica.forEach(fase => {
-        if (fase.cloze) eserciziCloze.push(fase.cloze);
-    });
+    // 🔑 FILTRA: prende SOLO i cloze dalle fasi che li contengono
+    eserciziClozeCorrenti = (fasiGrammatica || [])
+        .filter(f => f?.cloze)
+        .map(f => f.cloze);
 
-    eserciziClozeCorrenti = eserciziCloze;
-
-    eserciziCloze.forEach(cloze => {
+    eserciziClozeCorrenti.forEach(cloze => {
         const risposteRef = ref(db, `${basePath}/cloze/${cloze.id}/risposte`);
         onValue(risposteRef, (snap) => {
             aggiornaUICloze(cloze.id, snap.val() || {});
         });
     });
-
-    eserciziCloze.forEach(cloze => {
-        if (cloze.associazione) {
-            const assocRef = ref(db, `${basePath}/associazione/${cloze.associazione.id}/associazioni`);
-            onValue(assocRef, (snap) => {
-                aggiornaUIAssociazione(cloze.associazione.id, snap.val() || {});
-            });
-        }
-    });
 }
+
+// ================================================================
+// AGGIORNA UI
+// ================================================================
 
 function aggiornaUICloze(idCloze, dati) {
     const statoEl = document.getElementById(`cloze_stato_${idCloze}`);
@@ -611,15 +443,9 @@ function aggiornaUICloze(idCloze, dati) {
     }
 }
 
-function aggiornaUIAssociazione(idAssoc, dati) {
-    const esitoEl = document.getElementById(`associazione_esito_${idAssoc}`);
-    const ass = (window.__associazioniCloze || []).find(a => a.id === idAssoc);
-    if (!ass) return;
-    const stato = dati[myUserNameCorrente]?.stato || 'in_attesa';
-    if (!esitoEl) return;
-    esitoEl.className = `associazione-esito visibile ${stato === 'approvata' ? 'ok' : 'ko'}`;
-    esitoEl.textContent = stato === 'approvata' ? '✅ Perfetto! Tutte le associazioni sono corrette!' : '';
-}
+// ================================================================
+// FUNZIONI GLOBALI (Studente)
+// ================================================================
 
 window.inviaCloze = async function(idCloze) {
     if (!db || !myUserNameCorrente) {
@@ -631,7 +457,7 @@ window.inviaCloze = async function(idCloze) {
     const risposte = [];
     const risposteAccettate = eserciziClozeCorrenti.find(c => c.id === idCloze)?.risposte || [];
     let vuoto = false;
-    let tutteCorrette = true;
+    let tutteCorrette = true;  // ✅ Qui è corretto
 
     inputs.forEach((input, index) => {
         const valore = input.value.trim();
@@ -651,6 +477,7 @@ window.inviaCloze = async function(idCloze) {
         return;
     }
 
+    // ✅ CORRETTO: usa "tutteCorrette" (senza "s" finale)
     const stato = tutteCorrette ? 'approvata' : 'in_attesa';
 
     const refRisposta = ref(db, `${basePathCorrente}/cloze/${idCloze}/risposte/${myUserNameCorrente}`);
@@ -661,6 +488,7 @@ window.inviaCloze = async function(idCloze) {
         timestamp: Date.now()
     });
 };
+
 
 window.riapriCloze = function(idCloze) {
     const inputs = document.querySelectorAll(`#cloze_testo_${idCloze} input`);
@@ -683,8 +511,15 @@ window.riapriCloze = function(idCloze) {
     if (suggEl) suggEl.style.display = 'none';
 };
 
+// ================================================================
+// FUNZIONI GLOBALI (Docente)
+// ================================================================
+
 window.approvaCloze = async function(idCloze, studentName) {
-    if (!db || !isDocenteCorrente) return;
+    if (!db || !isDocenteCorrente) {
+        alert('Solo il docente può approvare.');
+        return;
+    }
     const refRisposta = ref(db, `${basePathCorrente}/cloze/${idCloze}/risposte/${studentName}`);
     await update(refRisposta, {
         stato: 'approvata',
@@ -694,7 +529,10 @@ window.approvaCloze = async function(idCloze, studentName) {
 };
 
 window.richiediModificaCloze = async function(idCloze, studentName) {
-    if (!db || !isDocenteCorrente) return;
+    if (!db || !isDocenteCorrente) {
+        alert('Solo il docente può richiedere modifiche.');
+        return;
+    }
 
     const cloze = eserciziClozeCorrenti.find(c => c.id === idCloze);
     const suggerimentoDefault = cloze?.suggerimenti?.[0] || '📖 Rivedi le forme del verbo.';
@@ -715,7 +553,10 @@ window.richiediModificaCloze = async function(idCloze, studentName) {
 };
 
 window.eliminaCloze = async function(idCloze, studentName) {
-    if (!db || !isDocenteCorrente) return;
+    if (!db || !isDocenteCorrente) {
+        alert('Solo il docente può eliminare le risposte.');
+        return;
+    }
     if (!confirm(`Eliminare la risposta di ${studentName}?`)) return;
 
     const refRisposta = ref(db, `${basePathCorrente}/cloze/${idCloze}/risposte/${studentName}`);
@@ -723,88 +564,12 @@ window.eliminaCloze = async function(idCloze, studentName) {
 };
 
 window.resettaCloze = async function(idCloze) {
-    if (!db || !isDocenteCorrente) return;
+    if (!db || !isDocenteCorrente) {
+        alert('Solo il docente può resettare.');
+        return;
+    }
     if (!confirm(`Resettare tutte le risposte per questo esercizio?`)) return;
 
     const refEsercizio = ref(db, `${basePathCorrente}/cloze/${idCloze}`);
     await remove(refEsercizio);
-};
-
-window.__associazioniCloze = [];
-window.spostaAssociazione = function(idAssoc, sinistraId, destraId) {
-    const slot = document.getElementById(`slot_${idAssoc}_${sinistraId}`);
-    if (!slot) return;
-    slot.textContent = destraId ? destraId : 'vuoto';
-    slot.dataset.destraId = destraId || '';
-    slot.classList.toggle('piena', !!destraId);
-};
-
-window.selezionaVoceAssociazione = function(idAssoc, destraId) {
-    const ass = window.__associazioniCloze.find(a => a.id === idAssoc);
-    if (!ass) return;
-
-    const used = ass._used || {};
-    const slotVuoto = Object.keys(ass.associazioneCorretta || {}).find(k => !used[k]);
-    if (!slotVuoto) return;
-
-    used[slotVuoto] = destraId;
-    ass._used = used;
-    window.spostaAssociazione(idAssoc, slotVuoto, destraId);
-
-    const voce = document.getElementById(`voce_${idAssoc}_${destraId}`);
-    if (voce) voce.classList.add('usata');
-};
-
-window.verificaAssociazione = async function(idAssoc) {
-    if (!db || !myUserNameCorrente) {
-        alert('Errore: non sei connesso.');
-        return;
-    }
-
-    const ass = window.__associazioniCloze.find(a => a.id === idAssoc);
-    if (!ass) return;
-
-    const corrette = ass.associazioneCorretta || {};
-    const slots = Object.keys(corrette);
-    let tutteCorrette = true;
-
-    slots.forEach(sinistraId => {
-        const slot = document.getElementById(`slot_${idAssoc}_${sinistraId}`);
-        const destraId = slot?.dataset?.destraId || '';
-        if (destraId !== corrette[sinistraId]) tutteCorrette = false;
-    });
-
-    const stato = tutteCorrette ? 'approvata' : 'in_attesa';
-    const payload = { associazioni: {}, stato, timestamp: Date.now() };
-
-    slots.forEach(sinistraId => {
-        const slot = document.getElementById(`slot_${idAssoc}_${sinistraId}`);
-        payload.associazioni[sinistraId] = slot?.dataset?.destraId || '';
-    });
-
-    const refRisposta = ref(db, `${basePathCorrente}/associazione/${idAssoc}/associazioni/${myUserNameCorrente}`);
-    await set(refRisposta, payload);
-
-    const esitoEl = document.getElementById(`associazione_esito_${idAssoc}`);
-    if (esitoEl) {
-        esitoEl.className = `associazione-esito visibile ${tutteCorrette ? 'ok' : 'ko'}`;
-        esitoEl.textContent = tutteCorrette ? '✅ Perfetto! Tutte le associazioni sono corrette!' : '❌ C’è qualche errore. Riprova!';
-    }
-};
-
-window.resetAssociazione = function(idAssoc) {
-    const ass = window.__associazioniCloze.find(a => a.id === idAssoc);
-    if (!ass) return;
-
-    Object.keys(ass.associazioneCorretta || {}).forEach(sinistraId => {
-        window.spostaAssociazione(idAssoc, sinistraId, null);
-    });
-
-    document.querySelectorAll(`[id^="voce_${idAssoc}_"]`).forEach(el => el.classList.remove('usata'));
-
-    const esitoEl = document.getElementById(`associazione_esito_${idAssoc}`);
-    if (esitoEl) {
-        esitoEl.className = 'associazione-esito';
-        esitoEl.textContent = '';
-    }
 };
