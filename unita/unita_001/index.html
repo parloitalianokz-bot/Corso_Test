@@ -290,9 +290,41 @@
         function renderScheda8() {
             const grammatica = datiLezione.grammatica;
             if (!grammatica) return '';
-            const fasiCloze = (grammatica.fasi || []).filter(f => f.cloze);
-            const fasiAssociazione = (grammatica.fasi || []).filter(f => f.associazione);
-            return generaCloze(fasiCloze, STATO_ACCORDION.isDocente) + generaAssociazione(fasiAssociazione, STATO_ACCORDION.isDocente);
+            
+            const fasi = grammatica.fasi || [];
+            
+            // Separa le fasi per tipo
+            const fasiCloze = fasi.filter(f => f.cloze);
+            const fasiAssociazione = fasi.filter(f => f.associazione);
+            const fasiInfo = fasi.filter(f => f.soloInformativa);
+            
+            let html = '';
+            
+            // 1. Cloze (fasi 1, 2, 3)
+            if (fasiCloze.length) {
+                html += generaCloze(fasiCloze, STATO_ACCORDION.isDocente);
+            }
+            
+            // 2. Associazione (fase 4)
+            if (fasiAssociazione.length) {
+                html += generaAssociazione(fasiAssociazione, STATO_ACCORDION.isDocente);
+            }
+            
+            // 3. Informativa (fase 5)
+            if (fasiInfo.length) {
+                html += `
+                    <div class="cloze-container">
+                        ${fasiInfo.map(fase => `
+                            <div class="cloze-fase" id="fase_${fase.id}">
+                                <div class="titolo-fase">${fase.titolo || ''}</div>
+                                ${fase.contenuto || ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            return html;
         }
 
         function avviaPagina(utente) {
@@ -400,19 +432,32 @@
                     isDocente
                 );
             }
+            
+            // Scheda 8 - Grammatica
             if (datiLezione.grammatica?.fasi?.length) {
-                avviaClozeListener(
-                    BASE_PATH,
-                    datiLezione.grammatica.fasi,
-                    isDocente,
-                    utente.username
-                );
-                avviaAssociazioneListener(
-                    BASE_PATH,
-                    datiLezione.grammatica.fasi,
-                    isDocente,
-                    utente.username
-                );
+                const fasi = datiLezione.grammatica.fasi;
+                
+                // Listener per cloze (fasi 1, 2, 3)
+                const fasiCloze = fasi.filter(f => f.cloze);
+                if (fasiCloze.length) {
+                    avviaClozeListener(
+                        BASE_PATH,
+                        fasiCloze,
+                        isDocente,
+                        utente.username
+                    );
+                }
+                
+                // Listener per associazione (fase 4)
+                const fasiAssociazione = fasi.filter(f => f.associazione);
+                if (fasiAssociazione.length) {
+                    avviaAssociazioneListener(
+                        BASE_PATH,
+                        fasiAssociazione,
+                        isDocente,
+                        utente.username
+                    );
+                }
             }
         }
 
