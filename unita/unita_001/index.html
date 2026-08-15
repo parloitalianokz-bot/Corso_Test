@@ -143,6 +143,18 @@
                 </div>
             </div>
         </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_11')">
+                Scheda 11: 🎤 Mi presento <span id="arrow_scheda_11">▼</span>
+            </div>
+            <div id="content_scheda_11" class="accordion-content">
+                <div id="contenitore-presentazione"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_11')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -209,6 +221,7 @@
             grammaticaInizializzata: false,
             negazioneInizializzata: false,
             dialoghiInizializzata: false,
+            presentazioneInizializzata: false,
             isDocente: false,
             utente: null
         };
@@ -322,7 +335,6 @@
             if (!negazione) return '';
             const fasi = negazione.fasi || [];
             let html = '';
-            
             fasi.forEach((fase, idx) => {
                 if (fase.soloInformativa) {
                     html += `
@@ -333,7 +345,6 @@
                     `;
                     return;
                 }
-                
                 if (fase.esercizi?.length) {
                     const datiPerModulo = {
                         titolo: fase.titolo || `Fase ${idx + 1}`,
@@ -347,7 +358,6 @@
                     html += generaParliamoneInsieme(datiPerModulo, STATO_ACCORDION.isDocente);
                     return;
                 }
-                
                 if (fase.forum) {
                     html += `
                         <div class="negazione-fase" id="fase_${fase.id}">
@@ -358,20 +368,17 @@
                     `;
                 }
             });
-            
             return html;
         }
 
         function renderScheda10() {
             const dialoghi = datiLezione.produzioneDialoghi;
             if (!dialoghi) return '';
-            
             let html = `
                 <div class="dialoghi-container">
                     <h3 class="scheda-dialoghi-titolo">${dialoghi.titolo || '🎭 Completa i dialoghi'}</h3>
                     <p class="scheda-istruzioni">${dialoghi.istruzioni || ''}</p>
             `;
-            
             dialoghi.personaggi.forEach(personaggio => {
                 const datiPerModulo = {
                     titolo: `👤 ${personaggio.nome}`,
@@ -381,7 +388,6 @@
                         placeholder: "Scrivi qui la tua risposta..."
                     }))
                 };
-                
                 html += `
                     <div class="personaggio-box" id="personaggio_${personaggio.id}">
                         ${personaggio.immagine ? `<div class="personaggio-avatar-wrapper"><img src="${personaggio.immagine}" alt="Ritratto di ${personaggio.nome}" class="personaggio-avatar"></div>` : ''}
@@ -389,9 +395,23 @@
                     </div>
                 `;
             });
-            
             html += `</div>`;
             return html;
+        }
+
+        function renderScheda11() {
+            const presentazione = datiLezione.presentazionePersonale;
+            if (!presentazione) return '';
+            const datiPerModulo = {
+                titolo: presentazione.titolo || '🎤 Mi presento',
+                istruzioni: presentazione.istruzioni || '',
+                esercizi: (presentazione.esercizi || []).map(ex => ({
+                    id: ex.id,
+                    domanda: ex.domanda,
+                    placeholder: ex.placeholder || 'Scrivi qui...'
+                }))
+            };
+            return generaParliamoneInsieme(datiPerModulo, STATO_ACCORDION.isDocente);
         }
 
         function avviaPagina(utente) {
@@ -430,6 +450,7 @@
             document.getElementById('contenitore-grammatica').innerHTML = renderScheda8();
             document.getElementById('contenitore-negazione').innerHTML = renderScheda9();
             document.getElementById('contenitore-dialoghi').innerHTML = renderScheda10();
+            document.getElementById('contenitore-presentazione').innerHTML = renderScheda11();
 
             const BASE_PATH = 'unita_001';
 
@@ -488,6 +509,18 @@
                         avviaParliamoneInsiemeListener(BASE_PATH, eserciziPersonaggio, isDocente, utente.username);
                     }
                 });
+            }
+
+            if (datiLezione.presentazionePersonale?.esercizi?.length) {
+                avviaParliamoneInsiemeListener(
+                    BASE_PATH,
+                    datiLezione.presentazionePersonale.esercizi.map(ex => ({
+                        id: ex.id,
+                        domanda: ex.domanda
+                    })),
+                    isDocente,
+                    utente.username
+                );
             }
         }
 
