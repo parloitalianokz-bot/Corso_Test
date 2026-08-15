@@ -322,7 +322,9 @@
             if (!negazione) return '';
             const fasi = negazione.fasi || [];
             let html = '';
+            
             fasi.forEach((fase, idx) => {
+                // Fase 1: Informativa
                 if (fase.soloInformativa) {
                     html += `
                         <div class="negazione-fase" id="fase_${fase.id}">
@@ -332,68 +334,67 @@
                     `;
                     return;
                 }
+                
+                // Fase 2: Pratica → parliamoneInsieme
                 if (fase.esercizi?.length) {
-                    html += `
-                        <div class="negazione-fase" id="fase_${fase.id}">
-                            <div class="titolo-fase">${fase.titolo || `Fase ${idx + 1}`}</div>
-                            ${fase.introduzione || ''}
-                            ${fase.esercizi.map(ex => `
-                                <div class="negazione-esercizio">
-                                    <p><strong>${ex.domanda}</strong></p>
-                                    ${generaForum({
-                                        forum: {
-                                            idFirebase: `u001_negazione_${ex.id}`,
-                                            domanda: "Scrivi la risposta:",
-                                            placeholder: "Es. No, Yoko non è francese. Yoko è giapponese."
-                                        }
-                                    })}
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
+                    const datiPerModulo = {
+                        titolo: fase.titolo || `Fase ${idx + 1}`,
+                        istruzioni: fase.introduzione || '',
+                        esercizi: fase.esercizi.map(ex => ({
+                            id: ex.id,
+                            domanda: ex.domanda,
+                            placeholder: "Scrivi qui la tua risposta..."
+                        }))
+                    };
+                    html += generaParliamoneInsieme(datiPerModulo, STATO_ACCORDION.isDocente);
                     return;
                 }
+                
+                // Fase 3: La regola (forum singolo)
                 if (fase.forum) {
                     html += `
                         <div class="negazione-fase" id="fase_${fase.id}">
                             <div class="titolo-fase">${fase.titolo || `Fase ${idx + 1}`}</div>
                             ${fase.introduzione || ''}
-                            ${generaForum({ forum: fase.forum })}
+                            ${generaForum({ forum: fase.forum }, STATO_ACCORDION.isDocente)}
                         </div>
                     `;
                 }
             });
+            
             return html;
         }
 
         function renderScheda10() {
             const dialoghi = datiLezione.produzioneDialoghi;
             if (!dialoghi) return '';
-            return `
+            
+            let html = `
                 <div class="dialoghi-container">
                     <h3 class="scheda-dialoghi-titolo">${dialoghi.titolo || '🎭 Completa i dialoghi'}</h3>
                     <p class="scheda-istruzioni">${dialoghi.istruzioni || ''}</p>
-                    ${(dialoghi.personaggi || []).map(personaggio => `
-                        <div class="personaggio-box" id="personaggio_${personaggio.id}">
-                            <div class="personaggio-header">
-                                ${personaggio.immagine ? `<img src="${personaggio.immagine}" alt="Ritratto di ${personaggio.nome}" class="personaggio-avatar">` : ''}
-                                <h4 class="personaggio-nome">👤 ${personaggio.nome}</h4>
-                            </div>
-                            <div class="personaggio-domande">
-                                ${(personaggio.domande || []).map(domanda => `
-                                    ${generaForum({
-                                        forum: {
-                                            idFirebase: domanda.id,
-                                            domanda: domanda.testo,
-                                            placeholder: "Scrivi qui la tua risposta..."
-                                        }
-                                    })}
-                                `).join('')}
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
             `;
+            
+            dialoghi.personaggi.forEach(personaggio => {
+                const datiPerModulo = {
+                    titolo: `👤 ${personaggio.nome}`,
+                    esercizi: personaggio.domande.map(domanda => ({
+                        id: domanda.id,
+                        domanda: domanda.testo,
+                        placeholder: "Scrivi qui la tua risposta..."
+                    }))
+                };
+                
+                html += `
+                    <div class="personaggio-box" id="personaggio_${personaggio.id}">
+                        ${personaggio.immagine ? `<div class="personaggio-avatar-wrapper"><img src="${personaggio.immagine}" alt="Ritratto di ${personaggio.nome}" class="personaggio-avatar"></div>` : ''}
+                        ${generaParliamoneInsieme(datiPerModulo, STATO_ACCORDION.isDocente)}
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            return html;
         }
 
         function avviaPagina(utente) {
@@ -464,21 +465,51 @@
                 if (fasiAssociazione.length) avviaAssociazioneListener(BASE_PATH, fasiAssociazione, isDocente, utente.username);
             }
 
+            // Scheda 9 - Negazione
             if (datiLezione.negazione?.fasi?.length) {
-                datiLezione.negazione.fasi.forEach(fase => {
-                    if (fase.esercizi?.length) {
-                        fase.esercizi.forEach(ex => avviaForumListener(BASE_PATH, `u001_negazione_${ex.id}`, isDocente));
-                    }
-                    if (fase.forum?.idFirebase) avviaForumListener(BASE_PATH, fase.forum.idFirebase, isDocente);
-                });
+                const fasi = datiLezione.negazione.fasi;
+                
+                // Fase 2: pratica → parliamoneInsieme
+                const fasePratica = fasi.find(f => f.esercizi?.length);
+                if (fasePratica) {
+                    const esercizi = fasePratica.esercizi.map(ex => ({
+                        id: ex.id,
+                        domanda: ex.domanda
+                    }));
+                    avviaParliamoneInsiemeListener(
+                        BASE_PATH,
+                        esercizi,
+                        isDocente,
+                        utente.username
+                    );
+                }
+                
+                // Fase 3: regola → forum
+                const faseRegola = fasi.find(f => f.forum);
+                if (faseRegola?.forum?.idFirebase) {
+                    avviaForumListener(BASE_PATH, faseRegola.forum.idFirebase, isDocente);
+                }
             }
 
+            // Scheda 10 - Dialoghi
             if (datiLezione.produzioneDialoghi?.personaggi?.length) {
+                const tuttiEsercizi = [];
                 datiLezione.produzioneDialoghi.personaggi.forEach(personaggio => {
                     personaggio.domande.forEach(domanda => {
-                        avviaForumListener(BASE_PATH, domanda.id, isDocente);
+                        tuttiEsercizi.push({
+                            id: domanda.id,
+                            domanda: domanda.testo
+                        });
                     });
                 });
+                if (tuttiEsercizi.length) {
+                    avviaParliamoneInsiemeListener(
+                        BASE_PATH,
+                        tuttiEsercizi,
+                        isDocente,
+                        utente.username
+                    );
+                }
             }
         }
 
