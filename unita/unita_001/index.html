@@ -131,6 +131,18 @@
                 </div>
             </div>
         </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_10')">
+                Scheda 10: 🎭 Completa i dialoghi <span id="arrow_scheda_10">▼</span>
+            </div>
+            <div id="content_scheda_10" class="accordion-content">
+                <div id="contenitore-dialoghi"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_10')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -196,6 +208,7 @@
             riordinoInizializzato: false,
             grammaticaInizializzata: false,
             negazioneInizializzata: false,
+            dialoghiInizializzata: false,
             isDocente: false,
             utente: null
         };
@@ -203,8 +216,7 @@
         function renderScheda2() {
             const ascolto = datiLezione.ascolto;
             if (!ascolto) return '';
-
-            const htmlVideo = `
+            return `
                 <div class="scheda-video-box">
                     <div class="attivita-label">Attività 1 - Guardate e ascoltate il video</div>
                     <p class="scheda-istruzioni">${ascolto.istruzioni}</p>
@@ -215,56 +227,41 @@
                             allowfullscreen>
                         </iframe>
                     </div>
+                    ${ascolto.scanning ? `
+                        <div class="section-separator">
+                            ${generaLavagna({
+                                id: ascolto.scanning.id,
+                                placeholder: ascolto.scanning.placeholder,
+                                titolo: ascolto.scanning.titolo || 'Attività 2 - Caccia alle parole'
+                            })}
+                        </div>
+                    ` : ''}
+                    ${ascolto.comprensione ? `
+                        <div class="section-separator">
+                            ${generaForum({
+                                forum: {
+                                    idFirebase: ascolto.comprensione.id,
+                                    domanda: ascolto.comprensione.domanda || 'Attività 3 - Mettiti alla prova, scrivi cosa ricordi',
+                                    placeholder: ascolto.comprensione.placeholder
+                                }
+                            })}
+                        </div>
+                    ` : ''}
                 </div>
             `;
-
-            const htmlLavagna = ascolto.scanning
-                ? `
-                    <div class="section-separator">
-                        ${generaLavagna({
-                            id: ascolto.scanning.id,
-                            placeholder: ascolto.scanning.placeholder,
-                            titolo: ascolto.scanning.titolo || 'Attività 2 - Caccia alle parole'
-                        })}
-                    </div>
-                `
-                : '';
-
-            const htmlForum = ascolto.comprensione
-                ? `
-                    <div class="section-separator">
-                        ${generaForum({
-                            forum: {
-                                idFirebase: ascolto.comprensione.id,
-                                domanda: ascolto.comprensione.domanda || 'Attività 3 - Mettiti alla prova, scrivi cosa ricordi',
-                                placeholder: ascolto.comprensione.placeholder
-                            }
-                        })}
-                    </div>
-                `
-                : '';
-
-            return htmlVideo + htmlLavagna + htmlForum;
         }
 
         function renderScheda3() {
             const lettura = datiLezione.lettura;
             if (!lettura) return '';
-
-            const paragrafi = (lettura.paragrafi || []);
-            const glossario = (lettura.glossario || []);
-
-            const paragrafiGlossati = paragrafi
-                .map(p => `<p class="lettura-paragrafo">${glossarizzaTesto(p, glossario)}</p>`)
+            const paragrafiGlossati = (lettura.paragrafi || [])
+                .map(p => `<p class="lettura-paragrafo">${glossarizzaTesto(p, lettura.glossario || [])}</p>`)
                 .join('');
-
             return `
                 <div class="scheda-lettura-box">
                     <h3 class="scheda-lettura-titolo">${lettura.titolo || ''}</h3>
-                    <div class="scheda-lettura-pagina">
-                        ${paragrafiGlossati}
-                    </div>
-                    ${generaListaGlossario(glossario)}
+                    <div class="scheda-lettura-pagina">${paragrafiGlossati}</div>
+                    ${generaListaGlossario(lettura.glossario || [])}
                     <div class="section-separator">
                         ${generaLavagna({
                             id: lettura.brainstorming.id,
@@ -303,45 +300,28 @@
         function renderScheda8() {
             const grammatica = datiLezione.grammatica;
             if (!grammatica) return '';
-
             const fasi = grammatica.fasi || [];
+            let html = '';
             const fasiCloze = fasi.filter(f => f.cloze);
             const fasiAssociazione = fasi.filter(f => f.associazione);
             const fasiInfo = fasi.filter(f => f.soloInformativa);
-
-            let html = '';
-
-            if (fasiCloze.length) {
-                html += generaCloze(fasiCloze, STATO_ACCORDION.isDocente);
-            }
-
-            if (fasiAssociazione.length) {
-                html += generaAssociazione(fasiAssociazione, STATO_ACCORDION.isDocente);
-            }
-
+            if (fasiCloze.length) html += generaCloze(fasiCloze, STATO_ACCORDION.isDocente);
+            if (fasiAssociazione.length) html += generaAssociazione(fasiAssociazione, STATO_ACCORDION.isDocente);
             if (fasiInfo.length) {
-                html += `
-                    <div class="cloze-container">
-                        ${fasiInfo.map(fase => `
-                            <div class="cloze-fase" id="fase_${fase.id}">
-                                <div class="titolo-fase">${fase.titolo || ''}</div>
-                                ${fase.contenuto || ''}
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
+                html += `<div class="cloze-container">${fasiInfo.map(fase => `
+                    <div class="cloze-fase" id="fase_${fase.id}">
+                        <div class="titolo-fase">${fase.titolo || ''}</div>
+                        ${fase.contenuto || ''}
+                    </div>`).join('')}</div>`;
             }
-
             return html;
         }
 
         function renderScheda9() {
             const negazione = datiLezione.negazione;
             if (!negazione) return '';
-
             const fasi = negazione.fasi || [];
             let html = '';
-
             fasi.forEach((fase, idx) => {
                 if (fase.soloInformativa) {
                     html += `
@@ -352,8 +332,7 @@
                     `;
                     return;
                 }
-
-                if (fase.esercizi) {
+                if (fase.esercizi?.length) {
                     html += `
                         <div class="negazione-fase" id="fase_${fase.id}">
                             <div class="titolo-fase">${fase.titolo || `Fase ${idx + 1}`}</div>
@@ -374,7 +353,6 @@
                     `;
                     return;
                 }
-
                 if (fase.forum) {
                     html += `
                         <div class="negazione-fase" id="fase_${fase.id}">
@@ -385,8 +363,37 @@
                     `;
                 }
             });
-
             return html;
+        }
+
+        function renderScheda10() {
+            const dialoghi = datiLezione.produzioneDialoghi;
+            if (!dialoghi) return '';
+            return `
+                <div class="dialoghi-container">
+                    <h3 class="scheda-dialoghi-titolo">${dialoghi.titolo || '🎭 Completa i dialoghi'}</h3>
+                    <p class="scheda-istruzioni">${dialoghi.istruzioni || ''}</p>
+                    ${(dialoghi.personaggi || []).map(personaggio => `
+                        <div class="personaggio-box" id="personaggio_${personaggio.id}">
+                            <div class="personaggio-header">
+                                ${personaggio.immagine ? `<img src="${personaggio.immagine}" alt="Ritratto di ${personaggio.nome}" class="personaggio-avatar">` : ''}
+                                <h4 class="personaggio-nome">👤 ${personaggio.nome}</h4>
+                            </div>
+                            <div class="personaggio-domande">
+                                ${(personaggio.domande || []).map(domanda => `
+                                    ${generaForum({
+                                        forum: {
+                                            idFirebase: domanda.id,
+                                            domanda: domanda.testo,
+                                            placeholder: "Scrivi qui la tua risposta..."
+                                        }
+                                    })}
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
         }
 
         function avviaPagina(utente) {
@@ -404,47 +411,18 @@
             STATO_ACCORDION.utente = utente;
             STATO_ACCORDION.isDocente = utente.ruolo === 'docenti';
 
-            const datiConUtente = {
+            initIntestazione({
                 ...datiLezione,
-                badge: {
-                    nome: utente.username,
-                    gruppo: utente.gruppo,
-                    icona: '👤'
-                }
-            };
-
-            initIntestazione(datiConUtente);
+                badge: { nome: utente.username, gruppo: utente.gruppo, icona: '👤' }
+            });
 
             const isDocente = STATO_ACCORDION.isDocente;
 
-            const htmlScelta = datiLezione.elicitazione?.sceltaPersonale
-                ? `
-                    <div class="section-separator section-separator-no-top">
-                        <div class="attivita-label">Attività 1</div>
-                        ${generaSceltaPersonale(datiLezione, isDocente)}
-                    </div>
-                `
-                : '';
+            document.getElementById('contenitore-dinamico').innerHTML =
+                (datiLezione.elicitazione?.sceltaPersonale ? `<div class="section-separator section-separator-no-top"><div class="attivita-label">Attività 1</div>${generaSceltaPersonale(datiLezione, isDocente)}</div>` : '') +
+                (datiLezione.vocabolario?.length ? `<div class="section-separator"><div class="attivita-label">Attività 2</div>${generaFlashcard(datiLezione.vocabolario, 'u001')}</div>` : '') +
+                (datiLezione.forum ? `<div class="section-separator"><div class="attivita-label">Attività 3</div>${generaForum(datiLezione)}</div>` : '');
 
-            const htmlFlashcard = datiLezione.vocabolario && datiLezione.vocabolario.length
-                ? `
-                    <div class="section-separator">
-                        <div class="attivita-label">Attività 2</div>
-                        ${generaFlashcard(datiLezione.vocabolario, 'u001')}
-                    </div>
-                `
-                : '';
-
-            const htmlForum = datiLezione.forum
-                ? `
-                    <div class="section-separator">
-                        <div class="attivita-label">Attività 3</div>
-                        ${generaForum(datiLezione)}
-                    </div>
-                `
-                : '';
-
-            document.getElementById('contenitore-dinamico').innerHTML = htmlScelta + htmlFlashcard + htmlForum;
             document.getElementById('contenitore-ascolto').innerHTML = renderScheda2();
             document.getElementById('contenitore-lettura').innerHTML = renderScheda3();
             document.getElementById('contenitore-comprensione').innerHTML = renderScheda4();
@@ -453,86 +431,53 @@
             document.getElementById('contenitore-riordino').innerHTML = renderScheda7();
             document.getElementById('contenitore-grammatica').innerHTML = renderScheda8();
             document.getElementById('contenitore-negazione').innerHTML = renderScheda9();
+            document.getElementById('contenitore-dialoghi').innerHTML = renderScheda10();
 
             const BASE_PATH = 'unita_001';
 
             avviaSceltaPersonaleListener(BASE_PATH, utente.username, isDocente);
 
-            if (datiLezione.forum?.idFirebase) {
-                avviaForumListener(BASE_PATH, datiLezione.forum.idFirebase, isDocente);
-            }
-            if (datiLezione.ascolto?.comprensione?.id) {
-                avviaForumListener(BASE_PATH, datiLezione.ascolto.comprensione.id, isDocente);
-            }
+            if (datiLezione.forum?.idFirebase) avviaForumListener(BASE_PATH, datiLezione.forum.idFirebase, isDocente);
+            if (datiLezione.ascolto?.comprensione?.id) avviaForumListener(BASE_PATH, datiLezione.ascolto.comprensione.id, isDocente);
+
             if (datiLezione.comprensione?.domande?.length) {
-                avviaSceltaOpzioniListener(
-                    BASE_PATH,
-                    datiLezione.comprensione.domande,
-                    isDocente,
-                    utente.username
-                );
+                avviaSceltaOpzioniListener(BASE_PATH, datiLezione.comprensione.domande, isDocente, utente.username);
             }
+
             if (datiLezione.produzioneDomande?.esercizi?.length) {
-                avviaCreaDomandeListener(
-                    BASE_PATH,
-                    datiLezione.produzioneDomande.esercizi,
-                    isDocente,
-                    utente.username
-                );
+                avviaCreaDomandeListener(BASE_PATH, datiLezione.produzioneDomande.esercizi, isDocente, utente.username);
             }
+
             if (datiLezione.produzioneRisposte?.esercizi?.length) {
-                avviaParliamoneInsiemeListener(
-                    BASE_PATH,
-                    datiLezione.produzioneRisposte.esercizi,
-                    isDocente,
-                    utente.username
-                );
+                avviaParliamoneInsiemeListener(BASE_PATH, datiLezione.produzioneRisposte.esercizi, isDocente, utente.username);
             }
+
             if (datiLezione.riordinoDialoghi?.esercizi?.length) {
-                avviaRiordinaDialoghiListener(
-                    BASE_PATH,
-                    datiLezione.riordinoDialoghi.esercizi,
-                    isDocente
-                );
+                avviaRiordinaDialoghiListener(BASE_PATH, datiLezione.riordinoDialoghi.esercizi, isDocente);
             }
 
             if (datiLezione.grammatica?.fasi?.length) {
                 const fasi = datiLezione.grammatica.fasi;
-
                 const fasiCloze = fasi.filter(f => f.cloze);
-                if (fasiCloze.length) {
-                    avviaClozeListener(
-                        BASE_PATH,
-                        fasiCloze,
-                        isDocente,
-                        utente.username
-                    );
-                }
-
                 const fasiAssociazione = fasi.filter(f => f.associazione);
-                if (fasiAssociazione.length) {
-                    avviaAssociazioneListener(
-                        BASE_PATH,
-                        fasiAssociazione,
-                        isDocente,
-                        utente.username
-                    );
-                }
+                if (fasiCloze.length) avviaClozeListener(BASE_PATH, fasiCloze, isDocente, utente.username);
+                if (fasiAssociazione.length) avviaAssociazioneListener(BASE_PATH, fasiAssociazione, isDocente, utente.username);
             }
 
             if (datiLezione.negazione?.fasi?.length) {
-                const fasiNegazione = datiLezione.negazione.fasi;
-
-                fasiNegazione.forEach(fase => {
+                datiLezione.negazione.fasi.forEach(fase => {
                     if (fase.esercizi?.length) {
-                        fase.esercizi.forEach(ex => {
-                            avviaForumListener(BASE_PATH, `u001_negazione_${ex.id}`, isDocente);
-                        });
+                        fase.esercizi.forEach(ex => avviaForumListener(BASE_PATH, `u001_negazione_${ex.id}`, isDocente));
                     }
+                    if (fase.forum?.idFirebase) avviaForumListener(BASE_PATH, fase.forum.idFirebase, isDocente);
+                });
+            }
 
-                    if (fase.forum?.idFirebase) {
-                        avviaForumListener(BASE_PATH, fase.forum.idFirebase, isDocente);
-                    }
+            if (datiLezione.produzioneDialoghi?.personaggi?.length) {
+                datiLezione.produzioneDialoghi.personaggi.forEach(personaggio => {
+                    personaggio.domande.forEach(domanda => {
+                        avviaForumListener(BASE_PATH, domanda.id, isDocente);
+                    });
                 });
             }
         }
@@ -543,46 +488,24 @@
         window.toggleAccordion = function(id) {
             const currentContent = document.getElementById('content_' + id);
             if (!currentContent) return;
-
             const isOpen = currentContent.classList.contains('open');
             document.querySelectorAll('.accordion-content').forEach(content => content.classList.remove('open'));
             document.querySelectorAll('.accordion-header span').forEach(arrow => arrow.textContent = '▼');
-
             if (!isOpen) {
                 currentContent.classList.add('open');
                 const arrow = document.getElementById('arrow_' + id);
                 if (arrow) arrow.textContent = '▲';
-
                 localStorage.setItem(STORAGE_KEY, id);
-
                 const utente = STATO_ACCORDION.utente;
                 const isDocente = STATO_ACCORDION.isDocente;
                 if (!utente) return;
-
                 if (id === 'scheda_2' && !STATO_ACCORDION.lavagnaInizializzata && datiLezione.ascolto?.scanning?.id) {
                     STATO_ACCORDION.lavagnaInizializzata = true;
-                    setTimeout(() => {
-                        avviaLavagnaListener(
-                            BASE_PATH,
-                            datiLezione.ascolto.scanning.id,
-                            isDocente,
-                            utente.username,
-                            `${utente.username}_${Date.now()}`
-                        );
-                    }, 100);
+                    setTimeout(() => avviaLavagnaListener(BASE_PATH, datiLezione.ascolto.scanning.id, isDocente, utente.username, `${utente.username}_${Date.now()}`), 100);
                 }
-
                 if (id === 'scheda_3' && !STATO_ACCORDION.lavagnaLetturaInizializzata && datiLezione.lettura?.brainstorming?.id) {
                     STATO_ACCORDION.lavagnaLetturaInizializzata = true;
-                    setTimeout(() => {
-                        avviaLavagnaListener(
-                            BASE_PATH,
-                            datiLezione.lettura.brainstorming.id,
-                            isDocente,
-                            utente.username,
-                            `${utente.username}_${Date.now()}`
-                        );
-                    }, 100);
+                    setTimeout(() => avviaLavagnaListener(BASE_PATH, datiLezione.lettura.brainstorming.id, isDocente, utente.username, `${utente.username}_${Date.now()}`), 100);
                 }
             } else {
                 localStorage.removeItem(STORAGE_KEY);
@@ -600,7 +523,6 @@
         function autoOpenSavedAccordion() {
             const schedaSalvata = localStorage.getItem(STORAGE_KEY);
             if (!schedaSalvata) return;
-
             setTimeout(() => {
                 const content = document.getElementById('content_' + schedaSalvata);
                 const arrow = document.getElementById('arrow_' + schedaSalvata);
