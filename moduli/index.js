@@ -67,6 +67,12 @@ export {
 } from './associazione.js';
 
 export {
+    generaAutovalutazione,        // ← AGGIUNGI
+    initAutovalutazione,          // ← AGGIUNGI
+    avviaAutovalutazioneListener  // ← AGGIUNGI
+} from './autovalutazione.js';
+
+export {
     initLogin,
     haAccesso,
     getGruppi,
