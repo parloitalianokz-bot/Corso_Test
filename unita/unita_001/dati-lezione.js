@@ -569,19 +569,14 @@ export const datiLezione = {
         ]
     },
 
-    // ================================================================
-// SCHEDA 12: AUTOVALUTAZIONE
-// ================================================================
-
-autovalutazione: {
-    titolo: "✅ Autovalutazione",
-    istruzioni: "Com'è andata questa unità? Clicca sul tuo livello:",
-    obiettivi: [
-        { id: "u001_auto_1", testo: "So coniugare il verbo 'essere'." },
-        { id: "u001_auto_2", testo: "So presentarmi." },
-        { id: "u001_auto_3", testo: "So negare un'informazione." },
-        { id: "u001_auto_4", testo: "So fare domande sugli altri." }
-    ]
-}
-
+    autovalutazione: {
+        titolo: "✅ Autovalutazione",
+        istruzioni: "Com'è andata questa unità? Clicca sul tuo livello:",
+        obiettivi: [
+            { id: "u001_auto_1", testo: "So coniugare il verbo 'essere'.", testoDocente: "essere" },
+            { id: "u001_auto_2", testo: "So presentarmi.", testoDocente: "presentarsi" },
+            { id: "u001_auto_3", testo: "So negare un'informazione.", testoDocente: "negare" },
+            { id: "u001_auto_4", testo: "So fare domande sugli altri.", testoDocente: "domandare" }
+        ]
+    }
 };
