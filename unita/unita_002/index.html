@@ -53,6 +53,9 @@
             generaSceltaOpzioni,
             initSceltaOpzioni,
             avviaSceltaOpzioniListener,
+            generaCreaDomande,
+            initCreaDomande,
+            avviaCreaDomandeListener,
             ModuloTrasformatore
         } from '../../moduli/index.js';
 
@@ -70,6 +73,7 @@
         initForum(app);
         initLavagna(app);
         initSceltaOpzioni(app);
+        initCreaDomande(app);
 
         const BASE_PATH = 'unita_002';
         const STORAGE_KEY = 'parlo_italiano_unita_002_scheda_aperta';
@@ -99,6 +103,7 @@
             isDocente: false,
             sceltaPersonaleInizializzata: false,
             sceltaOpzioniInizializzata: false,
+            creaDomandeInizializzata: false,
             trasformatoreInizializzato: false,
             lavagnaScheda2Inizializzata: false,
             lavagnaScheda3Inizializzata: false
@@ -234,6 +239,16 @@
             );
         }
 
+        function generaScheda5() {
+            const produzioneDomande = datiLezione.produzioneDomande;
+            if (!produzioneDomande) return '';
+
+            return generaCreaDomande(
+                produzioneDomande,
+                STATO.isDocente
+            );
+        }
+
         function configuraTrasformatore(config) {
             return {
                 ...config,
@@ -360,6 +375,8 @@
                     contenuto = generaScheda3();
                 } else if (numero === 4) {
                     contenuto = generaScheda4();
+                } else if (numero === 5) {
+                    contenuto = generaScheda5();
                 } else {
                     contenuto = `
                         <div class="section-separator">
@@ -537,6 +554,16 @@
                         utente.username
                     );
                     STATO.sceltaOpzioniInizializzata = true;
+                }
+
+                if (datiLezione.produzioneDomande?.esercizi?.length) {
+                    avviaCreaDomandeListener(
+                        BASE_PATH,
+                        datiLezione.produzioneDomande.esercizi,
+                        STATO.isDocente,
+                        utente.username
+                    );
+                    STATO.creaDomandeInizializzata = true;
                 }
 
                 apriSchedaSalvata();
