@@ -279,5 +279,72 @@ export const datiLezione = {
                 suggerimento: '📖 Nel testo: "Non sei più un bambino. Hai trentacinque anni."'
             }
         ]
+    },
+
+    produzioneDomande: {
+        titolo: "🎤 Creiamo le domande",
+        istruzioni: "Leggi la risposta e scrivi la domanda corretta.",
+        esercizi: [
+            {
+                id: "u002_p1",
+                risposta: "Marco è a letto.",
+                guida: "💡 Dove?",
+                modello: "Dov'è Marco?"
+            },
+            {
+                id: "u002_p2",
+                risposta: "La madre è in cucina.",
+                guida: "💡 Dove?",
+                modello: "Dov'è la madre?"
+            },
+            {
+                id: "u002_p3",
+                risposta: "Quando il figlio ha sete, la madre porta un bicchiere d'acqua.",
+                guida: "💡 Che cosa?",
+                modello: "Che cosa porta la madre quando il figlio ha sete?"
+            },
+            {
+                id: "u002_p4",
+                risposta: "Quando il figlio ha fame, la madre porta un piatto di pasta.",
+                guida: "💡 Che cosa?",
+                modello: "Che cosa porta la madre quando il figlio ha fame?"
+            },
+            {
+                id: "u002_p5",
+                risposta: "Quando il figlio ha freddo, la madre porta una coperta.",
+                guida: "💡 Che cosa?",
+                modello: "Che cosa porta la madre quando il figlio ha freddo?"
+            },
+            {
+                id: "u002_p6",
+                risposta: "Quando il figlio ha sonno, la madre spegne la luce.",
+                guida: "💡 Che cosa?",
+                modello: "Che cosa fa la madre quando il figlio ha sonno?"
+            },
+            {
+                id: "u002_p7",
+                risposta: "Marco ha 35 anni.",
+                guida: "💡 Quanti?",
+                modello: "Quanti anni ha Marco?"
+            },
+            {
+                id: "u002_p8",
+                risposta: "Marco beve l'acqua.",
+                guida: "💡 Che cosa?",
+                modello: "Che cosa beve Marco?"
+            },
+            {
+                id: "u002_p9",
+                risposta: "Marco mangia la pasta.",
+                guida: "💡 Che cosa?",
+                modello: "Che cosa mangia Marco?"
+            },
+            {
+                id: "u002_p10",
+                risposta: "Marco è grande.",
+                guida: "💡 Come?",
+                modello: "Com'è Marco?"
+            }
+        ]
     }
 };
