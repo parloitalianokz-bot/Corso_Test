@@ -25,22 +25,26 @@ export const datiLezione = {
                 {
                     id: "cat_bambino",
                     testo: "👦 Bambino / 👧 Bambina",
-                    valore: "bambino"
+                    valore: "bambino",
+                    img: "img/personaggi/bambino.webp"
                 },
                 {
                     id: "cat_ragazzo",
                     testo: "🧑 Ragazzo / 👩 Ragazza",
-                    valore: "ragazzo"
+                    valore: "ragazzo",
+                    img: "img/personaggi/ragazza.webp"
                 },
                 {
                     id: "cat_uomo",
                     testo: "👨 Uomo / 👩 Donna",
-                    valore: "uomo"
+                    valore: "uomo",
+                    img: "img/personaggi/adulto.webp"
                 },
                 {
                     id: "cat_anziano",
                     testo: "👴 Anziano / 👵 Anziana",
-                    valore: "anziano"
+                    valore: "anziano",
+                    img: "img/personaggi/anziano.webp"
                 }
             ]
         }
