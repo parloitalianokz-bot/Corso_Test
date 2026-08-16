@@ -140,7 +140,7 @@
 
         @media (max-width: 600px) {
             .glossario-lista {
-                padding: 12px 12px;
+                padding: 12px;
             }
 
             .glossario-item {
@@ -154,6 +154,7 @@
             }
         }
     `;
+
     const style = document.createElement('style');
     style.textContent = css;
     document.head.appendChild(style);
@@ -165,6 +166,7 @@ function escapeRegExp(str) {
 
 function buildTooltip(voce) {
     const traduzione = voce.traduzione_ru || '';
+
     return `
         <span class="glossario-tooltip">
             <span class="glossario-tooltip-breve">${traduzione}</span>
@@ -183,26 +185,33 @@ const SOLO_TOOLTIP = new Set([
     'occupato'
 ]);
 
-export function glossarizzaTesto(testo, glossario) {
-    if (!testo || !glossario || glossario.length === 0) return testo;
+export function glossarizzaTesto(testo, glossario = [], tooltip = []) {
+    if (!testo) return testo;
+
+    const voci = [
+        ...glossario.filter(voce =>
+            SOLO_TOOLTIP.has((voce.parola || '').trim())
+        ),
+        ...tooltip
+    ];
+
+    const vociOrdinate = voci
+        .filter(voce => voce?.parola?.trim())
+        .sort((a, b) => b.parola.length - a.parola.length);
 
     let risultato = testo;
 
-    const vociOrdinate = glossario
-        .filter(voce => SOLO_TOOLTIP.has((voce.parola || '').trim()))
-        .slice()
-        .sort((a, b) => (b.parola?.length || 0) - (a.parola?.length || 0));
-
-    vociOrdinate.forEach((voce) => {
-        const parola = (voce.parola || '').trim();
-        if (!parola) return;
-
+    vociOrdinate.forEach(voce => {
+        const parola = voce.parola.trim();
         const escaped = escapeRegExp(parola);
-        const regex = new RegExp(`(?<![\\p{L}\\p{N}])(${escaped})(?![\\p{L}\\p{N}])`, 'giu');
+        const regex = new RegExp(
+            `(?<![\\p{L}\\p{N}])(${escaped})(?![\\p{L}\\p{N}])`,
+            'giu'
+        );
 
-        risultato = risultato.replace(regex, (match) => {
-            return `<span class="glossario-word" tabindex="0">${match}${buildTooltip(voce)}</span>`;
-        });
+        risultato = risultato.replace(regex, match =>
+            `<span class="glossario-word" tabindex="0">${match}${buildTooltip(voce)}</span>`
+        );
     });
 
     return risultato;
@@ -221,7 +230,10 @@ export function generaListaGlossario(glossario) {
             <div class="glossario-item">
                 <span class="glossario-item-parola">${parola}</span>
                 <span class="glossario-item-resto">: ${traduzione} (${pronuncia})</span>
-                ${voce.audio ? `<button type="button" class="glossario-audio-btn" onclick="window.playGlossarioAudio('${audioId}')">🔊</button><audio id="${audioId}" src="${voce.audio}" preload="none"></audio>` : ''}
+                ${voce.audio
+                    ? `<button type="button" class="glossario-audio-btn" onclick="window.playGlossarioAudio('${audioId}')">🔊</button>
+                       <audio id="${audioId}" src="${voce.audio}" preload="none"></audio>`
+                    : ''}
             </div>
         `;
     }).join('');
@@ -240,9 +252,11 @@ export function generaListaGlossario(glossario) {
 window.toggleGlossario = function() {
     const lista = document.getElementById('glossario_lista');
     const btn = document.querySelector('.glossario-toggle-btn');
+
     if (!lista || !btn) return;
 
     const nascosto = lista.hasAttribute('hidden');
+
     if (nascosto) {
         lista.removeAttribute('hidden');
         btn.textContent = 'Nascondi glossario';
@@ -254,7 +268,9 @@ window.toggleGlossario = function() {
 
 window.playGlossarioAudio = function(audioId) {
     const audio = document.getElementById(audioId);
+
     if (!audio) return;
+
     audio.currentTime = 0;
     audio.play();
 };
