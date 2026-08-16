@@ -85,8 +85,9 @@
                 elicitazione: {
                     sceltaPersonale: {
                         domanda: scheda.istruzioni || scelta.titolo || '',
-                        fraseBase: 'Io sono...',
-                        idFirebase: 'u002_scelta_personale',
+                        fraseBase: scelta.fraseBase || 'Io sono...',
+                        fraseClasse: scelta.fraseClasse || '{nome} è {etichetta}',
+                        idFirebase: scelta.idFirebase || 'u002_scelta_personale',
                         opzioni: (scelta.opzioni || []).map(opzione => ({
                             id: opzione.id || opzione.valore,
                             etichetta: opzione.etichetta || opzione.testo,
