@@ -159,10 +159,69 @@ export const datiLezione = {
                 min: 1,
                 max: 120
             },
-            trasforma: valore => {
-                return `Io ho ${convertiValore(Number(valore))} anni`;
-            },
+            trasforma: valore => `Io ho ${convertiValore(Number(valore))} anni`,
             valoreCondiviso: valore => convertiValore(Number(valore))
         }
+    },
+
+    scheda_3: {
+        titolo: "Un bravo ragazzo",
+        sfondo: "img/sfondo_pagina_libro.webp",
+
+        brainstorming: {
+            id: "u002_lettura_brainstorming",
+            titolo: "✍️ Vocabolario: quali parole nuove hai trovato?",
+            placeholder: "Scrivi qui le parole nuove che hai trovato..."
+        },
+
+        tooltip: [
+            { parola: "a letto", traduzione_ru: "в постели" },
+            { parola: "chiama", traduzione_ru: "звонит / зовёт" },
+            { parola: "dice", traduzione_ru: "говорит" },
+            { parola: "ho sete", traduzione_ru: "я хочу пить" },
+            { parola: "bicchiere", traduzione_ru: "стакан" },
+            { parola: "ho fame", traduzione_ru: "я хочу есть" },
+            { parola: "ho freddo", traduzione_ru: "мне холодно" },
+            { parola: "coperta", traduzione_ru: "одеяло" },
+            { parola: "ho sonno", traduzione_ru: "я хочу спать" },
+            { parola: "spegne la luce", traduzione_ru: "выключает свет" },
+            { parola: "chiude la finestra", traduzione_ru: "закрывает окно" },
+            { parola: "ho paura", traduzione_ru: "мне страшно" }
+        ],
+
+        glossario: [
+            { parola: "casa", traduzione_ru: "дом", pronuncia_ru: "каза" },
+            { parola: "letto", traduzione_ru: "кровать", pronuncia_ru: "летто" },
+            { parola: "cucina", traduzione_ru: "кухня", pronuncia_ru: "кучина" },
+            { parola: "chiamare", traduzione_ru: "звать / звонить", pronuncia_ru: "кьямаре" },
+            { parola: "dire", traduzione_ru: "говорить", pronuncia_ru: "дире" },
+            { parola: "sete", traduzione_ru: "жажда", pronuncia_ru: "сете" },
+            { parola: "portare", traduzione_ru: "приносить", pronuncia_ru: "портаре" },
+            { parola: "bicchiere", traduzione_ru: "стакан", pronuncia_ru: "биккьере" },
+            { parola: "bere", traduzione_ru: "пить", pronuncia_ru: "бере" },
+            { parola: "fame", traduzione_ru: "голод", pronuncia_ru: "фаме" },
+            { parola: "piatto", traduzione_ru: "тарелка", pronuncia_ru: "пьятто" },
+            { parola: "mangiare", traduzione_ru: "есть", pronuncia_ru: "манджаре" },
+            { parola: "freddo", traduzione_ru: "холод", pronuncia_ru: "фреддо" },
+            { parola: "coperta", traduzione_ru: "одеяло", pronuncia_ru: "коперта" },
+            { parola: "sonno", traduzione_ru: "сонливость", pronuncia_ru: "сонно" },
+            { parola: "spegnere", traduzione_ru: "выключать", pronuncia_ru: "спеньере" },
+            { parola: "luce", traduzione_ru: "свет", pronuncia_ru: "луче" },
+            { parola: "chiudere", traduzione_ru: "закрывать", pronuncia_ru: "кьюдере" },
+            { parola: "finestra", traduzione_ru: "окно", pronuncia_ru: "финестра" },
+            { parola: "dormire", traduzione_ru: "спать", pronuncia_ru: "дормире" },
+            { parola: "un po'", traduzione_ru: "немного", pronuncia_ru: "ун по" },
+            { parola: "paura", traduzione_ru: "страх", pronuncia_ru: "паура" }
+        ],
+
+        paragrafi: [
+            "La mamma e suo figlio Marco sono in casa. Marco è in camera, è a letto; la madre è in cucina.",
+            "Il figlio chiama la madre e dice: “Mamma, <strong>ho sete</strong>”. Allora la madre porta un bicchiere d'acqua. Il figlio beve l'acqua, e non ha più sete.",
+            "Ma poi dice: “Mamma, <strong>ho fame</strong>”. Allora la madre porta un piatto di pasta. Marco mangia la pasta, e non ha più fame.",
+            "Ma poi dice: “Mamma, <strong>ho freddo</strong>”. Allora la madre porta una coperta. Con la coperta, il figlio non ha più freddo.",
+            "Ma poi dice: “Mamma, <strong>ho sonno</strong>”. Allora la madre spegne la luce e chiude la finestra, e lui dorme.",
+            "Marco dorme un po', e poi dice: “Mamma, <strong>ho paura</strong>”.",
+            "Allora la madre dice: “Perché hai paura? Non sei più un bambino. <strong>Hai trentacinque anni</strong>”."
+        ]
     }
 };
