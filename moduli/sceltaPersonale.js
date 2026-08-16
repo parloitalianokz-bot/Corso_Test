@@ -158,6 +158,7 @@ import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/
             }
         }
     `;
+
     const style = document.createElement('style');
     style.textContent = css;
     document.head.appendChild(style);
@@ -165,6 +166,8 @@ import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/
 
 let dbGlobal = null;
 let BASE_PATH_GLOBAL = '';
+
+const configurazioniScelta = new Map();
 
 export function initSceltaPersonale(app) {
     dbGlobal = app;
@@ -178,9 +181,14 @@ export function setBasePath(basePath) {
 export function generaSceltaPersonale(config, isDocente) {
     const data = config?.elicitazione?.sceltaPersonale;
     if (!data) return '';
+
     const id = data.idFirebase || 'scelta_personale';
 
+    // Memorizza la configurazione specifica dell'unità.
+    configurazioniScelta.set(id, data);
+
     let opzioniHtml = '';
+
     (data.opzioni || []).forEach((opt) => {
         opzioniHtml += `
         <div class="scelta-option" onclick="${isDocente ? '' : `scegliOpzione('${id}', '${opt.id}', '${opt.etichetta}')`}">
@@ -230,6 +238,7 @@ window.scegliOpzione = function(id, opzioneId, etichetta) {
     });
 
     const testoEl = document.getElementById(`scelta_testo_${id}`);
+
     if (testoEl) {
         testoEl.innerHTML = `<strong>${etichetta}</strong>`;
         testoEl.style.color = 'var(--primary-color)';
@@ -241,18 +250,28 @@ window.scegliOpzione = function(id, opzioneId, etichetta) {
         return;
     }
 
-    const myUserName = localStorage.getItem('parlo_italiano_utente') ? JSON.parse(localStorage.getItem('parlo_italiano_utente')).username : 'Studente';
+    const utenteSalvato = localStorage.getItem('parlo_italiano_utente');
+    const myUserName = utenteSalvato
+        ? JSON.parse(utenteSalvato).username
+        : 'Studente';
+
     const database = getDatabase(dbGlobal);
     const percorso = `${BASE_PATH_GLOBAL}/scelta_personale/${id}/${myUserName}`;
 
     set(ref(database, percorso), {
         opzione: opzioneId,
-        etichetta: etichetta,
+        etichetta,
         timestamp: Date.now()
     }).catch((error) => {
         console.error('❌ Errore durante il salvataggio:', error);
     });
 };
+
+function generaFraseClasse(template, nome, etichetta) {
+    return (template || '{nome}: {etichetta}')
+        .replaceAll('{nome}', nome)
+        .replaceAll('{etichetta}', etichetta);
+}
 
 export function avviaSceltaPersonaleListener(basePath, myUserName, isDocente) {
     if (!dbGlobal) {
@@ -278,15 +297,22 @@ export function avviaSceltaPersonaleListener(basePath, myUserName, isDocente) {
                 return;
             }
 
-            let html = '';
-            nomi.forEach(nome => {
+            const configurazione = configurazioniScelta.get(id);
+            const fraseClasse = configurazione?.fraseClasse || '{nome}: {etichetta}';
+
+            const html = nomi.map(nome => {
                 const risposta = studenti[nome];
-                html += `
+
+                return `
                 <div style="padding: 4px 0; border-bottom: 1px solid #eee;">
-                    <b>${nome}</b> studia l'italiano ${risposta.etichetta}
+                    <b>${nome}</b> ${generaFraseClasse(
+                        fraseClasse,
+                        nome,
+                        risposta.etichetta
+                    ).replace(`${nome} `, '')}
                 </div>
                 `;
-            });
+            }).join('');
 
             container.innerHTML = html || 'Ancora nessuna risposta...';
         });
@@ -310,6 +336,7 @@ function pulisciUIScelta(id) {
 
 window.resetSceltaPersonale = async function(id) {
     if (!dbGlobal) return;
+
     const database = getDatabase(dbGlobal);
     const percorso = `${BASE_PATH_GLOBAL}/scelta_personale/${id}`;
 
