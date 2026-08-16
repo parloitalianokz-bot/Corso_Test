@@ -223,5 +223,61 @@ export const datiLezione = {
             "Marco dorme un po', e poi dice: “Mamma, <strong>ho paura</strong>”.",
             "Allora la madre dice: “Perché hai paura? Non sei più un bambino. <strong>Hai trentacinque anni</strong>”."
         ]
+    },
+
+    comprensione: {
+        titolo: "🧠 Capiamo il testo",
+        istruzioni: "Scegli la risposta corretta.",
+        domande: [
+            {
+                id: "u002_q1",
+                testo: "La madre...",
+                opzioni: ["è in cucina", "è in camera", "è a letto"],
+                corretta: 0,
+                suggerimento: '📖 Nel testo: "La madre è in cucina."'
+            },
+            {
+                id: "u002_q2",
+                testo: "Il figlio...",
+                opzioni: ["è in cucina", "è a scuola", "è a letto"],
+                corretta: 2,
+                suggerimento: '📖 Nel testo: "Marco è in camera, è a letto."'
+            },
+            {
+                id: "u002_q3",
+                testo: "Quando il figlio ha sete, la madre porta...",
+                opzioni: ["un piatto di pasta", "un bicchiere d'acqua", "una coperta"],
+                corretta: 1,
+                suggerimento: '📖 Nel testo: "Mamma, ho sete. Allora la madre porta un bicchiere d’acqua."'
+            },
+            {
+                id: "u002_q4",
+                testo: "Quando il figlio ha fame, la madre porta...",
+                opzioni: ["una coperta", "una finestra", "un piatto di pasta"],
+                corretta: 2,
+                suggerimento: '📖 Nel testo: "Mamma, ho fame. Allora la madre porta un piatto di pasta."'
+            },
+            {
+                id: "u002_q5",
+                testo: "Quando il figlio ha freddo, la madre porta...",
+                opzioni: ["una finestra", "una coperta", "un bicchiere d'acqua"],
+                corretta: 1,
+                suggerimento: '📖 Nel testo: "Mamma, ho freddo. Allora la madre porta una coperta."'
+            },
+            {
+                id: "u002_q6",
+                testo: "Quando il figlio ha sonno, la madre...",
+                opzioni: ["apre la finestra", "chiude la coperta", "spegne la luce"],
+                corretta: 2,
+                suggerimento: '📖 Nel testo: "Mamma, ho sonno. Allora la madre spegne la luce e chiude la finestra."'
+            },
+            {
+                id: "u002_q7",
+                testo: "Il figlio...",
+                opzioni: ["è piccolo", "è grande"],
+                corretta: 1,
+                suggerimento: '📖 Nel testo: "Non sei più un bambino. Hai trentacinque anni."'
+            }
+        ]
     }
 };
