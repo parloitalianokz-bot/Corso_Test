@@ -1,5 +1,5 @@
 // ================================================================
-// UNITÀ 2: Un bravo ragazzo (Livello A1 - Possesso e sensazioni)
+// UNITÀ 2: Un bravo ragazzo
 // ================================================================
 
 export const datiLezione = {
@@ -9,7 +9,6 @@ export const datiLezione = {
     sottotitolo: "Livello A1 - Possesso e sensazioni",
     bannerImg: "img/banner_unita2.webp",
 
-    // Alias descrittivi mantenuti per compatibilità
     titoloUnita: "Unità 2 - Un bravo ragazzo",
     sottotitoloUnita: "Livello A1 - Possesso e sensazioni",
     bannerUnita: "img/banner_unita2.webp",
@@ -21,6 +20,10 @@ export const datiLezione = {
 
         sceltaPersonale: {
             titolo: "👥 Scegli la tua categoria:",
+            fraseBase: "Io sono...",
+            fraseClasse: "{nome} è {etichetta}",
+            idFirebase: "u002_scelta_personale",
+
             opzioni: [
                 {
                     id: "cat_bambino",
