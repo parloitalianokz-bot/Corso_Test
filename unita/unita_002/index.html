@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../style.css">
+    <title>Unità 002 - Un bravo ragazzo</title>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="top-nav">
+            <a href="../../index.html" class="back-link">← Torna alla Home</a>
+            <button onclick="window.parloLogout()" class="logout-button">Logout</button>
+        </div>
+
+        <div class="lesson-header">
+            <img
+                src="img/copertina.webp"
+                alt="Un bravo ragazzo"
+                class="lesson-header-image"
+            >
+            <div class="lesson-header-content">
+                <h1>Unità 2 - Un bravo ragazzo</h1>
+                <p>Livello A1 - Possesso e sensazioni</p>
+                <div id="utente-badge"></div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_1')">
+                Scheda 1: 🧊 Per rompere il ghiaccio <span id="arrow_scheda_1">▼</span>
+            </div>
+            <div id="content_scheda_1" class="accordion-content">
+                <div id="contenitore-scheda-1"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_1')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_2')">
+                Scheda 2: 🎧 Orecchie aperte! <span id="arrow_scheda_2">▼</span>
+            </div>
+            <div id="content_scheda_2" class="accordion-content">
+                <div id="contenitore-scheda-2"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_2')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_3')">
+                Scheda 3: 📖 Leggiamo insieme <span id="arrow_scheda_3">▼</span>
+            </div>
+            <div id="content_scheda_3" class="accordion-content">
+                <div id="contenitore-scheda-3"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_3')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_4')">
+                Scheda 4: 🧠 Capiamo il testo <span id="arrow_scheda_4">▼</span>
+            </div>
+            <div id="content_scheda_4" class="accordion-content">
+                <div id="contenitore-scheda-4"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_4')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_5')">
+                Scheda 5: 🎤 Creiamo le domande <span id="arrow_scheda_5">▼</span>
+            </div>
+            <div id="content_scheda_5" class="accordion-content">
+                <div id="contenitore-scheda-5"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_5')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_6')">
+                Scheda 6: 💬 Parliamone insieme <span id="arrow_scheda_6">▼</span>
+            </div>
+            <div id="content_scheda_6" class="accordion-content">
+                <div id="contenitore-scheda-6"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_6')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_7')">
+                Scheda 7: 🧩 Riordina i dialoghi <span id="arrow_scheda_7">▼</span>
+            </div>
+            <div id="content_scheda_7" class="accordion-content">
+                <div id="contenitore-scheda-7"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_7')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_8')">
+                Scheda 8: 🎯 Essere o avere? <span id="arrow_scheda_8">▼</span>
+            </div>
+            <div id="content_scheda_8" class="accordion-content">
+                <div id="contenitore-scheda-8"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_8')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_9')">
+                Scheda 9: 🔍 Alla scoperta della grammatica <span id="arrow_scheda_9">▼</span>
+            </div>
+            <div id="content_scheda_9" class="accordion-content">
+                <div id="contenitore-scheda-9"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_9')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_10')">
+                Scheda 10: 🕵️ Chi è? (Indovinelli) <span id="arrow_scheda_10">▼</span>
+            </div>
+            <div id="content_scheda_10" class="accordion-content">
+                <div id="contenitore-scheda-10"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_10')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_11')">
+                Scheda 11: 🔢 I numeri italiani <span id="arrow_scheda_11">▼</span>
+            </div>
+            <div id="content_scheda_11" class="accordion-content">
+                <div id="contenitore-scheda-11"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_11')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_12')">
+                Scheda 12: 🏠 Cosa hanno...? <span id="arrow_scheda_12">▼</span>
+            </div>
+            <div id="content_scheda_12" class="accordion-content">
+                <div id="contenitore-scheda-12"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_12')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_13')">
+                Scheda 13: 💎 Le mie 3 cose importanti <span id="arrow_scheda_13">▼</span>
+            </div>
+            <div id="content_scheda_13" class="accordion-content">
+                <div id="contenitore-scheda-13"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_13')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_14')">
+                Scheda 14: 🗣️ Parla con un compagno <span id="arrow_scheda_14">▼</span>
+            </div>
+            <div id="content_scheda_14" class="accordion-content">
+                <div id="contenitore-scheda-14"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_14')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_15')">
+                Scheda 15: 🎤 Parliamo di noi <span id="arrow_scheda_15">▼</span>
+            </div>
+            <div id="content_scheda_15" class="accordion-content">
+                <div id="contenitore-scheda-15"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_15')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header" onclick="toggleAccordion('scheda_16')">
+                Scheda 16: ✅ Autovalutazione <span id="arrow_scheda_16">▼</span>
+            </div>
+            <div id="content_scheda_16" class="accordion-content">
+                <div id="contenitore-scheda-16"></div>
+                <div class="scheda-azioni">
+                    <button onclick="closeAccordion('scheda_16')" class="logout-button">Chiudi scheda</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import {
+            initLogin,
+            getUtenteCorrente,
+            haAccesso,
+            logout,
+            mostraLogin
+        } from '../../moduli/login.js';
+
+        const firebaseConfig = {
+            databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
+        };
+
+        const app = initializeApp(firebaseConfig, 'unita002');
+        initLogin(app);
+
+        const BASE_PATH = 'unita_002';
+        const STORAGE_KEY = 'parlo_italiano_unita_002_scheda_aperta';
+
+        const schede = [
+            '🧊 Per rompere il ghiaccio',
+            '🎧 Orecchie aperte!',
+            '📖 Leggiamo insieme',
+            '🧠 Capiamo il testo',
+            '🎤 Creiamo le domande',
+            '💬 Parliamone insieme',
+            '🧩 Riordina i dialoghi',
+            '🎯 Essere o avere?',
+            '🔍 Alla scoperta della grammatica',
+            '🕵️ Chi è? (Indovinelli)',
+            '🔢 I numeri italiani',
+            '🏠 Cosa hanno...?',
+            '💎 Le mie 3 cose importanti',
+            '🗣️ Parla con un compagno',
+            '🎤 Parliamo di noi',
+            '✅ Autovalutazione'
+        ];
+
+        function mostraSchedeInPreparazione() {
+            schede.forEach((titolo, indice) => {
+                const contenitore = document.getElementById(`contenitore-scheda-${indice + 1}`);
+                if (contenitore) {
+                    contenitore.innerHTML = `
+                        <div class="section-separator">
+                            <div class="attivita-label">Contenuti in preparazione</div>
+                            <p class="scheda-istruzioni">
+                                Questa attività sarà disponibile prossimamente.
+                            </p>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function avviaPagina(utente) {
+            if (!utente) {
+                mostraLogin(utenteLoggato => avviaPagina(utenteLoggato));
+                return;
+            }
+
+            if (!haAccesso(utente, 2)) {
+                alert('Non hai accesso a questa unità!');
+                window.location.href = '../../index.html';
+                return;
+            }
+
+            document.getElementById('utente-badge').innerHTML = `
+                <div style="margin-top:10px;">
+                    👤 ${utente.username} · 🏫 ${utente.gruppo}
+                </div>
+            `;
+
+            mostraSchedeInPreparazione();
+        }
+
+        window.toggleAccordion = function(id) {
+            const contenuto = document.getElementById(`content_${id}`);
+            if (!contenuto) return;
+
+            const eraAperto = contenuto.classList.contains('open');
+
+            document.querySelectorAll('.accordion-content')
+                .forEach(elemento => elemento.classList.remove('open'));
+
+            document.querySelectorAll('.accordion-header span')
+                .forEach(freccia => freccia.textContent = '▼');
+
+            if (!eraAperto) {
+                contenuto.classList.add('open');
+
+                const freccia = document.getElementById(`arrow_${id}`);
+                if (freccia) freccia.textContent = '▲';
+
+                localStorage.setItem(STORAGE_KEY, id);
+            } else {
+                localStorage.removeItem(STORAGE_KEY);
+            }
+        };
+
+        window.closeAccordion = function(id) {
+            const contenuto = document.getElementById(`content_${id}`);
+            const freccia = document.getElementById(`arrow_${id}`);
+
+            if (contenuto) contenuto.classList.remove('open');
+            if (freccia) freccia.textContent = '▼';
+
+            localStorage.removeItem(STORAGE_KEY);
+        };
+
+        function apriSchedaSalvata() {
+            const schedaSalvata = localStorage.getItem(STORAGE_KEY);
+            if (schedaSalvata) {
+                setTimeout(() => window.toggleAccordion(schedaSalvata), 200);
+            }
+        }
+
+        window.parloLogout = logout;
+
+        avviaPagina(getUtenteCorrente());
+        apriSchedaSalvata();
+    </script>
+</body>
+</html>
