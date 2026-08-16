@@ -67,10 +67,12 @@ export {
 } from './associazione.js';
 
 export {
-    generaAutovalutazione,        // ← AGGIUNGI
-    initAutovalutazione,          // ← AGGIUNGI
-    avviaAutovalutazioneListener  // ← AGGIUNGI
+    generaAutovalutazione,
+    initAutovalutazione,
+    avviaAutovalutazioneListener
 } from './autovalutazione.js';
+
+export { default as ModuloTrasformatore } from './trasformatore.js';
 
 export {
     initLogin,
