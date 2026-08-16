@@ -15,12 +15,12 @@
         </div>
 
         <div id="intestazione-container"></div>
-
         <div id="contenitore-schede"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
         import {
             initLogin,
             getUtenteCorrente,
@@ -28,14 +28,24 @@
             logout,
             mostraLogin
         } from '../../moduli/login.js';
-        import { initIntestazione } from '../../moduli/intestazione.js';
+
+        import {
+            initIntestazione,
+            generaSceltaPersonale,
+            initSceltaPersonale,
+            avviaSceltaPersonaleListener
+        } from '../../moduli/index.js';
+
+        import { datiLezione } from './dati-lezione.js';
 
         const firebaseConfig = {
             databaseURL: "https://esercizi-parlo-italiano-default-rtdb.europe-west1.firebasedatabase.app/"
         };
 
         const app = initializeApp(firebaseConfig, 'unita002');
+
         initLogin(app);
+        initSceltaPersonale(app);
 
         const BASE_PATH = 'unita_002';
         const STORAGE_KEY = 'parlo_italiano_unita_002_scheda_aperta';
@@ -59,38 +69,114 @@
             '✅ Autovalutazione'
         ];
 
-        function generaSchede() {
-            document.getElementById('contenitore-schede').innerHTML = schede.map((titolo, indice) => {
-                const numero = indice + 1;
+        const STATO = {
+            utente: null,
+            isDocente: false,
+            sceltaPersonaleInizializzata: false
+        };
 
+        function preparaDatiSceltaPersonale() {
+            const scheda = datiLezione.scheda_1;
+            const scelta = scheda?.sceltaPersonale;
+
+            if (!scelta) return null;
+
+            return {
+                elicitazione: {
+                    sceltaPersonale: {
+                        domanda: scheda.istruzioni || scelta.titolo || '',
+                        fraseBase: 'Io sono...',
+                        idFirebase: 'u002_scelta_personale',
+                        opzioni: (scelta.opzioni || []).map(opzione => ({
+                            id: opzione.id || opzione.valore,
+                            etichetta: opzione.etichetta || opzione.testo,
+                            img: opzione.img || ''
+                        }))
+                    }
+                }
+            };
+        }
+
+        function generaContenutoScheda1() {
+            const scheda = datiLezione.scheda_1;
+            const datiSceltaPersonale = preparaDatiSceltaPersonale();
+
+            if (!scheda || !datiSceltaPersonale) {
                 return `
-                    <div class="accordion-item">
-                        <div class="accordion-header" onclick="toggleAccordion('scheda_${numero}')">
-                            Scheda ${numero}: ${titolo}
-                            <span id="arrow_scheda_${numero}">▼</span>
-                        </div>
-
-                        <div id="content_scheda_${numero}" class="accordion-content">
-                            <div id="contenitore-scheda-${numero}">
-                                <div class="section-separator">
-                                    <div class="attivita-label">Contenuti in preparazione</div>
-                                    <p class="scheda-istruzioni">
-                                        Questa attività sarà disponibile prossimamente.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="scheda-azioni">
-                                <button
-                                    onclick="closeAccordion('scheda_${numero}')"
-                                    class="logout-button">
-                                    Chiudi scheda
-                                </button>
-                            </div>
-                        </div>
+                    <div class="section-separator">
+                        <div class="attivita-label">Contenuti in preparazione</div>
                     </div>
                 `;
-            }).join('');
+            }
+
+            return `
+                <div class="section-separator section-separator-no-top">
+                    ${scheda.immaginePrincipale ? `
+                        <div class="scheda-immagine-box">
+                            <img
+                                src="${scheda.immaginePrincipale}"
+                                alt="${scheda.titolo || 'Attività introduttiva'}"
+                                class="scheda-immagine scheda-immagine-centrata">
+                        </div>
+                    ` : ''}
+
+                    <div class="attivita-label">${scheda.titolo || ''}</div>
+
+                    <div id="contenitore-scelta-personale">
+                        ${generaSceltaPersonale(
+                            datiSceltaPersonale,
+                            STATO.isDocente
+                        )}
+                    </div>
+                </div>
+            `;
+        }
+
+        function generaSchede() {
+            document.getElementById('contenitore-schede').innerHTML =
+                schede.map((titolo, indice) => {
+                    const numero = indice + 1;
+
+                    const contenuto = numero === 1
+                        ? generaContenutoScheda1()
+                        : `
+                            <div class="section-separator">
+                                <div class="attivita-label">Contenuti in preparazione</div>
+                                <p class="scheda-istruzioni">
+                                    Questa attività sarà disponibile prossimamente.
+                                </p>
+                            </div>
+                        `;
+
+                    return `
+                        <div class="accordion-item">
+                            <div
+                                class="accordion-header"
+                                onclick="toggleAccordion('scheda_${numero}')">
+                                Scheda ${numero}: ${titolo}
+                                <span id="arrow_scheda_${numero}">▼</span>
+                            </div>
+
+                            <div
+                                id="content_scheda_${numero}"
+                                class="accordion-content">
+
+                                <div id="contenitore-scheda-${numero}">
+                                    ${contenuto}
+                                </div>
+
+                                <div class="scheda-azioni">
+                                    <button
+                                        onclick="closeAccordion('scheda_${numero}')"
+                                        class="logout-button">
+                                        Chiudi scheda
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                })
+                .join('');
         }
 
         function avviaPagina(utente) {
@@ -105,10 +191,13 @@
                 return;
             }
 
+            STATO.utente = utente;
+            STATO.isDocente = utente.ruolo === 'docenti';
+
             initIntestazione({
-                titolo: 'Unità 2 - Un bravo ragazzo',
-                sottotitolo: 'Livello A1 - Possesso e sensazioni',
-                bannerImg: 'img/copertina.webp',
+                titolo: datiLezione.titolo,
+                sottotitolo: datiLezione.sottotitolo,
+                bannerImg: datiLezione.bannerImg,
                 badge: {
                     nome: utente.username,
                     gruppo: utente.gruppo,
@@ -117,6 +206,18 @@
             });
 
             generaSchede();
+
+            const datiSceltaPersonale = preparaDatiSceltaPersonale();
+
+            if (datiSceltaPersonale) {
+                avviaSceltaPersonaleListener(
+                    BASE_PATH,
+                    utente.username,
+                    STATO.isDocente
+                );
+                STATO.sceltaPersonaleInizializzata = true;
+            }
+
             apriSchedaSalvata();
         }
 
@@ -156,16 +257,15 @@
 
         function apriSchedaSalvata() {
             const schedaSalvata = localStorage.getItem(STORAGE_KEY);
+            if (!schedaSalvata) return;
 
-            if (schedaSalvata) {
-                setTimeout(() => {
-                    const contenuto = document.getElementById(`content_${schedaSalvata}`);
-                    const freccia = document.getElementById(`arrow_${schedaSalvata}`);
+            setTimeout(() => {
+                const contenuto = document.getElementById(`content_${schedaSalvata}`);
+                const freccia = document.getElementById(`arrow_${schedaSalvata}`);
 
-                    if (contenuto) contenuto.classList.add('open');
-                    if (freccia) freccia.textContent = '▲';
-                }, 200);
-            }
+                if (contenuto) contenuto.classList.add('open');
+                if (freccia) freccia.textContent = '▲';
+            }, 200);
         }
 
         window.parloLogout = logout;
