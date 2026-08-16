@@ -33,7 +33,11 @@
             initIntestazione,
             generaSceltaPersonale,
             initSceltaPersonale,
-            avviaSceltaPersonaleListener
+            avviaSceltaPersonaleListener,
+            generaFlashcard,
+            generaForum,
+            initForum,
+            avviaForumListener
         } from '../../moduli/index.js';
 
         import { datiLezione } from './dati-lezione.js';
@@ -46,6 +50,7 @@
 
         initLogin(app);
         initSceltaPersonale(app);
+        initForum(app);
 
         const BASE_PATH = 'unita_002';
         const STORAGE_KEY = 'parlo_italiano_unita_002_scheda_aperta';
@@ -84,9 +89,9 @@
             return {
                 elicitazione: {
                     sceltaPersonale: {
-                        domanda: scheda.istruzioni || scelta.titolo || '',
+                        domanda: scelta.titolo || scheda.istruzioni || '',
                         fraseBase: scelta.fraseBase || 'Io sono...',
-                        fraseClasse: scelta.fraseClasse || '{nome} è {etichetta}',
+                        fraseClasse: scelta.fraseClasse || '{nome}: {etichetta}',
                         idFirebase: scelta.idFirebase || 'u002_scelta_personale',
                         opzioni: (scelta.opzioni || []).map(opzione => ({
                             id: opzione.id || opzione.valore,
@@ -100,17 +105,12 @@
 
         function generaContenutoScheda1() {
             const scheda = datiLezione.scheda_1;
+            if (!scheda) return '';
+
             const datiSceltaPersonale = preparaDatiSceltaPersonale();
+            const attivita2 = scheda.attivita_2;
 
-            if (!scheda || !datiSceltaPersonale) {
-                return `
-                    <div class="section-separator">
-                        <div class="attivita-label">Contenuti in preparazione</div>
-                    </div>
-                `;
-            }
-
-            return `
+            let contenuto = `
                 <div class="section-separator section-separator-no-top">
                     ${scheda.immaginePrincipale ? `
                         <div class="scheda-immagine-box">
@@ -122,15 +122,51 @@
                     ` : ''}
 
                     <div class="attivita-label">${scheda.titolo || ''}</div>
+            `;
 
+            if (datiSceltaPersonale) {
+                contenuto += `
                     <div id="contenitore-scelta-personale">
+                        <div class="scheda-istruzioni">${scheda.istruzioni || ''}</div>
                         ${generaSceltaPersonale(
                             datiSceltaPersonale,
                             STATO.isDocente
                         )}
                     </div>
+                `;
+            }
+
+            if (attivita2) {
+                contenuto += `
+                    <div class="section-separator">
+                        <div class="attivita-label">
+                            ${attivita2.titolo || '📌 Attività 2'}
+                        </div>
+
+                        <p class="scheda-istruzioni">
+                            ${attivita2.istruzioni || ''}
+                        </p>
+
+                        <p class="scheda-domanda">
+                            ${attivita2.domanda || ''}
+                        </p>
+
+                        ${attivita2.vocabolario?.length
+                            ? generaFlashcard(attivita2.vocabolario, 'u002_cibi')
+                            : ''}
+
+                        ${attivita2.forum
+                            ? generaForum({ forum: attivita2.forum }, STATO.isDocente)
+                            : ''}
+                    </div>
+                `;
+            }
+
+            contenuto += `
                 </div>
             `;
+
+            return contenuto;
         }
 
         function generaSchede() {
@@ -217,6 +253,16 @@
                     STATO.isDocente
                 );
                 STATO.sceltaPersonaleInizializzata = true;
+            }
+
+            const forumAttivita2 = datiLezione.scheda_1?.attivita_2?.forum;
+
+            if (forumAttivita2?.idFirebase) {
+                avviaForumListener(
+                    BASE_PATH,
+                    forumAttivita2.idFirebase,
+                    STATO.isDocente
+                );
             }
 
             apriSchedaSalvata();
