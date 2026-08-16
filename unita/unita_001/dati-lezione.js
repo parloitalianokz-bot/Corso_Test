@@ -11,6 +11,7 @@ export const datiLezione = {
         sceltaPersonale: {
             domanda: '📌 Perché studi l\'italiano?',
             fraseBase: 'Io studio l\'italiano...',
+            fraseClasse: '{nome} studia l\'italiano {etichetta}',
             idFirebase: 'unita_001_motivazione',
             opzioni: [
                 { id: 'turismo', etichetta: 'per turismo', img: 'img/motivazioni/turismo.webp' },
