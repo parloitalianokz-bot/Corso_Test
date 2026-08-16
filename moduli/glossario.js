@@ -5,11 +5,11 @@
 (function() {
     const css = `
         .glossario-word {
-            color: inherit;
-            border-bottom: 1px dashed rgba(26, 110, 58, 0.45);
-            padding: 0 1px;
-            cursor: help;
             position: relative;
+            color: inherit;
+            padding: 0 1px;
+            border-bottom: 1px dashed rgba(26, 110, 58, 0.45);
+            cursor: help;
             white-space: nowrap;
         }
 
@@ -17,33 +17,40 @@
             position: absolute;
             left: 50%;
             bottom: calc(100% + 8px);
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.98);
-            color: #1f3f2a;
-            border: 1px solid rgba(26, 110, 58, 0.18);
-            border-radius: 10px;
-            padding: 8px 10px;
-            min-width: 140px;
-            max-width: 220px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
             z-index: 20;
             display: none;
+            min-width: 140px;
+            max-width: 220px;
+            padding: 8px 10px;
+            transform: translateX(-50%);
+            border: 1px solid rgba(26, 110, 58, 0.18);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.98);
+            color: #1f3f2a;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
             font-size: 0.92rem;
+            font-weight: 400 !important;
             line-height: 1.35;
             text-align: left;
+            white-space: normal;
+        }
+
+        .glossario-tooltip *,
+        .glossario-tooltip-breve {
+            font-weight: 400 !important;
         }
 
         .glossario-tooltip::after {
-            content: '';
             position: absolute;
             left: 50%;
             bottom: -6px;
-            transform: translateX(-50%) rotate(45deg);
             width: 12px;
             height: 12px;
-            background: rgba(255, 255, 255, 0.98);
+            transform: translateX(-50%) rotate(45deg);
             border-right: 1px solid rgba(26, 110, 58, 0.18);
             border-bottom: 1px solid rgba(26, 110, 58, 0.18);
+            background: rgba(255, 255, 255, 0.98);
+            content: '';
         }
 
         .glossario-word:hover .glossario-tooltip,
@@ -52,23 +59,19 @@
             display: block;
         }
 
-        .glossario-tooltip-breve {
-            font-weight: 600;
-        }
-
         .glossario-toggle-wrap {
             margin-top: 16px;
         }
 
         .glossario-toggle-btn {
-            background: var(--primary-color, #1a6e3a);
-            color: white;
+            padding: 8px 12px;
             border: none;
             border-radius: 8px;
-            padding: 8px 12px;
+            background: var(--primary-color, #1a6e3a);
+            color: white;
             cursor: pointer;
-            font-weight: 700;
             font-size: 0.92rem;
+            font-weight: 700;
         }
 
         .glossario-toggle-btn:hover {
@@ -78,9 +81,9 @@
         .glossario-lista {
             margin-top: 10px;
             padding: 14px 16px;
+            border: 1px solid rgba(26, 110, 58, 0.12);
             border-radius: 14px;
             background: #ffffff;
-            border: 1px solid rgba(26, 110, 58, 0.12);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
         }
 
@@ -89,20 +92,20 @@
         }
 
         .glossario-lista-titolo {
-            font-weight: 700;
-            color: var(--primary-color, #1a6e3a);
             margin-bottom: 10px;
+            color: var(--primary-color, #1a6e3a);
             font-size: 1rem;
+            font-weight: 700;
         }
 
         .glossario-item {
             display: flex;
+            flex-wrap: wrap;
             align-items: flex-start;
             gap: 8px;
             padding: 7px 0;
             border-bottom: 1px solid #edf2ee;
             line-height: 1.45;
-            flex-wrap: wrap;
         }
 
         .glossario-item:last-child {
@@ -110,28 +113,28 @@
         }
 
         .glossario-item-parola {
-            font-weight: 700;
             color: var(--primary-color, #1a6e3a);
+            font-weight: 700;
             white-space: nowrap;
         }
 
-        .glossario-item-resto {
+        .glossario-item-resto,
+        .glossario-item-pronuncia {
             color: #1a1a1a;
         }
 
         .glossario-item-pronuncia {
-            color: #1a1a1a;
             font-style: italic;
         }
 
         .glossario-audio-btn {
+            padding: 0;
             border: none;
             background: transparent;
             color: var(--primary-color, #1a6e3a);
             cursor: pointer;
-            font-weight: 700;
-            padding: 0;
             font-size: 0.95rem;
+            font-weight: 700;
         }
 
         .glossario-audio-btn:hover {
@@ -165,11 +168,11 @@ function escapeRegExp(str) {
 }
 
 function buildTooltip(voce) {
-    const traduzione = voce.traduzione_ru || '';
-
     return `
         <span class="glossario-tooltip">
-            <span class="glossario-tooltip-breve">${traduzione}</span>
+            <span class="glossario-tooltip-breve">
+                ${voce.traduzione_ru || ''}
+            </span>
         </span>
     `;
 }
@@ -188,16 +191,17 @@ const SOLO_TOOLTIP = new Set([
 export function glossarizzaTesto(testo, glossario = [], tooltip = []) {
     if (!testo) return testo;
 
-    const voci = [
-        ...glossario.filter(voce =>
-            SOLO_TOOLTIP.has((voce.parola || '').trim())
-        ),
-        ...tooltip
-    ];
+    // Se viene fornita una lista tooltip, usa esclusivamente quella.
+    // In Unità 001 mantiene il comportamento precedente.
+    const voci = tooltip.length
+        ? tooltip
+        : glossario.filter(voce =>
+            SOLO_TOOLTIP.has((voce.parola || '').trim().toLowerCase())
+        );
 
     const vociOrdinate = voci
         .filter(voce => voce?.parola?.trim())
-        .sort((a, b) => b.parola.length - a.parola.length);
+        .sort((a, b) => b.parola.trim().length - a.parola.trim().length);
 
     let risultato = testo;
 
@@ -231,7 +235,12 @@ export function generaListaGlossario(glossario) {
                 <span class="glossario-item-parola">${parola}</span>
                 <span class="glossario-item-resto">: ${traduzione} (${pronuncia})</span>
                 ${voce.audio
-                    ? `<button type="button" class="glossario-audio-btn" onclick="window.playGlossarioAudio('${audioId}')">🔊</button>
+                    ? `<button
+                            type="button"
+                            class="glossario-audio-btn"
+                            onclick="window.playGlossarioAudio('${audioId}')">
+                            🔊
+                       </button>
                        <audio id="${audioId}" src="${voce.audio}" preload="none"></audio>`
                     : ''}
             </div>
@@ -240,7 +249,13 @@ export function generaListaGlossario(glossario) {
 
     return `
         <div class="glossario-toggle-wrap">
-            <button type="button" class="glossario-toggle-btn" onclick="window.toggleGlossario()">Mostra glossario</button>
+            <button
+                type="button"
+                class="glossario-toggle-btn"
+                onclick="window.toggleGlossario()">
+                Mostra glossario
+            </button>
+
             <div class="glossario-lista" id="glossario_lista" hidden>
                 <div class="glossario-lista-titolo">📚 Glossario</div>
                 ${items}
