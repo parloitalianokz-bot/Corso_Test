@@ -50,6 +50,9 @@
             avviaLavagnaListener,
             glossarizzaTesto,
             generaListaGlossario,
+            generaSceltaOpzioni,
+            initSceltaOpzioni,
+            avviaSceltaOpzioniListener,
             ModuloTrasformatore
         } from '../../moduli/index.js';
 
@@ -66,6 +69,7 @@
         initSceltaPersonale(app);
         initForum(app);
         initLavagna(app);
+        initSceltaOpzioni(app);
 
         const BASE_PATH = 'unita_002';
         const STORAGE_KEY = 'parlo_italiano_unita_002_scheda_aperta';
@@ -94,6 +98,7 @@
             utente: null,
             isDocente: false,
             sceltaPersonaleInizializzata: false,
+            sceltaOpzioniInizializzata: false,
             trasformatoreInizializzato: false,
             lavagnaScheda2Inizializzata: false,
             lavagnaScheda3Inizializzata: false
@@ -217,6 +222,16 @@
                     ` : ''}
                 </div>
             `;
+        }
+
+        function generaScheda4() {
+            const comprensione = datiLezione.comprensione;
+            if (!comprensione) return '';
+
+            return generaSceltaOpzioni(
+                comprensione,
+                STATO.isDocente
+            );
         }
 
         function configuraTrasformatore(config) {
@@ -343,6 +358,8 @@
                     contenuto = generaScheda2();
                 } else if (numero === 3) {
                     contenuto = generaScheda3();
+                } else if (numero === 4) {
+                    contenuto = generaScheda4();
                 } else {
                     contenuto = `
                         <div class="section-separator">
@@ -470,7 +487,6 @@
                 STATO.utente = utente;
                 STATO.isDocente = utente.ruolo === 'docenti';
 
-                console.log('[U002] Generazione intestazione');
                 initIntestazione({
                     titolo: datiLezione.titolo,
                     sottotitolo: datiLezione.sottotitolo,
@@ -482,7 +498,6 @@
                     }
                 });
 
-                console.log('[U002] Generazione schede');
                 generaSchede();
 
                 const datiSceltaPersonale = preparaDatiSceltaPersonale();
@@ -508,7 +523,22 @@
                     avviaForumListener(BASE_PATH, forumBevande.idFirebase, STATO.isDocente);
                 }
 
-                avviaForumListener(BASE_PATH, 'u002_ascolto_comprensione', STATO.isDocente);
+                avviaForumListener(
+                    BASE_PATH,
+                    'u002_ascolto_comprensione',
+                    STATO.isDocente
+                );
+
+                if (datiLezione.comprensione?.domande?.length) {
+                    avviaSceltaOpzioniListener(
+                        BASE_PATH,
+                        datiLezione.comprensione.domande,
+                        STATO.isDocente,
+                        utente.username
+                    );
+                    STATO.sceltaOpzioniInizializzata = true;
+                }
+
                 apriSchedaSalvata();
 
                 console.log('[U002] Inizializzazione completata');
