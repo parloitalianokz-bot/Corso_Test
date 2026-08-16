@@ -45,6 +45,9 @@
             generaForum,
             initForum,
             avviaForumListener,
+            generaLavagna,
+            initLavagna,
+            avviaLavagnaListener,
             ModuloTrasformatore
         } from '../../moduli/index.js';
 
@@ -60,9 +63,11 @@
         initLogin(app);
         initSceltaPersonale(app);
         initForum(app);
+        initLavagna(app);
 
         const BASE_PATH = 'unita_002';
         const STORAGE_KEY = 'parlo_italiano_unita_002_scheda_aperta';
+        const VIDEO_ID_SCHEDA_2 = '6kl8KZftC_A';
 
         const schede = [
             '🧊 Per rompere il ghiaccio',
@@ -87,7 +92,8 @@
             utente: null,
             isDocente: false,
             sceltaPersonaleInizializzata: false,
-            trasformatoreInizializzato: false
+            trasformatoreInizializzato: false,
+            lavagnaScheda2Inizializzata: false
         };
 
         function preparaDatiSceltaPersonale() {
@@ -120,8 +126,48 @@
                 <div class="section-separator">
                     <p class="scheda-domanda">${parte.domanda || ''}</p>
                     <p class="scheda-istruzioni">${parte.istruzioni || ''}</p>
-                    ${parte.vocabolario?.length ? generaFlashcard(parte.vocabolario, idFlashcard) : ''}
-                    ${parte.forum ? generaForum({ forum: parte.forum }, STATO.isDocente) : ''}
+                    ${parte.vocabolario?.length
+                        ? generaFlashcard(parte.vocabolario, idFlashcard)
+                        : ''}
+                    ${parte.forum
+                        ? generaForum({ forum: parte.forum }, STATO.isDocente)
+                        : ''}
+                </div>
+            `;
+        }
+
+        function generaScheda2() {
+            return `
+                <div class="scheda-video-box">
+                    <div class="attivita-label">Attività 1 - Guardate e ascoltate il video</div>
+                    <p class="scheda-istruzioni">Guardate il video e ascoltate con attenzione.</p>
+
+                    <div class="video-wrapper">
+                        <iframe
+                            src="https://www.youtube.com/embed/${VIDEO_ID_SCHEDA_2}?rel=0"
+                            title="Video di ascolto dell'Unità 002"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+
+                    <div class="section-separator">
+                        ${generaLavagna({
+                            id: 'u002_ascolto_scanning',
+                            placeholder: 'Scrivete le parole che riconoscete...',
+                            titolo: 'Attività 2 - Caccia alle parole'
+                        })}
+                    </div>
+
+                    <div class="section-separator">
+                        ${generaForum({
+                            forum: {
+                                idFirebase: 'u002_ascolto_comprensione',
+                                domanda: 'Attività 3 - Mettiti alla prova: scrivi cosa ricordi',
+                                placeholder: 'Scrivi qui ciò che hai capito...'
+                            }
+                        })}
+                    </div>
                 </div>
             `;
         }
@@ -148,11 +194,9 @@
                 onElimina: async risposta => {
                     if (!STATO.isDocente || !risposta?._key) return;
 
-                    const conferma = confirm(
-                        `Vuoi eliminare la risposta di ${risposta.username || 'questo studente'}?`
-                    );
-
-                    if (!conferma) return;
+                    if (!confirm(`Vuoi eliminare la risposta di ${risposta.username || 'questo studente'}?`)) {
+                        return;
+                    }
 
                     const rispostaRef = ref(
                         database,
@@ -219,9 +263,7 @@
             if (attivita2) {
                 contenuto += `
                     <div class="section-separator">
-                        <div class="attivita-label">
-                            ${attivita2.titolo || '📌 Attività 2'}
-                        </div>
+                        <div class="attivita-label">${attivita2.titolo || '📌 Attività 2'}</div>
                         ${generaParteAttivita2(attivita2.cibi, 'u002_cibi')}
                         ${generaParteAttivita2(attivita2.bevande, 'u002_bevande')}
                     </div>
@@ -236,119 +278,174 @@
                 `;
             }
 
-            contenuto += `</div>`;
+            contenuto += '</div>';
             return contenuto;
         }
 
         function generaSchede() {
-            document.getElementById('contenitore-schede').innerHTML =
-                schede.map((titolo, indice) => {
-                    const numero = indice + 1;
+            const contenitore = document.getElementById('contenitore-schede');
 
-                    const contenuto = numero === 1
-                        ? generaContenutoScheda1()
-                        : `
-                            <div class="section-separator">
-                                <div class="attivita-label">Contenuti in preparazione</div>
-                                <p class="scheda-istruzioni">
-                                    Questa attività sarà disponibile prossimamente.
-                                </p>
-                            </div>
-                        `;
+            contenitore.innerHTML = schede.map((titolo, indice) => {
+                const numero = indice + 1;
 
-                    return `
-                        <div class="accordion-item">
-                            <div class="accordion-header"
-                                 onclick="toggleAccordion('scheda_${numero}')">
-                                Scheda ${numero}: ${titolo}
-                                <span id="arrow_scheda_${numero}">▼</span>
-                            </div>
+                let contenuto;
 
-                            <div id="content_scheda_${numero}"
-                                 class="accordion-content">
-                                <div id="contenitore-scheda-${numero}">
-                                    ${contenuto}
-                                </div>
-
-                                <div class="scheda-azioni">
-                                    <button
-                                        onclick="closeAccordion('scheda_${numero}')"
-                                        class="logout-button">
-                                        Chiudi scheda
-                                    </button>
-                                </div>
-                            </div>
+                if (numero === 1) {
+                    contenuto = generaContenutoScheda1();
+                } else if (numero === 2) {
+                    contenuto = generaScheda2();
+                } else {
+                    contenuto = `
+                        <div class="section-separator">
+                            <div class="attivita-label">Contenuti in preparazione</div>
+                            <p class="scheda-istruzioni">
+                                Questa attività sarà disponibile prossimamente.
+                            </p>
                         </div>
                     `;
-                })
-                .join('');
+                }
+
+                return `
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion('scheda_${numero}')">
+                            Scheda ${numero}: ${titolo}
+                            <span id="arrow_scheda_${numero}">▼</span>
+                        </div>
+
+                        <div id="content_scheda_${numero}" class="accordion-content">
+                            <div id="contenitore-scheda-${numero}">
+                                ${contenuto}
+                            </div>
+
+                            <div class="scheda-azioni">
+                                <button
+                                    onclick="closeAccordion('scheda_${numero}')"
+                                    class="logout-button">
+                                    Chiudi scheda
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function inizializzaTrasformatore() {
+            if (STATO.trasformatoreInizializzato) return;
+
+            const configTrasformatore = datiLezione.scheda_1?.attivita_3;
+            const contenitore = document.getElementById('contenitore-trasformatore');
+
+            if (!configTrasformatore || !contenitore) return;
+
+            const config = configuraTrasformatore(configTrasformatore);
+
+            ModuloTrasformatore.init(contenitore, config);
+            avviaListenerTrasformatore(config);
+
+            STATO.trasformatoreInizializzato = true;
+        }
+
+        function inizializzaLavagnaScheda2() {
+            if (STATO.lavagnaScheda2Inizializzata) return;
+
+            const utente = STATO.utente;
+            if (!utente) return;
+
+            const idLavagna = 'u002_ascolto_scanning';
+            const contenitore = document.getElementById(`lavagna_${idLavagna}`);
+
+            if (!contenitore) return;
+
+            STATO.lavagnaScheda2Inizializzata = true;
+
+            setTimeout(() => {
+                avviaLavagnaListener(
+                    BASE_PATH,
+                    idLavagna,
+                    STATO.isDocente,
+                    utente.username,
+                    `${utente.username}_${Date.now()}`
+                );
+            }, 100);
+        }
+
+        function inizializzaScheda(id) {
+            if (id === 'scheda_1') inizializzaTrasformatore();
+            if (id === 'scheda_2') inizializzaLavagnaScheda2();
         }
 
         function avviaPagina(utente) {
-            if (!utente) {
-                mostraLogin(utenteLoggato => avviaPagina(utenteLoggato));
-                return;
-            }
+            console.log('[U002] avviaPagina:', utente);
 
-            if (!haAccesso(utente, 2)) {
-                alert('Non hai accesso a questa unità!');
-                window.location.href = '../../index.html';
-                return;
-            }
-
-            STATO.utente = utente;
-            STATO.isDocente = utente.ruolo === 'docenti';
-
-            initIntestazione({
-                titolo: datiLezione.titolo,
-                sottotitolo: datiLezione.sottotitolo,
-                bannerImg: datiLezione.bannerImg,
-                badge: {
-                    nome: utente.username,
-                    gruppo: utente.gruppo,
-                    icona: '👤'
+            try {
+                if (!utente) {
+                    console.log('[U002] Utente assente: apro il login');
+                    mostraLogin(utenteLoggato => avviaPagina(utenteLoggato));
+                    return;
                 }
-            });
 
-            generaSchede();
-
-            const datiSceltaPersonale = preparaDatiSceltaPersonale();
-
-            if (datiSceltaPersonale) {
-                avviaSceltaPersonaleListener(
-                    BASE_PATH,
-                    utente.username,
-                    STATO.isDocente
-                );
-                STATO.sceltaPersonaleInizializzata = true;
-            }
-
-            const attivita2 = datiLezione.scheda_1?.attivita_2;
-            const forumCibi = attivita2?.cibi?.forum;
-            const forumBevande = attivita2?.bevande?.forum;
-
-            if (forumCibi?.idFirebase) {
-                avviaForumListener(BASE_PATH, forumCibi.idFirebase, STATO.isDocente);
-            }
-
-            if (forumBevande?.idFirebase) {
-                avviaForumListener(BASE_PATH, forumBevande.idFirebase, STATO.isDocente);
-            }
-
-            const configTrasformatore = datiLezione.scheda_1?.attivita_3;
-
-            if (configTrasformatore) {
-                const config = configuraTrasformatore(configTrasformatore);
-                const contenitore = document.getElementById('contenitore-trasformatore');
-
-                if (contenitore) {
-                    ModuloTrasformatore.init(contenitore, config);
-                    avviaListenerTrasformatore(config);
-                    STATO.trasformatoreInizializzato = true;
+                if (!haAccesso(utente, 2)) {
+                    console.warn('[U002] Accesso negato:', utente);
+                    alert('Non hai accesso a questa unità!');
+                    window.location.href = '../../index.html';
+                    return;
                 }
-            }
 
-            apriSchedaSalvata();
+                STATO.utente = utente;
+                STATO.isDocente = utente.ruolo === 'docenti';
+
+                console.log('[U002] Generazione intestazione');
+                initIntestazione({
+                    titolo: datiLezione.titolo,
+                    sottotitolo: datiLezione.sottotitolo,
+                    bannerImg: datiLezione.bannerImg,
+                    badge: {
+                        nome: utente.username,
+                        gruppo: utente.gruppo,
+                        icona: '👤'
+                    }
+                });
+
+                console.log('[U002] Generazione schede');
+                generaSchede();
+
+                const datiSceltaPersonale = preparaDatiSceltaPersonale();
+
+                if (datiSceltaPersonale) {
+                    avviaSceltaPersonaleListener(
+                        BASE_PATH,
+                        utente.username,
+                        STATO.isDocente
+                    );
+                    STATO.sceltaPersonaleInizializzata = true;
+                }
+
+                const attivita2 = datiLezione.scheda_1?.attivita_2;
+                const forumCibi = attivita2?.cibi?.forum;
+                const forumBevande = attivita2?.bevande?.forum;
+
+                if (forumCibi?.idFirebase) {
+                    avviaForumListener(BASE_PATH, forumCibi.idFirebase, STATO.isDocente);
+                }
+
+                if (forumBevande?.idFirebase) {
+                    avviaForumListener(BASE_PATH, forumBevande.idFirebase, STATO.isDocente);
+                }
+
+                avviaForumListener(BASE_PATH, 'u002_ascolto_comprensione', STATO.isDocente);
+                apriSchedaSalvata();
+
+                console.log('[U002] Inizializzazione completata');
+            } catch (errore) {
+                console.error('[U002] Errore durante l’inizializzazione:', errore);
+                document.getElementById('contenitore-schede').innerHTML = `
+                    <div class="section-separator" style="color:#b00020;">
+                        <strong>Errore durante il caricamento dell’Unità 002.</strong>
+                        <p>Controlla la console per il dettaglio.</p>
+                    </div>
+                `;
+            }
         }
 
         window.toggleAccordion = function(id) {
@@ -370,6 +467,7 @@
                 if (freccia) freccia.textContent = '▲';
 
                 localStorage.setItem(STORAGE_KEY, id);
+                inizializzaScheda(id);
             } else {
                 localStorage.removeItem(STORAGE_KEY);
             }
@@ -391,10 +489,10 @@
 
             setTimeout(() => {
                 const contenuto = document.getElementById(`content_${schedaSalvata}`);
-                const freccia = document.getElementById(`arrow_${schedaSalvata}`);
 
-                if (contenuto) contenuto.classList.add('open');
-                if (freccia) freccia.textContent = '▲';
+                if (contenuto && !contenuto.classList.contains('open')) {
+                    window.toggleAccordion(schedaSalvata);
+                }
             }, 200);
         }
 
