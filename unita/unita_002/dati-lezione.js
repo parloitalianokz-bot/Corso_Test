@@ -50,6 +50,76 @@ export const datiLezione = {
                     img: "img/personaggi/anziano.webp"
                 }
             ]
+        },
+
+        attivita_2: {
+            titolo: "📌 Attività 2: Mangiare e bere",
+            istruzioni: "Scopri i cibi italiani, poi scrivi le tue risposte!",
+            domanda: "🍝 Cosa mangi quando hai fame?",
+
+            vocabolario: [
+                {
+                    parola: "Bistecca alla Fiorentina",
+                    audio: "audio/cibi/bistecca-alla-fiorentina.mp3",
+                    img: "img/cibi/bistecca-alla-fiorentina.webp"
+                },
+                {
+                    parola: "Bruschette",
+                    audio: "audio/cibi/bruschette.mp3",
+                    img: "img/cibi/bruschette.webp"
+                },
+                {
+                    parola: "Caprese",
+                    audio: "audio/cibi/caprese.mp3",
+                    img: "img/cibi/caprese.webp"
+                },
+                {
+                    parola: "Gelato",
+                    audio: "audio/cibi/gelato.mp3",
+                    img: "img/cibi/gelato.webp"
+                },
+                {
+                    parola: "Lasagne",
+                    audio: "audio/cibi/lasagne.mp3",
+                    img: "img/cibi/lasagne.webp"
+                },
+                {
+                    parola: "Pizza",
+                    audio: "audio/cibi/pizza.mp3",
+                    img: "img/cibi/pizza.webp"
+                },
+                {
+                    parola: "Ravioli",
+                    audio: "audio/cibi/ravioli.mp3",
+                    img: "img/cibi/ravioli.webp"
+                },
+                {
+                    parola: "Risotto",
+                    audio: "audio/cibi/risotto.mp3",
+                    img: "img/cibi/risotto.webp"
+                },
+                {
+                    parola: "Spaghetti ai Frutti di Mare",
+                    audio: "audio/cibi/spaghetti-frutti-di-mare.mp3",
+                    img: "img/cibi/spaghetti-frutti-di-mare.webp"
+                },
+                {
+                    parola: "Spaghetti alla Carbonara",
+                    audio: "audio/cibi/spaghetti-carbonara.mp3",
+                    img: "img/cibi/spaghetti-carbonara.webp"
+                },
+                {
+                    parola: "Tiramisù",
+                    audio: "audio/cibi/tiramisu.mp3",
+                    img: "img/cibi/tiramisu.webp"
+                }
+            ],
+
+            forum: {
+                idFirebase: "u002_mangiare_quando_ho_fame",
+                domanda: "✍️ La tua risposta:<br>Quando ho fame, mangio...",
+                placeholder: "Scrivi qui la tua risposta..."
+            }
         }
     }
 };
