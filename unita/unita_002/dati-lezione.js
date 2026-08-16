@@ -2,6 +2,42 @@
 // UNITÀ 2: Un bravo ragazzo
 // ================================================================
 
+function convertiValore(numero) {
+    const unita = [
+        "zero", "uno", "due", "tre", "quattro",
+        "cinque", "sei", "sette", "otto", "nove",
+        "dieci", "undici", "dodici", "tredici", "quattordici",
+        "quindici", "sedici", "diciassette", "diciotto", "diciannove"
+    ];
+
+    const decine = [
+        "", "", "venti", "trenta", "quaranta",
+        "cinquanta", "sessanta", "settanta", "ottanta", "novanta"
+    ];
+
+    if (numero < 20) return unita[numero];
+
+    if (numero < 100) {
+        const decina = Math.floor(numero / 10);
+        const resto = numero % 10;
+        let risultato = decine[decina];
+
+        if (resto === 1 || resto === 8) {
+            risultato = risultato.slice(0, -1);
+        }
+
+        return risultato + (resto ? unita[resto] : "");
+    }
+
+    if (numero === 100) return "cento";
+
+    if (numero < 120) {
+        return `cento${convertiValore(numero - 100)}`;
+    }
+
+    return String(numero);
+}
+
 export const datiLezione = {
     unita: "unita_002",
 
@@ -60,61 +96,17 @@ export const datiLezione = {
                 domanda: "🍝 Cosa mangi quando hai fame?",
 
                 vocabolario: [
-                    {
-                        parola: "Bistecca alla Fiorentina",
-                        audio: "audio/cibi/bistecca-alla-fiorentina.mp3",
-                        img: "img/cibi/bistecca-alla-fiorentina.webp"
-                    },
-                    {
-                        parola: "Bruschette",
-                        audio: "audio/cibi/bruschette.mp3",
-                        img: "img/cibi/bruschette.webp"
-                    },
-                    {
-                        parola: "Caprese",
-                        audio: "audio/cibi/caprese.mp3",
-                        img: "img/cibi/caprese.webp"
-                    },
-                    {
-                        parola: "Gelato",
-                        audio: "audio/cibi/gelato.mp3",
-                        img: "img/cibi/gelato.webp"
-                    },
-                    {
-                        parola: "Lasagne",
-                        audio: "audio/cibi/lasagne.mp3",
-                        img: "img/cibi/lasagne.webp"
-                    },
-                    {
-                        parola: "Pizza",
-                        audio: "audio/cibi/pizza.mp3",
-                        img: "img/cibi/pizza.webp"
-                    },
-                    {
-                        parola: "Ravioli",
-                        audio: "audio/cibi/ravioli.mp3",
-                        img: "img/cibi/ravioli.webp"
-                    },
-                    {
-                        parola: "Risotto",
-                        audio: "audio/cibi/risotto.mp3",
-                        img: "img/cibi/risotto.webp"
-                    },
-                    {
-                        parola: "Spaghetti ai Frutti di Mare",
-                        audio: "audio/cibi/spaghetti-frutti-di-mare.mp3",
-                        img: "img/cibi/spaghetti-frutti-di-mare.webp"
-                    },
-                    {
-                        parola: "Spaghetti alla Carbonara",
-                        audio: "audio/cibi/spaghetti-carbonara.mp3",
-                        img: "img/cibi/spaghetti-carbonara.webp"
-                    },
-                    {
-                        parola: "Tiramisù",
-                        audio: "audio/cibi/tiramisu.mp3",
-                        img: "img/cibi/tiramisu.webp"
-                    }
+                    { parola: "Bistecca alla Fiorentina", audio: "audio/cibi/bistecca-alla-fiorentina.mp3", img: "img/cibi/bistecca-alla-fiorentina.webp" },
+                    { parola: "Bruschette", audio: "audio/cibi/bruschette.mp3", img: "img/cibi/bruschette.webp" },
+                    { parola: "Caprese", audio: "audio/cibi/caprese.mp3", img: "img/cibi/caprese.webp" },
+                    { parola: "Gelato", audio: "audio/cibi/gelato.mp3", img: "img/cibi/gelato.webp" },
+                    { parola: "Lasagne", audio: "audio/cibi/lasagne.mp3", img: "img/cibi/lasagne.webp" },
+                    { parola: "Pizza", audio: "audio/cibi/pizza.mp3", img: "img/cibi/pizza.webp" },
+                    { parola: "Ravioli", audio: "audio/cibi/ravioli.mp3", img: "img/cibi/ravioli.webp" },
+                    { parola: "Risotto", audio: "audio/cibi/risotto.mp3", img: "img/cibi/risotto.webp" },
+                    { parola: "Spaghetti ai Frutti di Mare", audio: "audio/cibi/spaghetti-frutti-di-mare.mp3", img: "img/cibi/spaghetti-frutti-di-mare.webp" },
+                    { parola: "Spaghetti alla Carbonara", audio: "audio/cibi/spaghetti-carbonara.mp3", img: "img/cibi/spaghetti-carbonara.webp" },
+                    { parola: "Tiramisù", audio: "audio/cibi/tiramisu.mp3", img: "img/cibi/tiramisu.webp" }
                 ],
 
                 forum: {
@@ -129,61 +121,17 @@ export const datiLezione = {
                 domanda: "🥤 Cosa bevi quando hai sete?",
 
                 vocabolario: [
-                    {
-                        parola: "Acqua",
-                        audio: "audio/bevande/acqua.mp3",
-                        img: "img/bevande/acqua.webp"
-                    },
-                    {
-                        parola: "Aranciata",
-                        audio: "audio/bevande/aranciata.mp3",
-                        img: "img/bevande/aranciata.webp"
-                    },
-                    {
-                        parola: "Birra",
-                        audio: "audio/bevande/birra.mp3",
-                        img: "img/bevande/birra.webp"
-                    },
-                    {
-                        parola: "Caffè",
-                        audio: "audio/bevande/caffe.mp3",
-                        img: "img/bevande/caffe.webp"
-                    },
-                    {
-                        parola: "Cappuccino",
-                        audio: "audio/bevande/cappuccino.mp3",
-                        img: "img/bevande/cappuccino.webp"
-                    },
-                    {
-                        parola: "Coca Cola",
-                        audio: "audio/bevande/coca-cola.mp3",
-                        img: "img/bevande/coca-cola.webp"
-                    },
-                    {
-                        parola: "Limoncello",
-                        audio: "audio/bevande/limoncello.mp3",
-                        img: "img/bevande/limoncello.webp"
-                    },
-                    {
-                        parola: "Prosecco",
-                        audio: "audio/bevande/prosecco.mp3",
-                        img: "img/bevande/prosecco.webp"
-                    },
-                    {
-                        parola: "Succo di frutta",
-                        audio: "audio/bevande/succo-di-frutta.mp3",
-                        img: "img/bevande/succo-di-frutta.webp"
-                    },
-                    {
-                        parola: "Tè",
-                        audio: "audio/bevande/te.mp3",
-                        img: "img/bevande/te.webp"
-                    },
-                    {
-                        parola: "Vino",
-                        audio: "audio/bevande/vino.mp3",
-                        img: "img/bevande/vino.webp"
-                    }
+                    { parola: "Acqua", audio: "audio/bevande/acqua.mp3", img: "img/bevande/acqua.webp" },
+                    { parola: "Aranciata", audio: "audio/bevande/aranciata.mp3", img: "img/bevande/aranciata.webp" },
+                    { parola: "Birra", audio: "audio/bevande/birra.mp3", img: "img/bevande/birra.webp" },
+                    { parola: "Caffè", audio: "audio/bevande/caffe.mp3", img: "img/bevande/caffe.webp" },
+                    { parola: "Cappuccino", audio: "audio/bevande/cappuccino.mp3", img: "img/bevande/cappuccino.webp" },
+                    { parola: "Coca Cola", audio: "audio/bevande/coca-cola.mp3", img: "img/bevande/coca-cola.webp" },
+                    { parola: "Limoncello", audio: "audio/bevande/limoncello.mp3", img: "img/bevande/limoncello.webp" },
+                    { parola: "Prosecco", audio: "audio/bevande/prosecco.mp3", img: "img/bevande/prosecco.webp" },
+                    { parola: "Succo di frutta", audio: "audio/bevande/succo-di-frutta.mp3", img: "img/bevande/succo-di-frutta.webp" },
+                    { parola: "Tè", audio: "audio/bevande/te.mp3", img: "img/bevande/te.webp" },
+                    { parola: "Vino", audio: "audio/bevande/vino.mp3", img: "img/bevande/vino.webp" }
                 ],
 
                 forum: {
@@ -192,6 +140,29 @@ export const datiLezione = {
                     placeholder: "Scrivi qui la tua risposta..."
                 }
             }
+        },
+
+        attivita_3: {
+            titolo: "📌 Attività 3: Quanti anni hai?",
+            istruzioni: "Scrivi la tua età in cifre e scopri come si scrive in italiano!",
+            id: "u002_eta",
+            idFirebase: "u002_eta",
+            tipoInput: "number",
+            etichettaInput: "✍️ La tua risposta",
+            placeholderInput: "Inserisci la tua età in cifre",
+            etichettaOutput: "📝 La frase in italiano",
+            titoloCondivisi: "💬 Le età della classe",
+            testoBottone: "💾 Salva",
+            messaggioVuoto: "Ancora nessuna risposta...",
+            validazione: {
+                tipo: "numero",
+                min: 1,
+                max: 120
+            },
+            trasforma: valore => {
+                return `Io ho ${convertiValore(Number(valore))} anni`;
+            },
+            valoreCondiviso: valore => convertiValore(Number(valore))
         }
     }
 };
