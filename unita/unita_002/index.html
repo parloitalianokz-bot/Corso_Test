@@ -103,6 +103,25 @@
             };
         }
 
+        function generaParteAttivita2(parte, idFlashcard) {
+            if (!parte) return '';
+
+            return `
+                <div class="section-separator">
+                    <p class="scheda-domanda">${parte.domanda || ''}</p>
+                    <p class="scheda-istruzioni">${parte.istruzioni || ''}</p>
+
+                    ${parte.vocabolario?.length
+                        ? generaFlashcard(parte.vocabolario, idFlashcard)
+                        : ''}
+
+                    ${parte.forum
+                        ? generaForum({ forum: parte.forum }, STATO.isDocente)
+                        : ''}
+                </div>
+            `;
+        }
+
         function generaContenutoScheda1() {
             const scheda = datiLezione.scheda_1;
             if (!scheda) return '';
@@ -143,29 +162,13 @@
                             ${attivita2.titolo || '📌 Attività 2'}
                         </div>
 
-                        <p class="scheda-istruzioni">
-                            ${attivita2.istruzioni || ''}
-                        </p>
-
-                        <p class="scheda-domanda">
-                            ${attivita2.domanda || ''}
-                        </p>
-
-                        ${attivita2.vocabolario?.length
-                            ? generaFlashcard(attivita2.vocabolario, 'u002_cibi')
-                            : ''}
-
-                        ${attivita2.forum
-                            ? generaForum({ forum: attivita2.forum }, STATO.isDocente)
-                            : ''}
+                        ${generaParteAttivita2(attivita2.cibi, 'u002_cibi')}
+                        ${generaParteAttivita2(attivita2.bevande, 'u002_bevande')}
                     </div>
                 `;
             }
 
-            contenuto += `
-                </div>
-            `;
-
+            contenuto += `</div>`;
             return contenuto;
         }
 
@@ -255,12 +258,22 @@
                 STATO.sceltaPersonaleInizializzata = true;
             }
 
-            const forumAttivita2 = datiLezione.scheda_1?.attivita_2?.forum;
+            const attivita2 = datiLezione.scheda_1?.attivita_2;
+            const forumCibi = attivita2?.cibi?.forum;
+            const forumBevande = attivita2?.bevande?.forum;
 
-            if (forumAttivita2?.idFirebase) {
+            if (forumCibi?.idFirebase) {
                 avviaForumListener(
                     BASE_PATH,
-                    forumAttivita2.idFirebase,
+                    forumCibi.idFirebase,
+                    STATO.isDocente
+                );
+            }
+
+            if (forumBevande?.idFirebase) {
+                avviaForumListener(
+                    BASE_PATH,
+                    forumBevande.idFirebase,
                     STATO.isDocente
                 );
             }
