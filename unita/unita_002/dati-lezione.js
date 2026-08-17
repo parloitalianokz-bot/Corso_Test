@@ -39,15 +39,30 @@ function convertiValore(numero) {
 }
 
 export const datiLezione = {
-    unita: "unita_002",
+    numeroUnita: 2,
 
     titolo: "Unità 2 - Un bravo ragazzo",
     sottotitolo: "Livello A1 - Possesso e sensazioni",
     bannerImg: "img/banner_unita2.webp",
 
-    titoloUnita: "Unità 2 - Un bravo ragazzo",
-    sottotitoloUnita: "Livello A1 - Possesso e sensazioni",
-    bannerUnita: "img/banner_unita2.webp",
+    schede: [
+        { id: "scheda_1", titolo: "🧊 Per rompere il ghiaccio", tipo: "scheda1", dati: null },
+        { id: "scheda_2", titolo: "🎧 Orecchie aperte! (Ascolto)", tipo: "scheda2", dati: null },
+        { id: "scheda_3", titolo: "📖 Leggiamo insieme", tipo: "scheda3", dati: null },
+        { id: "scheda_4", titolo: "🧠 Capiamo il testo", tipo: "sceltaOpzioni", dati: "comprensione" },
+        { id: "scheda_5", titolo: "🎤 Creiamo le domande", tipo: "creaDomande", dati: "produzioneDomande" },
+        { id: "scheda_6", titolo: "💬 Parliamone insieme", tipo: "parliamoneInsieme", dati: "produzioneRisposte" },
+        { id: "scheda_7", titolo: "🧩 Riordina i dialoghi", tipo: null, dati: null },
+        { id: "scheda_8", titolo: "🎯 Essere o avere?", tipo: null, dati: null },
+        { id: "scheda_9", titolo: "🔍 Alla scoperta della grammatica", tipo: null, dati: null },
+        { id: "scheda_10", titolo: "🕵️ Chi è? (Indovinelli)", tipo: null, dati: null },
+        { id: "scheda_11", titolo: "🔢 I numeri italiani", tipo: null, dati: null },
+        { id: "scheda_12", titolo: "🏠 Cosa hanno...?", tipo: null, dati: null },
+        { id: "scheda_13", titolo: "💎 Le mie 3 cose importanti", tipo: null, dati: null },
+        { id: "scheda_14", titolo: "🗣️ Parla con un compagno", tipo: null, dati: null },
+        { id: "scheda_15", titolo: "🎤 Parliamo di noi", tipo: null, dati: null },
+        { id: "scheda_16", titolo: "✅ Autovalutazione", tipo: null, dati: null }
+    ],
 
     scheda_1: {
         titolo: "🧊 Per rompere il ghiaccio",
